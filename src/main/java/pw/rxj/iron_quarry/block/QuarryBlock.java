@@ -84,7 +84,7 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
     public static final DirectionProperty FACING = DirectionProperty.of("facing");
 
     public static QuarryBlock getFallback() {
-        return (QuarryBlock) ZBlocks.COPPER_QUARRY.getBlock();
+        return ZBlocks.COPPER_QUARRY.getBlock();
     }
 
     public static boolean isOf(ItemStack stack){

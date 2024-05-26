@@ -7,18 +7,17 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
-import pw.rxj.iron_quarry.block.QuarryBlock;
 import pw.rxj.iron_quarry.block.ZBlocks;
 
 import java.util.List;
 
 public class ZModels implements ModelResourceProvider {
-    public static final ComplexModel COPPER_QUARRY_MODEL = QuarryModel.of((QuarryBlock) ZBlocks.COPPER_QUARRY.getBlock());
-    public static final ComplexModel IRON_QUARRY_MODEL = QuarryModel.of((QuarryBlock) ZBlocks.IRON_QUARRY.getBlock());
-    public static final ComplexModel GOLD_QUARRY_MODEL = QuarryModel.of((QuarryBlock) ZBlocks.GOLD_QUARRY.getBlock());
-    public static final ComplexModel DIAMOND_QUARRY_MODEL = QuarryModel.of((QuarryBlock) ZBlocks.DIAMOND_QUARRY.getBlock());
-    public static final ComplexModel NETHERITE_QUARRY_MODEL = QuarryModel.of((QuarryBlock) ZBlocks.NETHERITE_QUARRY.getBlock());
-    public static final ComplexModel NETHER_STAR_QUARRY_MODEL = QuarryModel.of((QuarryBlock) ZBlocks.NETHER_STAR_QUARRY.getBlock());
+    public static final ComplexModel COPPER_QUARRY_MODEL = QuarryModel.of(ZBlocks.COPPER_QUARRY.getBlock());
+    public static final ComplexModel IRON_QUARRY_MODEL = QuarryModel.of(ZBlocks.IRON_QUARRY.getBlock());
+    public static final ComplexModel GOLD_QUARRY_MODEL = QuarryModel.of(ZBlocks.GOLD_QUARRY.getBlock());
+    public static final ComplexModel DIAMOND_QUARRY_MODEL = QuarryModel.of(ZBlocks.DIAMOND_QUARRY.getBlock());
+    public static final ComplexModel NETHERITE_QUARRY_MODEL = QuarryModel.of(ZBlocks.NETHERITE_QUARRY.getBlock());
+    public static final ComplexModel NETHER_STAR_QUARRY_MODEL = QuarryModel.of(ZBlocks.NETHER_STAR_QUARRY.getBlock());
 
     private static final List<ComplexModel> complexModelList = List.of(
             COPPER_QUARRY_MODEL,

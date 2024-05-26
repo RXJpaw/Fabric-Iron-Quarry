@@ -11,7 +11,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.village.VillagerProfession;
 import pw.rxj.iron_quarry.Main;
-import pw.rxj.iron_quarry.block.QuarryBlock;
 import pw.rxj.iron_quarry.block.ZBlocks;
 import pw.rxj.iron_quarry.network.PacketServerConfigApply;
 import pw.rxj.iron_quarry.network.ZNetwork;
@@ -133,12 +132,12 @@ public class ConfigHandler {
         }
 
         public void applyChanges() {
-            ((QuarryBlock) ZBlocks.COPPER_QUARRY.getBlock()).override(this.getCopperQuarry());
-            ((QuarryBlock) ZBlocks.IRON_QUARRY.getBlock()).override(this.getIronQuarry());
-            ((QuarryBlock) ZBlocks.GOLD_QUARRY.getBlock()).override(this.getGoldQuarry());
-            ((QuarryBlock) ZBlocks.DIAMOND_QUARRY.getBlock()).override(this.getDiamondQuarry());
-            ((QuarryBlock) ZBlocks.NETHERITE_QUARRY.getBlock()).override(this.getNetheriteQuarry());
-            ((QuarryBlock) ZBlocks.NETHER_STAR_QUARRY.getBlock()).override(this.getNetherStarQuarry());
+            ZBlocks.COPPER_QUARRY.getBlock().override(this.getCopperQuarry());
+            ZBlocks.IRON_QUARRY.getBlock().override(this.getIronQuarry());
+            ZBlocks.GOLD_QUARRY.getBlock().override(this.getGoldQuarry());
+            ZBlocks.DIAMOND_QUARRY.getBlock().override(this.getDiamondQuarry());
+            ZBlocks.NETHERITE_QUARRY.getBlock().override(this.getNetheriteQuarry());
+            ZBlocks.NETHER_STAR_QUARRY.getBlock().override(this.getNetherStarQuarry());
         }
     }
     public QuarryStatsConfigHandler getQuarryStatsConfig() {
