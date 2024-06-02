@@ -5,6 +5,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
@@ -24,8 +25,9 @@ import pw.rxj.iron_quarry.blockentity.QuarryBlockEntity;
 import pw.rxj.iron_quarry.blockentity.ZBlockEntities;
 import pw.rxj.iron_quarry.event.GameLifecycleCallback;
 import pw.rxj.iron_quarry.factory.ZTradeOffers;
-import pw.rxj.iron_quarry.interfaces.BlockAttackable;
+import pw.rxj.iron_quarry.interfaces.IBlockAttackable;
 import pw.rxj.iron_quarry.interfaces.IHandledItemEntity;
+import pw.rxj.iron_quarry.interfaces.IHandledUseBlock;
 import pw.rxj.iron_quarry.item.ZItems;
 import pw.rxj.iron_quarry.network.ZNetwork;
 import pw.rxj.iron_quarry.recipe.HandledCraftingRecipe;
@@ -75,8 +77,16 @@ public class Main implements ModInitializer {
 		GameLifecycleCallback.IMMINENT_FIRST_RELOAD.register(ZTradeOffers::register);
 
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-			if(ZUtil.getBlockOrItem(player.getStackInHand(hand)) instanceof BlockAttackable itemStack) {
+			if(ZUtil.getBlockOrItem(player.getStackInHand(hand)) instanceof IBlockAttackable itemStack) {
 				return itemStack.attackOnBlock(player, world, hand, pos, direction);
+			} else {
+				return ActionResult.PASS;
+			}
+		});
+
+		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+			if(world.getBlockState(hitResult.getBlockPos()).getBlock() instanceof IHandledUseBlock block) {
+				return block.useOnBlock(player, world, hand, hitResult);
 			} else {
 				return ActionResult.PASS;
 			}

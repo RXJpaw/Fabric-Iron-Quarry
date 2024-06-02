@@ -7,6 +7,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-public interface BlockAttackable {
+public interface IBlockAttackable {
     ActionResult attackOnBlock(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction);
 }

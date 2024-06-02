@@ -12,6 +12,9 @@ public class ZItemTags {
     private static TagKey<Item> of(String path) {
         return TagKey.of(Registry.ITEM_KEY, Identifier.of(Main.MOD_ID, path));
     }
+    private static TagKey<Item> commonOf(String path) {
+        return TagKey.of(Registry.ITEM_KEY, Identifier.of("c", path));
+    }
 
     public static final TagKey<Item> AUGMENT_CAPACITY_ENHANCERS = of("augment_capacity_enhancers");
     public static final TagKey<Item> AUGMENT_FORTUNE_T1_ENHANCERS = of("augment_fortune_tier1_enhancers");
@@ -20,6 +23,7 @@ public class ZItemTags {
     public static final TagKey<Item> AUGMENT_SPEED_T1_ENHANCERS = of("augment_speed_tier1_enhancers");
     public static final TagKey<Item> AUGMENT_SPEED_T2_ENHANCERS = of("augment_speed_tier2_enhancers");
     public static final TagKey<Item> AUGMENT_SPEED_T3_ENHANCERS = of("augment_speed_tier3_enhancers");
+    public static final TagKey<Item> C_WRENCHES = commonOf("wrenches");
 
     public static List<TagKey<Item>> AUGMENT_ENHANCERS = List.of(
             ZItemTags.AUGMENT_FORTUNE_T1_ENHANCERS,

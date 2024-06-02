@@ -8,6 +8,7 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.item.TooltipData;
@@ -44,6 +45,8 @@ import pw.rxj.iron_quarry.gui.ITooltipDataProvider;
 import pw.rxj.iron_quarry.gui.TooltipAugmentInventoryData;
 import pw.rxj.iron_quarry.interfaces.IEnergyContainer;
 import pw.rxj.iron_quarry.interfaces.IHandledCrafting;
+import pw.rxj.iron_quarry.interfaces.IHandledUseBlock;
+import pw.rxj.iron_quarry.item.ZItemTags;
 import pw.rxj.iron_quarry.recipe.HandledCraftingRecipe;
 import pw.rxj.iron_quarry.records.TexturePosition;
 import pw.rxj.iron_quarry.resource.Config;
@@ -54,7 +57,7 @@ import pw.rxj.iron_quarry.util.*;
 import java.util.List;
 import java.util.Optional;
 
-public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IEnergyContainer, ITooltipDataProvider {
+public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IEnergyContainer, ITooltipDataProvider, IHandledUseBlock {
     private final String textureReference;
     private int ticksPerOperation;
     private int baseConsumption;
@@ -204,6 +207,42 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
         return (long) (this.baseConsumption * blockHardnessPenalty * inefficiencyPenalty * 20 / operations);
     }
 
+    /**
+     * @see net.minecraft.server.network.ServerPlayerInteractionManager#tryBreakBlock(BlockPos)
+     */
+    @Override
+    public ActionResult useOnBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+        BlockPos blockPos = hitResult.getBlockPos();
+        Direction side = hitResult.getSide();
+
+        BlockEntity blockEntity = world.getBlockEntity(blockPos);
+        BlockState blockState = world.getBlockState(blockPos);
+        ItemStack itemStack = player.getStackInHand(hand);
+
+        if (blockEntity instanceof QuarryBlockEntity quarryBlockEntity) {
+            if(itemStack.isIn(ZItemTags.C_WRENCHES)) {
+                if(MinecraftClient.getInstance().options.sneakKey.isPressed()) {
+                    this.onBreak(world, blockPos, blockState, player);
+                    boolean removed = world.removeBlock(blockPos, false);
+                    if(removed) this.onBroken(world, blockPos, blockState);
+
+                    if(!player.isCreative()) {
+                        itemStack.postMine(world, blockState, blockPos, player);
+                        this.afterBreak(world, player, blockPos, blockState, blockEntity, itemStack.copy());
+                    }
+                } else {
+                    MachineConfiguration Configuration = quarryBlockEntity.Configuration;
+                    Face face = Face.from(side, blockState.get(FACING));
+
+                    Configuration.setIoState(face, Configuration.getNextIoState(face));
+                }
+
+                return ActionResult.SUCCESS;
+            }
+        }
+
+        return ActionResult.PASS;
+    }
     @Override
     public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
