@@ -157,11 +157,15 @@ public class ConfigHandler {
         public Config.Server.AugmentStatsConfig.Entry getSilkTouch() {
             return serverConfig.augmentStats.silkTouch;
         }
+        public Config.Server.AugmentStatsConfig.Entry getChestLooting() {
+            return serverConfig.augmentStats.chestLooting;
+        }
 
         public void applyChanges() {
             AugmentType.SPEED.override(this.getSpeed());
             AugmentType.FORTUNE.override(this.getFortune());
             AugmentType.SILK_TOUCH.override(this.getSilkTouch());
+            AugmentType.CHEST_LOOTING.override(this.getChestLooting());
         }
     }
     public AugmentStatsConfigHandler getAugmentStatsConfig() {
@@ -295,9 +299,14 @@ public class ConfigHandler {
         }
     }
 
+    public void applyServerChanges() {
+        this.getQuarryStatsConfig().applyChanges();
+        this.getAugmentStatsConfig().applyChanges();
+    }
     public void registerServer() {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             this.read(EnvType.SERVER);
+            this.applyServerChanges();
         });
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {

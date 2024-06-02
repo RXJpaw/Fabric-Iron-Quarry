@@ -5,11 +5,11 @@ import pw.rxj.iron_quarry.resource.Config;
 import java.util.List;
 
 public enum AugmentType {
-    EMPTY(0, "empty", "energy", 1, 0.0F, 0.0F),
-    SPEED(1, "speed", "energy", 1000, 0.10F, 0.05F),
-    FORTUNE(2, "fortune", "energy", 1500, 2.0F/225.0F, 1.0F/75.0F),
-    SILK_TOUCH(3, "silk_touch", "energy", 0, 0.0F, 180.0F),
-    CHEST_LOOTING(4, "chest_looting", "time", 0, 0.0F, 0.0F);
+    EMPTY(0, "empty", "energy", 1, 0.0F, 0.0F, false),
+    SPEED(1, "speed", "energy", 1000, 0.10F, 0.05F, false),
+    FORTUNE(2, "fortune", "energy", 1500, 2.0F/225.0F, 1.0F/75.0F, false),
+    SILK_TOUCH(3, "silk_touch", "energy", 0, 0.0F, 180.0F, false),
+    CHEST_LOOTING(4, "chest_looting", "time", 0, 0.0F, 0.0F, false);
 
     private final int id;
     private final String name;
@@ -17,18 +17,21 @@ public enum AugmentType {
     private int baseAmount;
     private float multiplier;
     private float inefficiency;
+    private boolean disabled;
 
     private static final List<AugmentType> ALL = List.of(EMPTY, SPEED, FORTUNE, SILK_TOUCH);
 
-    private AugmentType(int id, String name, String drawbackKey, int baseAmount, float multiplier, float inefficiency) {
+    private AugmentType(int id, String name, String drawbackKey, int baseAmount, float multiplier, float inefficiency, boolean disabled) {
         this.id = id;
         this.name = name;
         this.drawbackKey = drawbackKey;
         this.baseAmount = baseAmount;
         this.multiplier = multiplier;
         this.inefficiency = inefficiency;
+        this.disabled = disabled;
     }
     public void override(Config.Server.AugmentStatsConfig.Entry augmentStats) {
+        this.disabled = augmentStats.disabled;
         this.baseAmount = augmentStats.baseAmount;
         this.multiplier = augmentStats.multiplier;
         this.inefficiency = augmentStats.inefficiency;
@@ -42,6 +45,9 @@ public enum AugmentType {
     }
     public int getId(){
         return this.id;
+    }
+    public boolean isDisabled() {
+        return this.disabled;
     }
     public int getBaseAmount() { return this.baseAmount; }
     public float getMultiplier() { return this.multiplier; }

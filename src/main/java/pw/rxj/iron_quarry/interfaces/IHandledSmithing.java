@@ -55,7 +55,7 @@ public interface IHandledSmithing {
         return "smithing_preview.iron_quarry." + Registry.ITEM.getId(stack.getItem()) + "." + addition;
     }
     default boolean isSmithingPreview(ItemStack stack){
-        Identifier addition = getSmithingPreviewAdditionId(stack);
+        Identifier addition = this.getSmithingPreviewAdditionId(stack);
         if(addition == null) return false;
 
         return !addition.getPath().isEmpty();

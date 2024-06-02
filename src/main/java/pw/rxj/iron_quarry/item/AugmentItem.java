@@ -164,21 +164,28 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
             tooltip.add(LORE_EMPTY);
         }
 
-        if(this.isUnique()) return;
+        if(!this.isUnique()) {
+            if(this.isTooltipExtended(stack)) {
+                List<Item> used_upgrades = this.getUpgrades(stack, ZItemTags.AUGMENT_CAPACITY_ENHANCERS);
 
-        if(this.isTooltipExtended(stack)) {
-            List<Item> used_upgrades = this.getUpgrades(stack, ZItemTags.AUGMENT_CAPACITY_ENHANCERS);
+                MutableText LORE_INFO = ReadableString.translatable("item.iron_quarry.augment.lore.capacity_upgrades", used_upgrades.size(), CAPACITY_UPGRADE_SLOTS);
 
-            MutableText LORE_INFO = ReadableString.translatable("item.iron_quarry.augment.lore.capacity_upgrades", used_upgrades.size(), CAPACITY_UPGRADE_SLOTS);
+                tooltip.add(Text.empty());
+                tooltip.add(LORE_INFO);
+                tooltip.add(CustomTooltipData.MARKER);
+            } else {
+                MutableText LORE_DETAILS = ReadableString.translatable("item.iron_quarry.lore.details");
+
+                tooltip.add(Text.empty());
+                tooltip.add(LORE_DETAILS);
+            }
+        }
+
+        if(augmentType.isDisabled()) {
+            MutableText LORE_DISABLED = ReadableString.translatable("item.iron_quarry.lore.disabled");
 
             tooltip.add(Text.empty());
-            tooltip.add(LORE_INFO);
-            tooltip.add(CustomTooltipData.MARKER);
-        } else {
-            MutableText LORE_DETAILS = ReadableString.translatable("item.iron_quarry.lore.details");
-
-            tooltip.add(Text.empty());
-            tooltip.add(LORE_DETAILS);
+            tooltip.add(LORE_DISABLED);
         }
     }
     public boolean isTooltipExtended(ItemStack stack) {
@@ -435,12 +442,14 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
 
     @Override
     public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks) {
+        if (this.getUniqueType().isDisabled()) return;
+
         super.appendStacks(group, stacks);
 
         if(!this.isUnique() && this.isIn(group)) {
             stacks.add(this.withAllCapacityEnhancers());
-            stacks.add(this.withAllEnhancers(AugmentType.SPEED));
-            stacks.add(this.withAllEnhancers(AugmentType.FORTUNE));
+            if(!AugmentType.SPEED.isDisabled()) stacks.add(this.withAllEnhancers(AugmentType.SPEED));
+            if(!AugmentType.FORTUNE.isDisabled()) stacks.add(this.withAllEnhancers(AugmentType.FORTUNE));
         }
     }
 }

@@ -31,8 +31,7 @@ public class PacketServerConfigApply extends ComplexPacketHandler<ByteArrayPacke
         String address = client.getCurrentServerEntry() == null ? "unknown address/integrated server" : client.getCurrentServerEntry().address;
 
         Main.CONFIG.readByteArray(EnvType.SERVER, packet.bytes);
-        Main.CONFIG.getQuarryStatsConfig().applyChanges();
-        Main.CONFIG.getAugmentStatsConfig().applyChanges();
+        Main.CONFIG.applyServerChanges();
 
         Main.LOGGER.info("Received server config from: {}", address);
     }

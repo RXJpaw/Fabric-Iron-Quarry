@@ -17,6 +17,7 @@ public class Global {
     public static final int RGB_DARK_PURPLE = Color.HSBtoRGB(ZUtil.normDeg(300), 0.8F, 0.7F);
     public static final int RGB_WARNING =  Color.HSBtoRGB(ZUtil.normDeg(40), 0.8F, 0.99F);
     public static final int RGB_TAB_TITLE = 0xE1C92F;
+    public static final int RGB_MC_NOPERMS = 0xFB5454;
 
     public static final DynamicText DYN_RAINBOW = DynamicText.RAINBOW;
     public static final DynamicText DYN_EMERALD = DynamicText.EMERALD;

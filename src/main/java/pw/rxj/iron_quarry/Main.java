@@ -34,6 +34,7 @@ import pw.rxj.iron_quarry.recipe.HandledCraftingRecipe;
 import pw.rxj.iron_quarry.recipe.HandledSmithingRecipe;
 import pw.rxj.iron_quarry.resource.ConfigHandler;
 import pw.rxj.iron_quarry.screen.QuarryBlockScreenHandler;
+import pw.rxj.iron_quarry.types.AugmentType;
 import pw.rxj.iron_quarry.util.ChunkLoadingManager;
 import pw.rxj.iron_quarry.util.ZUtil;
 import team.reborn.energy.api.EnergyStorage;
@@ -67,7 +68,10 @@ public class Main implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		CONFIG.read(EnvType.SERVER);
+		CONFIG.applyServerChanges();
 		CONFIG.registerServer();
+
+		Main.LOGGER.info("{} {}", AugmentType.SPEED.isDisabled(), AugmentType.FORTUNE.isDisabled());
 
 		ChunkLoadingManager.register();
 		ZBlockEntities.register();

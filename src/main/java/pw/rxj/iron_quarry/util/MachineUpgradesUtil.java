@@ -23,6 +23,7 @@ public class MachineUpgradesUtil {
             if (!(stack.getItem() instanceof AugmentItem augmentItem)) continue;
 
             AugmentType augmentType = augmentItem.getType(stack);
+            if(augmentType.isDisabled()) continue;
 
             float multiplier = augmentItem.getAmount(stack) * augmentType.getMultiplier();
             float inefficiency = augmentItem.getAmount(stack) * augmentType.getInefficiency();
