@@ -318,6 +318,7 @@ public class ConfigHandler {
     public void registerClient() {
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             this.read(EnvType.SERVER);
+            this.applyServerChanges();
         });
     }
 }

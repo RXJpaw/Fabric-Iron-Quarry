@@ -431,11 +431,11 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
 
         return stack;
     }
-    public ItemStack withAllEnhancers(AugmentType augmentType) {
+    public ItemStack withCapacity(AugmentType augmentType, int capacityUpgrades) {
         ItemStack stack = this.withAllCapacityEnhancers();
 
         this.setType(stack, augmentType);
-        this.setAmount(stack, augmentType.getCapacity(CAPACITY_UPGRADE_SLOTS));
+        this.setAmount(stack, augmentType.getCapacity(capacityUpgrades));
 
         return stack;
     }
@@ -448,8 +448,8 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
 
         if(!this.isUnique() && this.isIn(group)) {
             stacks.add(this.withAllCapacityEnhancers());
-            if(!AugmentType.SPEED.isDisabled()) stacks.add(this.withAllEnhancers(AugmentType.SPEED));
-            if(!AugmentType.FORTUNE.isDisabled()) stacks.add(this.withAllEnhancers(AugmentType.FORTUNE));
+            if(!AugmentType.SPEED.isDisabled()) for (int i = 0; i < CAPACITY_UPGRADE_SLOTS; i++) stacks.add(this.withCapacity(AugmentType.SPEED, i + 1));
+            if(!AugmentType.FORTUNE.isDisabled()) for (int i = 0; i < CAPACITY_UPGRADE_SLOTS; i++) stacks.add(this.withCapacity(AugmentType.FORTUNE, i + 1));
         }
     }
 }
