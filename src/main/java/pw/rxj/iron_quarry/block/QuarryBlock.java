@@ -221,6 +221,7 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
 
         if (blockEntity instanceof QuarryBlockEntity quarryBlockEntity) {
             if(itemStack.isIn(ZItemTags.C_WRENCHES)) {
+                //TODO: make packet because MinecraftClient cannot be used on server {ServerPlayNetworkHandler#onPlayerInteractBlock}
                 if(MinecraftClient.getInstance().options.sneakKey.isPressed()) {
                     this.onBreak(world, blockPos, blockState, player);
                     boolean removed = world.removeBlock(blockPos, false);
@@ -323,16 +324,34 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
                     u = 16;
                     v = 0;
                 } else {
-                    u = 48;
+                    u = 64;
                     v = 0;
                 }
             }
-            case LEFT, BACK, RIGHT -> {
+            case LEFT -> {
                 if(alt) {
                     u = 0;
                     v = 16;
                 } else {
+                    u = 48;
+                    v = 16;
+                }
+            }
+            case BACK -> {
+                if(alt) {
                     u = 32;
+                    v = 32;
+                } else {
+                    u = 80;
+                    v = 32;
+                }
+            }
+            case RIGHT -> {
+                if(alt) {
+                    u = 32;
+                    v = 16;
+                } else {
+                    u = 80;
                     v = 16;
                 }
             }
@@ -341,7 +360,7 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
                     u = 16;
                     v = 16;
                 } else {
-                    u = 48;
+                    u = 64;
                     v = 16;
                 }
             }
@@ -350,7 +369,7 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
                     u = 16;
                     v = 32;
                 } else {
-                    u = 48;
+                    u = 64;
                     v = 32;
                 }
             }
