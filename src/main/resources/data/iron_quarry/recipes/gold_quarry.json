@@ -1,16 +1,19 @@
 {
     "type": "iron_quarry:handled_crafting_recipe",
     "pattern": [
-        "PBP",
-        "BMB",
-        "PBP"
+        "III",
+        "PMP",
+        "BBB"
     ],
     "key": {
         "P": {
-            "item": "minecraft:golden_pickaxe"
+            "item": "minecraft:diamond_pickaxe"
         },
         "B": {
             "item": "minecraft:gold_block"
+        },
+        "I": {
+            "item": "minecraft:gold_ingot"
         },
         "M": {
             "item": "iron_quarry:iron_quarry"

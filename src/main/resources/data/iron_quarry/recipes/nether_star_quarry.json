@@ -1,14 +1,11 @@
 {
     "type": "iron_quarry:handled_crafting_recipe",
     "pattern": [
-        "PBP",
+        "BBB",
         "BMB",
-        "PBP"
+        "BBB"
     ],
     "key": {
-        "P": {
-            "item": "minecraft:nether_star"
-        },
         "B": {
             "item": "minecraft:nether_star"
         },

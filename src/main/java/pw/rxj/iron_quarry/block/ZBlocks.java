@@ -35,11 +35,11 @@ public class ZBlocks {
             .withId(Main.MOD_ID, "diamond_quarry");
     public static final BlockEntry<QuarryBlock, BlockItem> NETHERITE_QUARRY = BlockEntry.buildQuarryBlock()
             .withBlock(new QuarryBlock(Blocks.NETHERITE_BLOCK, "block/netherite_quarry", QuarryStatsConfig.getNetheriteQuarry()))
-            .withBlockItemSettings(new FabricItemSettings().group(Main.ITEM_GROUP).fireproof())
+            .withBlockItemSettings(new FabricItemSettings().group(Main.ITEM_GROUP).rarity(Rarity.UNCOMMON).fireproof())
             .withId(Main.MOD_ID, "netherite_quarry");
     public static final BlockEntry<QuarryBlock, BlockItem> NETHER_STAR_QUARRY = BlockEntry.buildQuarryBlock()
             .withBlock(new QuarryBlock(Blocks.NETHERITE_BLOCK, "block/nether_star_quarry", QuarryStatsConfig.getNetherStarQuarry()))
-            .withBlockItemSettings(new FabricItemSettings().group(Main.ITEM_GROUP).rarity(Rarity.UNCOMMON).fireproof())
+            .withBlockItemSettings(new FabricItemSettings().group(Main.ITEM_GROUP).rarity(Rarity.RARE).fireproof())
             .withId(Main.MOD_ID, "nether_star_quarry");
     public static final List<QuarryBlock> quarryBlockList = List.of(
             COPPER_QUARRY.getBlock(),

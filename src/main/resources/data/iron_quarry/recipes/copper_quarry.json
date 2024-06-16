@@ -1,9 +1,9 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        "PBP",
-        "BMB",
-        "PBP"
+        "III",
+        "PMP",
+        "BBB"
     ],
     "key": {
         "P": {
@@ -11,6 +11,9 @@
         },
         "B": {
             "item": "minecraft:copper_block"
+        },
+        "I": {
+            "item": "minecraft:copper_ingot"
         },
         "M": {
             "item": "iron_quarry:conductive_amethyst"
