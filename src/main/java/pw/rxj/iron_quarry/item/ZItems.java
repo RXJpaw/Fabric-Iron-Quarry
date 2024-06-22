@@ -37,12 +37,30 @@ public class ZItems {
             )
             .setIdentifier(Main.MOD_ID, "silk_touch_augment");
 
+    public static final ItemEntryBuilder IRON_QUARRY_MONITOR = new ItemEntryBuilder()
+            .setItem(new QuarryMonitorItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1)))
+            .setIdentifier(Main.MOD_ID, "iron_quarry_monitor");
+    public static final ItemEntryBuilder DIAMOND_QUARRY_MONITOR = new ItemEntryBuilder()
+            .setItem(new QuarryMonitorItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1)))
+            .setIdentifier(Main.MOD_ID, "diamond_quarry_monitor");
+    public static final ItemEntryBuilder NETHERITE_QUARRY_MONITOR = new ItemEntryBuilder()
+            .setItem(new QuarryMonitorItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1).fireproof()))
+            .setIdentifier(Main.MOD_ID, "netherite_quarry_monitor");
+    public static final ItemEntryBuilder SCULK_QUARRY_MONITOR = new ItemEntryBuilder()
+            .setItem(new QuarryMonitorItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1).fireproof()))
+            .setIdentifier(Main.MOD_ID, "sculk_quarry_monitor");
+
     private static final List<ItemEntryBuilder> itemEntryList = List.of(
             BLUEPRINT,
             CONDUCTIVE_AMETHYST,
             AUGMENT,
             CHEST_LOOTING_AUGMENT,
             SILK_TOUCH_AUGMENT
+            SILK_TOUCH_AUGMENT,
+            IRON_QUARRY_MONITOR,
+            DIAMOND_QUARRY_MONITOR,
+            NETHERITE_QUARRY_MONITOR,
+            SCULK_QUARRY_MONITOR
     );
 
     public static void register(){

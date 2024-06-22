@@ -12,6 +12,10 @@
     "block.iron_quarry.reinforced_lapis_block": "Reinforced Block of Lapis Lazuli",
 
     "item.iron_quarry.conductive_amethyst": "Conductive Amethyst",
+    "item.iron_quarry.iron_quarry_monitor": "Iron Quarry Monitor",
+    "item.iron_quarry.diamond_quarry_monitor": "Diamond Quarry Monitor",
+    "item.iron_quarry.netherite_quarry_monitor": "Netherite Quarry Monitor",
+    "item.iron_quarry.sculk_quarry_monitor": "Sculk Quarry Monitor",
 
     "item.iron_quarry.quarry_block.lore.usage": "§{RGB_LIGHT_GRAY Usage:} §{RGB_DRAWBACK %s}",
     "item.iron_quarry.quarry_block.lore.speed": "§{RGB_LIGHT_GRAY Speed:} §{RGB_BENEFIT %s}",
