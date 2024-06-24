@@ -13,12 +13,13 @@ public enum IoState {
     ORANGE(1, "orange"),
     BLUE(2, "blue"),
     GREEN(3, "green"),
-    PURPLE(4, "purple");
+    PURPLE(4, "purple"),
+    RED(5, "red");
 
     private final int id;
     private final String name;
 
-    private static final List<IoState> ALL = List.of(BLOCKED, ORANGE, BLUE, GREEN, PURPLE);
+    private static final List<IoState> ALL = List.of(BLOCKED, ORANGE, BLUE, GREEN, PURPLE, RED);
     public static Identifier getTextureId(){
         return new Identifier(Main.MOD_ID, "textures/gui/options_io.png");
     }
@@ -79,6 +80,10 @@ public enum IoState {
             }
             case PURPLE -> {
                 u = 32;
+                v = 0;
+            }
+            case RED -> {
+                u = 40;
                 v = 0;
             }
             default -> {

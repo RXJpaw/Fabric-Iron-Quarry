@@ -11,7 +11,25 @@
     "block.iron_quarry.reinforced_redstone_block": "Reinforced Block of Redstone",
     "block.iron_quarry.reinforced_lapis_block": "Reinforced Block of Lapis Lazuli",
 
-    "item.iron_quarry.conductive_amethyst": "Conductive Amethyst",
+    "item.iron_quarry.conductive_amethyst": "Conductive Amethyst Shard",
+    "item.iron_quarry.superconductive_amethyst": "Superconductive Amethyst Shard",
+
+    "item.iron_quarry.copper_drill": "Copper Drill",
+    "item.iron_quarry.iron_drill": "Iron Drill",
+    "item.iron_quarry.diamond_drill": "Diamond Drill",
+    "item.iron_quarry.netherite_drill": "Netherite Drill",
+    "item.iron_quarry.shulker_drill": "Shulker Drill",
+    "item.iron_quarry.nether_star_drill": "Nether Star Drill",
+
+    "mining_level.iron_quarry.-1": "Any",
+    "mining_level.iron_quarry.0": "Wood",
+    "mining_level.iron_quarry.1": "Stone",
+    "mining_level.iron_quarry.2": "Iron",
+    "mining_level.iron_quarry.3": "Diamond",
+    "mining_level.iron_quarry.4": "Netherite",
+    "mining_level.iron_quarry.5": "Tier 5",
+    "mining_level.iron_quarry.6": "Tier 6",
+
     "item.iron_quarry.iron_quarry_monitor": "Iron Quarry Monitor",
     "item.iron_quarry.diamond_quarry_monitor": "Diamond Quarry Monitor",
     "item.iron_quarry.netherite_quarry_monitor": "Netherite Quarry Monitor",
@@ -76,7 +94,8 @@
 
     "screen.iron_quarry.quarry_block.tooltip.locked_augment_slot": "§{RGB_TAB_TITLE Upgrade the quarry to unlock this augment slot!}",
     "screen.iron_quarry.quarry_block.tooltip.blueprint_info": "§{RGB_TAB_TITLE Insert §lSealed Blueprint§r to start the quarry.}",
-    "screen.iron_quarry.quarry_block.tooltip.battery_info": "§{RGB_TAB_TITLE Insert §la battery§r to charge the quarry externally.}",
+    "screen.iron_quarry.quarry_block.tooltip.battery_info": "§{RGB_TAB_TITLE Insert §la Battery§r to charge the quarry externally.}",
+    "screen.iron_quarry.quarry_block.tooltip.drill_info": "§{RGB_TAB_TITLE Insert §lany Drill§r to start the quarry.}",
     "screen.iron_quarry.quarry_block.title.configuration": "§{RGB_TAB_TITLE Configuration}",
     "screen.iron_quarry.quarry_block.title.augmentation": "§{RGB_TAB_TITLE Augmentation}",
 

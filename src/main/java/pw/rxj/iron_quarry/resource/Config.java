@@ -24,6 +24,7 @@ public class Config {
         this.SERVER.silkTouchAugment = newServerConfig.silkTouchAugment;
         this.SERVER.quarryStats = newServerConfig.quarryStats;
         this.SERVER.augmentStats = newServerConfig.augmentStats;
+        this.SERVER.quarryDrillStats = newServerConfig.quarryDrillStats;
     }
     @Override
     public int hashCode() {
@@ -132,9 +133,44 @@ public class Config {
         }
         public AugmentStatsConfig augmentStats = new AugmentStatsConfig();
 
+
+        public static class QuarryDrillStatsConfig {
+            public final Entry copperDrill = new Entry(649, 1, 2);
+            public final Entry ironDrill = new Entry(1_284, 2, 5);
+            public final Entry diamondDrill = new Entry(6_649, 3, 4);
+            public final Entry netheriteDrill = new Entry(93_750, 4, 5);
+            public final Entry shulkerDrill = new Entry(159_375, 5, 7);
+            public final Entry netherStarDrill = new Entry(796_875, 6, 9);
+
+            @SuppressWarnings({"Class can be a record"})
+            public static class Entry {
+                public final int durability;
+                public final int miningLevel;
+                public final int enchantability;
+
+                public Entry(int durability, int miningLevel, int enchantability) {
+                    this.durability = durability;
+                    this.miningLevel = miningLevel;
+                    this.enchantability = enchantability;
+                }
+
+                @Override
+                public int hashCode() {
+                    return Objects.hash(durability, miningLevel, enchantability);
+                }
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(copperDrill, ironDrill, diamondDrill, netheriteDrill, shulkerDrill, netherStarDrill);
+            }
+        }
+        public QuarryDrillStatsConfig quarryDrillStats = new QuarryDrillStatsConfig();
+
+
         @Override
         public int hashCode() {
-            return Objects.hash(silkTouchAugment, quarryStats, augmentStats);
+            return Objects.hash(silkTouchAugment, quarryStats, augmentStats, quarryDrillStats);
         }
     }
 }

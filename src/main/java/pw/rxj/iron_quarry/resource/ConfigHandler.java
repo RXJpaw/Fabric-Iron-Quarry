@@ -12,6 +12,8 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.village.VillagerProfession;
 import pw.rxj.iron_quarry.Main;
 import pw.rxj.iron_quarry.block.ZBlocks;
+import pw.rxj.iron_quarry.item.DrillItem;
+import pw.rxj.iron_quarry.item.ZItems;
 import pw.rxj.iron_quarry.network.PacketServerConfigApply;
 import pw.rxj.iron_quarry.network.ZNetwork;
 import pw.rxj.iron_quarry.types.AugmentType;
@@ -172,6 +174,39 @@ public class ConfigHandler {
         return new AugmentStatsConfigHandler();
     }
 
+    public class QuarryDrillStatsConfigHandler {
+        private final Config.Server serverConfig = ConfigHandler.this.config.SERVER;
+        private QuarryDrillStatsConfigHandler() {}
+
+        public Config.Server.QuarryDrillStatsConfig.Entry getCopperDrill() {
+            return serverConfig.quarryDrillStats.copperDrill;
+        }
+        public Config.Server.QuarryDrillStatsConfig.Entry getIronDrill() {
+            return serverConfig.quarryDrillStats.ironDrill;
+        }
+        public Config.Server.QuarryDrillStatsConfig.Entry getDiamondDrill() {
+            return serverConfig.quarryDrillStats.diamondDrill;
+        }
+        public Config.Server.QuarryDrillStatsConfig.Entry getNetheriteDrill() {
+            return serverConfig.quarryDrillStats.netheriteDrill;
+        }
+        public Config.Server.QuarryDrillStatsConfig.Entry getShulkerDrill() {
+            return serverConfig.quarryDrillStats.shulkerDrill;
+        }
+        public Config.Server.QuarryDrillStatsConfig.Entry getNetherStarDrill() {
+            return serverConfig.quarryDrillStats.netherStarDrill;
+        }
+
+        public void applyChanges() {
+            ((DrillItem) ZItems.COPPER_DRILL.getItem()).override(this.getCopperDrill());
+            ((DrillItem) ZItems.IRON_DRILL.getItem()).override(this.getIronDrill());
+            ((DrillItem) ZItems.DIAMOND_DRILL.getItem()).override(this.getDiamondDrill());
+            ((DrillItem) ZItems.NETHERITE_DRILL.getItem()).override(this.getNetheriteDrill());
+            ((DrillItem) ZItems.SHULKER_DRILL.getItem()).override(this.getShulkerDrill());
+            ((DrillItem) ZItems.NETHER_STAR_DRILL.getItem()).override(this.getNetherStarDrill());
+        }
+    }
+    public QuarryDrillStatsConfigHandler getQuarryDrillStatsConfig() { return new QuarryDrillStatsConfigHandler(); }
 
     public void read(EnvType environment) {
         if(environment.equals(EnvType.CLIENT)) {
@@ -302,6 +337,7 @@ public class ConfigHandler {
     public void applyServerChanges() {
         this.getQuarryStatsConfig().applyChanges();
         this.getAugmentStatsConfig().applyChanges();
+        this.getQuarryDrillStatsConfig().applyChanges();
     }
     public void registerServer() {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {

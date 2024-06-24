@@ -7,6 +7,8 @@
         "BootstrapClientMixin",
         "BootstrapResourceMixin",
         "BootstrapServerMixin",
+        "EnchantmentHelperMixin",
+        "EnchantmentMixin",
         "GrindstoneInsertionMixin",
         "GrindstoneScreenHandlerMixin",
         "RecipeManagerMixin",

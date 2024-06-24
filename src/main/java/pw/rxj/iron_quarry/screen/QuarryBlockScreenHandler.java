@@ -12,6 +12,7 @@ import pw.rxj.iron_quarry.Main;
 import pw.rxj.iron_quarry.block.QuarryBlock;
 import pw.rxj.iron_quarry.item.AugmentItem;
 import pw.rxj.iron_quarry.item.BlueprintItem;
+import pw.rxj.iron_quarry.item.DrillItem;
 import pw.rxj.iron_quarry.types.Face;
 import pw.rxj.iron_quarry.util.*;
 import team.reborn.energy.api.EnergyStorageUtil;
@@ -20,6 +21,7 @@ public class QuarryBlockScreenHandler extends ScreenHandler {
     public static final SingleByteMap Buttons = new SingleByteMap().with(6, 2);
 
     private final MachineConfiguration Configuration;
+    private final ComplexInventory DrillInventory;
     private final ComplexInventory OutputInventory;
     private final ComplexInventory BlueprintInventory;
     private final ComplexInventory BatteryInputInventory;
@@ -33,7 +35,7 @@ public class QuarryBlockScreenHandler extends ScreenHandler {
     //sync this empty inventory with the inventory on the server.
     public QuarryBlockScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buffer) {
         this(syncId, playerInventory, new ComplexInventory(18), new ComplexInventory(1), new ComplexInventory(6),
-                new ComplexInventory(1), new ComplexEnergyContainer(), new MachineConfiguration(), QuarryBlock.getFallback());
+                new ComplexInventory(1), new ComplexInventory(1), new ComplexEnergyContainer(), new MachineConfiguration(), QuarryBlock.getFallback());
 
         this.quarryBlock = (QuarryBlock) Registry.BLOCK.get(buffer.readIdentifier());
         this.blockPos = buffer.readBlockPos();
@@ -42,25 +44,31 @@ public class QuarryBlockScreenHandler extends ScreenHandler {
     //This constructor gets called from the BlockEntity on the server without calling the other constructor first, the server knows the inventory of the container
     //and can therefore directly provide it as an argument. This inventory will then be synced to the client.
     public QuarryBlockScreenHandler(int syncId, PlayerInventory playerInventory, ComplexInventory outputInventory, ComplexInventory batteryInputInventory, ComplexInventory machineUpgradesInventory,
-                                                ComplexInventory blueprintInventory, ComplexEnergyContainer energyContainer, MachineConfiguration configuration, QuarryBlock quarryBlock) {
+                                                ComplexInventory blueprintInventory, ComplexInventory drillInventory, ComplexEnergyContainer energyContainer, MachineConfiguration configuration, QuarryBlock quarryBlock) {
         super(Main.QUARRY_BLOCK_SCREEN_HANDLER, syncId);
 
         this.quarryBlock = quarryBlock;
         this.blockPos = BlockPos.ORIGIN;
 
         checkSize(machineUpgradesInventory, 6);
-        checkSize(batteryInputInventory, 1);
         checkSize(blueprintInventory, 1);
+        checkSize(drillInventory, 1);
+        checkSize(batteryInputInventory, 1);
         checkSize(outputInventory, 18);
 
         this.MachineUpgradesInventory = machineUpgradesInventory;
-        this.BatteryInputInventory = batteryInputInventory;
         this.BlueprintInventory = blueprintInventory;
+        this.DrillInventory = drillInventory;
+        this.BatteryInputInventory = batteryInputInventory;
         this.OutputInventory = outputInventory;
+
         this.EnergyContainer = energyContainer;
         this.Configuration = configuration;
 
         //Some inventories do custom logic when a player opens it
+        machineUpgradesInventory.onOpen(playerInventory.player);
+        blueprintInventory.onOpen(playerInventory.player);
+        drillInventory.onOpen(playerInventory.player);
         batteryInputInventory.onOpen(playerInventory.player);
         outputInventory.onOpen(playerInventory.player);
 
@@ -83,10 +91,18 @@ public class QuarryBlockScreenHandler extends ScreenHandler {
         }
 
         //Blueprint Inventory
-        this.addSlot(new ManagedSlot(blueprintInventory, 0, 80, 38) {
+        this.addSlot(new ManagedSlot(blueprintInventory, 0, 80, 26) {
             @Override
             public boolean canInsert(ItemStack stack) {
                 return stack.getItem() instanceof BlueprintItem;
+            }
+        });
+
+        //Drill Inventory
+        this.addSlot(new ManagedSlot(drillInventory, 0, 80, 47) {
+            @Override
+            public boolean canInsert(ItemStack stack) {
+                return stack.getItem() instanceof DrillItem;
             }
         });
 
@@ -152,7 +168,7 @@ public class QuarryBlockScreenHandler extends ScreenHandler {
     @Override
     public ItemStack transferSlot(PlayerEntity player, int invSlot) {
         ItemStack newStack = ItemStack.EMPTY;
-        int maxInvSize = this.OutputInventory.size() + this.BatteryInputInventory.size() + this.MachineUpgradesInventory.size() + this.BlueprintInventory.size();
+        int maxInvSize = this.OutputInventory.size() + this.BatteryInputInventory.size() + this.MachineUpgradesInventory.size() + this.BlueprintInventory.size() + this.BatteryInputInventory.size();
 
         Slot slot = this.slots.get(invSlot);
         if (slot != null && slot.hasStack()) {

@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " S ",
+        " A ",
+        " M "
+    ],
+    "key": {
+        "S": {
+            "item": "minecraft:blaze_rod"
+        },
+        "A": {
+            "item": "iron_quarry:netherite_drill"
+        },
+        "M": {
+            "item": "minecraft:shulker_shell"
+        }
+    },
+    "result": {
+        "item": "iron_quarry:shulker_drill"
+    }
+}

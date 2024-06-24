@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " S ",
+        "MAM",
+        " M "
+    ],
+    "key": {
+        "S": {
+            "item": "minecraft:stick"
+        },
+        "A": {
+            "item": "iron_quarry:conductive_amethyst"
+        },
+        "M": {
+            "item": "minecraft:copper_ingot"
+        }
+    },
+    "result": {
+        "item": "iron_quarry:copper_drill"
+    }
+}

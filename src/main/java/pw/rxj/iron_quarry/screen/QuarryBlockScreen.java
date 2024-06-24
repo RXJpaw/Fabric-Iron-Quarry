@@ -8,9 +8,11 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import pw.rxj.iron_quarry.Global;
 import pw.rxj.iron_quarry.Main;
 import pw.rxj.iron_quarry.block.QuarryBlock;
 import pw.rxj.iron_quarry.blockentity.QuarryBlockEntity;
@@ -29,6 +31,7 @@ import java.util.Optional;
 public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
     //A path to the gui texture. In this example we use the texture from the dispenser
     public static final Identifier BACKGROUND_TEXTURE = new Identifier(Main.MOD_ID, "textures/gui/quarry_block_interface.png");
+    public static final Identifier BACKGROUND_IO_OVERLAY = new Identifier(Main.MOD_ID, "textures/gui/quarry_block_io_overlay.png");
     public static final Identifier OPTIONS_TEXTURE = new Identifier(Main.MOD_ID, "textures/gui/options.png");
     public static final Identifier OPTIONS_CONFIGURATION_TEXTURE = new Identifier(Main.MOD_ID, "textures/gui/options_configuration.png");
     public static final Identifier AUGMENTATION_CONFIGURATION_TEXTURE = new Identifier(Main.MOD_ID, "textures/gui/augmentation_configuration.png");
@@ -61,6 +64,7 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
     );
     private final List<ManagedSlot> AUGMENT_SLOTS = new ArrayList<>();
     private final ManagedSlot BLUEPRINT_SLOT;
+    private final ManagedSlot DRILL_SLOT;
     private final ManagedSlot BATTERY_SLOT;
 
     private void drawLockedSlot(MatrixStack matrices, Slot slot, int width, int height) {
@@ -95,7 +99,8 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
 
         for (int i = 0; i < 6; i++) AUGMENT_SLOTS.add((ManagedSlot) handler.getSlot(i));
         BLUEPRINT_SLOT = (ManagedSlot) handler.getSlot(6);
-        BATTERY_SLOT = (ManagedSlot) handler.getSlot(7);
+        DRILL_SLOT = (ManagedSlot) handler.getSlot(7);
+        BATTERY_SLOT = (ManagedSlot) handler.getSlot(8);
     }
 
     @Override
@@ -128,7 +133,7 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
         }
 
         //Battery Slot rendering
-        if(!handler.slots.get(7).hasStack()){
+        if(!BATTERY_SLOT.hasStack()){
             drawTexture(matrices, backgroundX + 11, backgroundY + 63, 180, 60, 10, 14);
         }
 
@@ -137,7 +142,7 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
         EnergyDisplay.supplyText(() -> ReadableString.translatable("item.iron_quarry.lore.energy.capacity",
                 ReadableString.intFrom(EnergyContainer.getStored()),
                 ReadableString.intFrom(EnergyContainer.getCapacity())
-        ));
+        ).setStyle(Style.EMPTY.withColor(Global.RGB_RF_PURPLE)));
 
         //Augmentation Configuration
         TrackableZone.Zone augmentsMenuZone = AugmentsConfig.zone;
@@ -190,6 +195,26 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
             int ioConfigY = IoConfig.zone.y;
             int ioConfigWidth = IoConfig.zone.width;
             int ioConfigHeight = IoConfig.zone.height;
+
+            //Io Overlay
+            float cappedMaxTicks = IoConfig.getMaxTicks() / 3;
+            if(IoConfig.getTicks() > cappedMaxTicks) {
+                float cappedTicks = IoConfig.getTicks() - cappedMaxTicks;
+
+                RenderSystem.enableBlend();
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, cappedTicks / cappedMaxTicks);
+
+                RenderSystem.setShaderTexture(0, BACKGROUND_IO_OVERLAY);
+                drawTexture(matrices, backgroundX, backgroundY, 0, 0, this.realBackgroundWidth, this.realBackgroundHeight);
+
+                //Battery Slot rendering
+                if(!BATTERY_SLOT.hasStack()){
+                    drawTexture(matrices, backgroundX + 11, backgroundY + 63, 180, 60, 10, 14);
+                }
+
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                RenderSystem.defaultBlendFunc();
+            }
 
             RenderSystem.setShaderTexture(0, OPTIONS_CONFIGURATION_TEXTURE);
             drawTexture(matrices, ioConfigX, ioConfigY, 0, 0, ioConfigWidth, ioConfigHeight);
@@ -263,6 +288,8 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
             this.renderTooltip(matrices, EnergyDisplay.getSuppliedText(), mouseX, mouseY);
         } else if(BLUEPRINT_SLOT.getStack().isEmpty() && TrackableZone.isMouseOver(BLUEPRINT_SLOT, this.x, this.y, mouseX, mouseY)) {
             this.renderTooltip(matrices, ReadableString.translatable("screen.iron_quarry.quarry_block.tooltip.blueprint_info"), mouseX, mouseY);
+        } else if(DRILL_SLOT.getStack().isEmpty() && TrackableZone.isMouseOver(DRILL_SLOT, this.x, this.y, mouseX, mouseY)) {
+            this.renderTooltip(matrices, ReadableString.translatable("screen.iron_quarry.quarry_block.tooltip.drill_info"), mouseX, mouseY);
         } else if(BATTERY_SLOT.getStack().isEmpty() && TrackableZone.isMouseOver(BATTERY_SLOT, this.x, this.y, mouseX, mouseY)) {
             this.renderTooltip(matrices, ReadableString.translatable("screen.iron_quarry.quarry_block.tooltip.battery_info"), mouseX, mouseY);
         } else if(AugmentsConfig.isMouseOver()) {

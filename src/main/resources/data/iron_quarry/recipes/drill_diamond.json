@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " S ",
+        "MAM",
+        " M "
+    ],
+    "key": {
+        "S": {
+            "item": "minecraft:stick"
+        },
+        "A": {
+            "item": "iron_quarry:superconductive_amethyst"
+        },
+        "M": {
+            "item": "minecraft:diamond"
+        }
+    },
+    "result": {
+        "item": "iron_quarry:diamond_drill"
+    }
+}

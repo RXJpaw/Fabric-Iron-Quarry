@@ -27,10 +27,13 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -43,6 +46,7 @@ import net.minecraft.world.chunk.WorldChunk;
 import org.jetbrains.annotations.Nullable;
 import pw.rxj.iron_quarry.block.QuarryBlock;
 import pw.rxj.iron_quarry.item.BlueprintItem;
+import pw.rxj.iron_quarry.item.DrillItem;
 import pw.rxj.iron_quarry.network.PacketQuarryBlockBreak;
 import pw.rxj.iron_quarry.network.ZNetwork;
 import pw.rxj.iron_quarry.screen.QuarryBlockScreenHandler;
@@ -107,6 +111,8 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
             IndexedMap<IoState, Object> usedIo = new IndexedMap<>();
             usedIo.put(IoState.BLOCKED, null);
             usedIo.put(IoState.ORANGE, OutputInventory);
+            usedIo.put(IoState.RED, DrillInventory);
+            usedIo.put(IoState.PURPLE, BatteryInputInventory);
 
             return usedIo;
         }
@@ -190,6 +196,21 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
             QuarryBlockEntity.this.markDirty();
         }
     };
+    public final ComplexInventory DrillInventory = new ComplexInventory(1){
+        @Override
+        public void markDirty() {
+            QuarryBlockEntity.this.markDirty();
+        }
+    };
+
+    public List<ItemStack> getMachineUpgradeStacks() {
+        List<ItemStack> stacks = new ArrayList<>();
+        stacks.addAll(MachineUpgradesInventory.stacks);
+        stacks.addAll(DrillInventory.stacks);
+
+        return stacks;
+
+    }
 
     public InventoryStorage getItemSideConfiguration(Direction direction){
         if(direction == null) return null;
@@ -204,8 +225,10 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
         return null;
     }
 
-    public void attemptPushIo(){
+    public void attemptPushIo(IoState ioState){
         for (Face face: Face.values()) {
+            if(!this.Configuration.getIoState(face).equals(ioState)) continue;
+
             Object object = this.Configuration.getLinkedIo(face);
             if(!(object instanceof Inventory inventory)) continue;
 
@@ -260,6 +283,7 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
     private final ArrayList<BlockPos> MiningQueue = new ArrayList<>();
     private ChunkPos currentChunk;
     private int blueprintHash = 0;
+    private int drillHash = 0;
     private int cooldown = 0;
 
     public static void tick(World thisWorld, BlockPos thisPos, BlockState thisBlockState, QuarryBlockEntity thisBlockEntity) {
@@ -275,20 +299,24 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
         if(thisBlock == null) return;
 
         thisBlockEntity.attemptCharge();
-        thisBlockEntity.attemptPushIo();
+        thisBlockEntity.attemptPushIo(IoState.ORANGE);
 
         ItemStack blueprintStack = thisBlockEntity.BlueprintInventory.getStack(0);
         int blueprintHash = blueprintStack.hashCode();
+        ItemStack drillStack = thisBlockEntity.DrillInventory.getStack(0);
+        int drillHash = drillStack.hashCode();
 
-        if(thisBlockEntity.blueprintHash != blueprintHash) {
+        if(thisBlockEntity.blueprintHash != blueprintHash || thisBlockEntity.drillHash != drillHash) {
             thisBlockEntity.blueprintHash = blueprintHash;
+            thisBlockEntity.drillHash = drillHash;
+
             thisBlockEntity.currentChunk = null;
             thisBlockEntity.MiningQueue.clear();
 
             ChunkLoadingManager.removeTickets(thisServerWorld, thisPos);
         }
 
-        if(blueprintStack.isEmpty()) return;
+        if(!(drillStack.getItem() instanceof DrillItem drillItem)) return;
         if(!(blueprintStack.getItem() instanceof BlueprintItem blueprintItem)) return;
         if(!blueprintItem.isSealed(blueprintStack) || blueprintItem.allChunksMined(blueprintStack)) return;
 
@@ -301,7 +329,7 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
         ServerWorld serverWorldToBreak = minecraftServer.getWorld(worldRegistryKey);
         if(serverWorldToBreak == null) return;
 
-        MachineUpgradesUtil upgradesUtil = MachineUpgradesUtil.from(thisBlockEntity.MachineUpgradesInventory);
+        MachineUpgradesUtil upgradesUtil = MachineUpgradesUtil.from(thisBlockEntity.getMachineUpgradeStacks());
         long minimumEnergyConsumption = thisBlock.getEnergyConsumption(upgradesUtil, Blocks.STONE);
         if(thisBlockEntity.EnergyContainer.getStored() < minimumEnergyConsumption) return;
 
@@ -385,15 +413,15 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
             return;
         }
 
-        List<BlockPosState> drillResults = thisBlockEntity.drillQueue(threads, thisBlock, thisBlockState, thisPos, thisBlockEntity, serverWorldToBreak, upgradesUtil);
+        List<BlockPosState> drillResults = thisBlockEntity.drillQueue(threads, thisBlock, thisBlockState, thisPos, thisBlockEntity, serverWorldToBreak, drillStack, drillItem, upgradesUtil);
         HashSet<Integer> shouldPlaySound = ZUtil.getNSpacedIndexes(drillResults.size(), 10);
 
         for (int i = 0; i < drillResults.size(); i++) {
-            BlockPosState drillItem = drillResults.get(i);
+            BlockPosState drill = drillResults.get(i);
             boolean playSound = shouldPlaySound.contains(i);
 
-            ZNetwork.sendToAround(serverWorldToBreak, drillItem.blockPos, 64.0, player -> {
-                return PacketQuarryBlockBreak.bake(drillItem.blockPos, drillItem.blockState, playSound);
+            ZNetwork.sendToAround(serverWorldToBreak, drill.blockPos, 64.0, player -> {
+                return PacketQuarryBlockBreak.bake(drill.blockPos, drill.blockState, playSound);
             });
         }
     }
@@ -420,7 +448,8 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
         return false;
     }
 
-    private List<BlockPosState> drillQueue(int threads, QuarryBlock quarryBlock, BlockState quarryBlockState, BlockPos quarryPos, QuarryBlockEntity quarryBlockEntity, ServerWorld serverWorldToBreak, MachineUpgradesUtil upgradesUtil) {
+    private List<BlockPosState> drillQueue(int threads, QuarryBlock quarryBlock, BlockState quarryBlockState, BlockPos quarryPos, QuarryBlockEntity quarryBlockEntity, ServerWorld serverWorldToBreak,
+                                           ItemStack drillStack, DrillItem drillItem, MachineUpgradesUtil upgradesUtil) {
         List<BlockPosState> drillResults = new ArrayList<>();
 
         ComplexEnergyContainer EnergyContainer = quarryBlockEntity.EnergyContainer;
@@ -428,6 +457,7 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
         ArrayList<BlockPos> MiningQueue = quarryBlockEntity.MiningQueue;
 
         for (int threadIndex = 0; threadIndex < threads; threadIndex++) {
+            if(drillStack.isEmpty()) return drillResults;
             if(MiningQueue.isEmpty()) return drillResults;
             int miningQueueIndex = MiningQueue.size() - 1;
 
@@ -479,34 +509,50 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
             if(EnergyContainer.getStored() < energyConsumption) return drillResults;
 
             //loot generation
-            ItemStack drillingTool = Items.NETHERITE_PICKAXE.getDefaultStack();
+            ItemStack mockPickaxe = Items.NETHERITE_PICKAXE.getDefaultStack();
 
             if(upgradesUtil.hasSilkTouch()) {
-                drillingTool.addEnchantment(Enchantments.SILK_TOUCH, 0);
+                mockPickaxe.addEnchantment(Enchantments.SILK_TOUCH, 0);
             } else {
                 int fortuneLevel = FortuneUtil.fromProbability(upgradesUtil.getFortuneMultiplier());
-                drillingTool.addEnchantment(Enchantments.FORTUNE, fortuneLevel);
+                mockPickaxe.addEnchantment(Enchantments.FORTUNE, fortuneLevel);
             }
 
-            List<ItemStack> droppedStacks = blockActress.getDroppedStacks(quarryBlockState, quarryPos, drillingTool);
-            List<ItemStack> stacksToAward = new ArrayList<>();
+            //only drop item if required mining level is present
+            if(drillItem.getMiningLevel() >= blockActress.getRequiredMiningLevel()) {
+                List<ItemStack> droppedStacks = blockActress.getDroppedStacks(quarryBlockState, quarryPos, mockPickaxe);
+                List<ItemStack> stacksToAward = new ArrayList<>();
 
-            //TODO: can result in loss of drops
-            for (ItemStack drop : droppedStacks) {
-                if(!OutputInventory.canInsert(drop)) {
-                    return drillResults;
-                } else {
-                    stacksToAward.add(drop);
+                //TODO: can result in loss of drops
+                for (ItemStack drop : droppedStacks) {
+                    if(!OutputInventory.canInsert(drop)) {
+                        return drillResults;
+                    } else {
+                        stacksToAward.add(drop);
+                    }
                 }
+
+                stacksToAward.forEach(OutputInventory::addStack);
             }
 
-            stacksToAward.forEach(OutputInventory::addStack);
 
             //mining
             BlockPosState blockPosState = blockActress.toBlockPosState();
 
             EnergyContainer.useEnergy(energyConsumption);
             blockActress.setBlockState(Blocks.AIR);
+
+            boolean drillBroke = drillStack.damage(1, serverWorldToBreak.getRandom(), null);
+            if(drillBroke) {
+                double x = quarryPos.getX() + 0.5;
+                double y = quarryPos.getY() + 0.5;
+                double z = quarryPos.getZ() + 0.5;
+
+                PlaySoundS2CPacket soundPacket = new PlaySoundS2CPacket(SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, x, y, z, 1.0F, 1.0F, serverWorldToBreak.getSeed());
+                serverWorldToBreak.getServer().getPlayerManager().sendToAround(null, x, y, z, 64.0, serverWorldToBreak.getRegistryKey(), soundPacket);
+
+                drillStack.setCount(0);
+            }
 
             MiningQueue.remove(miningQueueIndex);
             drillResults.add(blockPosState);
@@ -538,6 +584,9 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
 
         NbtCompound StorageBlueprintInventory = Storage.getCompound("BlueprintInventory");
         BlueprintInventory.read(StorageBlueprintInventory.getList("Items", NbtElement.COMPOUND_TYPE));
+
+        NbtCompound StorageDrillInventory = Storage.getCompound("DrillInventory");
+        DrillInventory.read(StorageDrillInventory.getList("Items", NbtElement.COMPOUND_TYPE));
 
         NbtCompound StorageMachineUpgradesInventory = Storage.getCompound("MachineUpgradesInventory");
         MachineUpgradesInventory.read(StorageMachineUpgradesInventory.getList("Items", NbtElement.COMPOUND_TYPE));
@@ -572,6 +621,10 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
         StorageBlueprintInventory.put("Items", BlueprintInventory.write());
         Storage.put("BlueprintInventory", StorageBlueprintInventory);
 
+        NbtCompound StorageDrillInventory = new NbtCompound();
+        StorageDrillInventory.put("Items", DrillInventory.write());
+        Storage.put("DrillInventory", StorageDrillInventory);
+
         NbtCompound StorageMachineUpgradesInventory = new NbtCompound();
         StorageMachineUpgradesInventory.put("Items", MachineUpgradesInventory.write());
         Storage.put("MachineUpgradesInventory", StorageMachineUpgradesInventory);
@@ -603,7 +656,7 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
     @Nullable
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-        return new QuarryBlockScreenHandler(syncId, playerInventory, OutputInventory, BatteryInputInventory, MachineUpgradesInventory,BlueprintInventory, EnergyContainer, Configuration, this.getQuarryBlock());
+        return new QuarryBlockScreenHandler(syncId, playerInventory, OutputInventory, BatteryInputInventory, MachineUpgradesInventory, BlueprintInventory, DrillInventory, EnergyContainer, Configuration, this.getQuarryBlock());
     }
 
     @Override

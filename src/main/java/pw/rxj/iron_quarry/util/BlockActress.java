@@ -1,5 +1,6 @@
 package pw.rxj.iron_quarry.util;
 
+import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -105,6 +106,9 @@ public class BlockActress {
                         .parameter(LootContextParameters.ORIGIN, originVec3d)
                         .parameter(LootContextParameters.TOOL, miningTool)
         );
+    }
+    public int getRequiredMiningLevel() {
+        return MiningLevelManager.getRequiredMiningLevel(this.blockState);
     }
 
     public BlockPosState toBlockPosState() {

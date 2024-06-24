@@ -17,6 +17,7 @@ import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -54,6 +55,7 @@ import pw.rxj.iron_quarry.resource.ResourceReloadListener;
 import pw.rxj.iron_quarry.types.Face;
 import pw.rxj.iron_quarry.util.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,6 +115,26 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
 
         return MachineUpgradesInventory;
     }
+    public List<ItemStack> getMachineUpgradeStacks(ItemStack stack) {
+        List<ItemStack> stacks = new ArrayList<>();
+
+        if(stack == null) return stacks;
+        NbtCompound tag = stack.getNbt();
+        if(tag == null) return stacks;
+
+        SimpleInventory MachineUpgradesInventory = this.getAugmentInventory(stack);
+        SimpleInventory DrillInventory = new SimpleInventory(1);
+
+        NbtCompound Storage = tag.getCompound("BlockEntityTag").getCompound("rxj.pw/Storage");
+        NbtCompound StorageDrillInventory = Storage.getCompound("DrillInventory");
+        DrillInventory.readNbtList(StorageDrillInventory.getList("Items", NbtElement.COMPOUND_TYPE));
+
+        stacks.addAll(MachineUpgradesInventory.stacks);
+        stacks.addAll(DrillInventory.stacks);
+
+        return stacks;
+    }
+
     public @NotNull MachineConfiguration getMachineConfiguration(ItemStack stack) {
         MachineConfiguration MachineConfiguration = new MachineConfiguration();
 
@@ -145,7 +167,7 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
     }
     @Override
     public void appendTooltip(ItemStack stack, @Nullable BlockView world, List<Text> tooltip, TooltipContext options) {
-        MachineUpgradesUtil machineUpgradesUtil = MachineUpgradesUtil.from(this.getAugmentInventory(stack));
+        MachineUpgradesUtil machineUpgradesUtil = MachineUpgradesUtil.from(this.getMachineUpgradeStacks(stack));
 
         float yield_bonus = (machineUpgradesUtil.getFortuneMultiplier() - 1) * 100.0F;
         float energy_usage = this.baseConsumption * machineUpgradesUtil.getInefficiency();
