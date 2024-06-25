@@ -10,12 +10,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import pw.rxj.iron_quarry.Main;
 import pw.rxj.iron_quarry.block.QuarryBlock;
-import pw.rxj.iron_quarry.item.AugmentItem;
-import pw.rxj.iron_quarry.item.BlueprintItem;
-import pw.rxj.iron_quarry.item.DrillItem;
 import pw.rxj.iron_quarry.types.Face;
 import pw.rxj.iron_quarry.util.*;
-import team.reborn.energy.api.EnergyStorageUtil;
 
 public class QuarryBlockScreenHandler extends ScreenHandler {
     public static final SingleByteMap Buttons = new SingleByteMap().with(6, 2);
@@ -34,8 +30,8 @@ public class QuarryBlockScreenHandler extends ScreenHandler {
     //The client will call the other constructor with an empty Inventory and the screenHandler will automatically
     //sync this empty inventory with the inventory on the server.
     public QuarryBlockScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buffer) {
-        this(syncId, playerInventory, new ComplexInventory(18), new ComplexInventory(1), new ComplexInventory(6),
-                new ComplexInventory(1), new ComplexInventory(1), new ComplexEnergyContainer(), new MachineConfiguration(), QuarryBlock.getFallback());
+        this(syncId, playerInventory, QuarryInventory.Output.noRef(), QuarryInventory.BatteryInput.noRef(), QuarryInventory.MachineUpgrades.noRef(),
+                QuarryInventory.Blueprint.noRef(), QuarryInventory.Drill.noRef(), new ComplexEnergyContainer(), new MachineConfiguration(), QuarryBlock.getFallback());
 
         this.quarryBlock = (QuarryBlock) Registry.BLOCK.get(buffer.readIdentifier());
         this.blockPos = buffer.readBlockPos();
@@ -79,10 +75,6 @@ public class QuarryBlockScreenHandler extends ScreenHandler {
             for (var slot = 0; slot < 3; ++slot) {
                 this.addSlot(new ManagedSlot(machineUpgradesInventory, (row * 3) + slot, 199 + slot * SLOT_SIZE, 52 + row * SLOT_SIZE) {
                     @Override
-                    public boolean canInsert(ItemStack stack) {
-                        return super.canInsert(stack) && stack.getItem() instanceof AugmentItem;
-                    }
-                    @Override
                     public boolean isLocked() {
                         return super.isLocked() || this.getIndex() >= QuarryBlockScreenHandler.this.quarryBlock.getAugmentLimit();
                     }
@@ -91,29 +83,13 @@ public class QuarryBlockScreenHandler extends ScreenHandler {
         }
 
         //Blueprint Inventory
-        this.addSlot(new ManagedSlot(blueprintInventory, 0, 80, 26) {
-            @Override
-            public boolean canInsert(ItemStack stack) {
-                return stack.getItem() instanceof BlueprintItem;
-            }
-        });
+        this.addSlot(new ManagedSlot(blueprintInventory, 0, 80, 26));
 
         //Drill Inventory
-        this.addSlot(new ManagedSlot(drillInventory, 0, 80, 47) {
-            @Override
-            public boolean canInsert(ItemStack stack) {
-                return stack.getItem() instanceof DrillItem;
-            }
-        });
-
+        this.addSlot(new ManagedSlot(drillInventory, 0, 80, 47));
 
         //Reborn Inventory
-        this.addSlot(new ManagedSlot(batteryInputInventory, 0, 8, 62) {
-            @Override
-            public boolean canInsert(ItemStack stack) {
-                return EnergyStorageUtil.isEnergyStorage(stack);
-            }
-        });
+        this.addSlot(new ManagedSlot(batteryInputInventory, 0, 8, 62));
 
         //Output Inventory
         for (var row = 0; row < 2; ++row) {
@@ -168,7 +144,7 @@ public class QuarryBlockScreenHandler extends ScreenHandler {
     @Override
     public ItemStack transferSlot(PlayerEntity player, int invSlot) {
         ItemStack newStack = ItemStack.EMPTY;
-        int maxInvSize = this.OutputInventory.size() + this.BatteryInputInventory.size() + this.MachineUpgradesInventory.size() + this.BlueprintInventory.size() + this.BatteryInputInventory.size();
+        int maxInvSize = this.DrillInventory.size() + this.OutputInventory.size() + this.BlueprintInventory.size() + this.BatteryInputInventory.size() + this.MachineUpgradesInventory.size();
 
         Slot slot = this.slots.get(invSlot);
         if (slot != null && slot.hasStack()) {

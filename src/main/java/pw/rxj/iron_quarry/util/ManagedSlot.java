@@ -1,6 +1,7 @@
 package pw.rxj.iron_quarry.util;
 
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 
@@ -14,7 +15,9 @@ public class ManagedSlot extends Slot {
 
     @Override
     public boolean canInsert(ItemStack stack) {
-        return super.canInsert(stack) && this.isEnabled();
+        boolean canSimpleInsert = !(inventory instanceof SimpleInventory simpleInventory) || simpleInventory.canInsert(stack);
+
+        return super.canInsert(stack) && !this.isLocked() && canSimpleInsert;
     }
     @Override
     public boolean isEnabled() {

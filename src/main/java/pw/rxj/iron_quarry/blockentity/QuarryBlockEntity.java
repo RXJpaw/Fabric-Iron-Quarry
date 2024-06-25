@@ -167,41 +167,11 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
     }
 
     //Item Handling
-    public final ComplexInventory OutputInventory = new ComplexInventory(18) {
-        @Override
-        public void markDirty() {
-            QuarryBlockEntity.this.markDirty();
-        }
-    };
-    public final ComplexInventory BatteryInputInventory = new ComplexInventory(1) {
-        @Override
-        public void markDirty() {
-            QuarryBlockEntity.this.markDirty();
-        }
-    };
-    public final ComplexInventory MachineUpgradesInventory = new ComplexInventory(6){
-        @Override
-        public void markDirty() {
-            QuarryBlockEntity.this.markDirty();
-        }
-
-        @Override
-        public int getMaxCountPerStack() {
-            return 1;
-        }
-    };
-    public final ComplexInventory BlueprintInventory = new ComplexInventory(1){
-        @Override
-        public void markDirty() {
-            QuarryBlockEntity.this.markDirty();
-        }
-    };
-    public final ComplexInventory DrillInventory = new ComplexInventory(1){
-        @Override
-        public void markDirty() {
-            QuarryBlockEntity.this.markDirty();
-        }
-    };
+    public final ComplexInventory OutputInventory = QuarryInventory.Output.ofRef(this);
+    public final ComplexInventory BatteryInputInventory = QuarryInventory.BatteryInput.ofRef(this);
+    public final ComplexInventory MachineUpgradesInventory = QuarryInventory.MachineUpgrades.ofRef(this);
+    public final ComplexInventory BlueprintInventory = QuarryInventory.Blueprint.ofRef(this);
+    public final ComplexInventory DrillInventory = QuarryInventory.Drill.ofRef(this);
 
     public List<ItemStack> getMachineUpgradeStacks() {
         List<ItemStack> stacks = new ArrayList<>();

@@ -42,4 +42,9 @@ public class ComplexInventory extends SimpleInventory {
             }
         }
     }
+
+    @Override
+    public boolean isValid(int slot, ItemStack stack) {
+        return super.isValid(slot, stack) && this.canInsert(stack);
+    }
 }
