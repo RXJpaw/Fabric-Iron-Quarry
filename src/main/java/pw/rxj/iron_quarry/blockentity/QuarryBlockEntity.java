@@ -274,7 +274,7 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
         ItemStack blueprintStack = thisBlockEntity.BlueprintInventory.getStack(0);
         int blueprintHash = blueprintStack.hashCode();
         ItemStack drillStack = thisBlockEntity.DrillInventory.getStack(0);
-        int drillHash = drillStack.hashCode();
+        int drillHash = drillStack.getItem().hashCode();
 
         if(thisBlockEntity.blueprintHash != blueprintHash || thisBlockEntity.drillHash != drillHash) {
             thisBlockEntity.blueprintHash = blueprintHash;
