@@ -156,14 +156,18 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
         long chargeEnergy = Math.min(EnergyContainer.getFreeSpace(), EnergyContainer.getMaxInsert(null));
         if(chargeEnergy <= 0) return;
 
-        if(BatteryInputInventory.getStack(0).isEmpty()) return;
+        ItemStack batteryStack = BatteryInputInventory.getStack(0);
+        if(batteryStack.isEmpty()) return;
 
-        EnergyStorageUtil.move(
-                ContainerItemContext.ofSingleSlot(InventoryStorage.of(BatteryInputInventory, null).getSlot(0)).find(EnergyStorage.ITEM),
-                EnergyContainer.getSideStorage(null),
-                Long.MAX_VALUE,
-                null
-        );
+        EnergyStorage energyStorage = ContainerItemContext.ofSingleSlot(InventoryStorage.of(BatteryInputInventory, null).getSlot(0)).find(EnergyStorage.ITEM);
+
+        if(energyStorage != null && energyStorage.getAmount() > 0) {
+            EnergyStorageUtil.move(energyStorage, EnergyContainer.getSideStorage(null), Long.MAX_VALUE, null);
+        } else if(OutputInventory.canInsert(batteryStack)) {
+            OutputInventory.addStack(BatteryInputInventory.removeStack(0));
+        }
+
+
     }
 
     //Item Handling
