@@ -1,12 +1,13 @@
 package pw.rxj.iron_quarry.util;
 
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import pw.rxj.iron_quarry.blockentity.QuarryBlockEntity;
 import pw.rxj.iron_quarry.item.AugmentItem;
 import pw.rxj.iron_quarry.item.BlueprintItem;
 import pw.rxj.iron_quarry.item.DrillItem;
-import team.reborn.energy.api.EnergyStorageUtil;
+import team.reborn.energy.api.EnergyStorage;
 
 public class QuarryInventory {
     private static class ReferencedQuarryInventory extends ComplexInventory {
@@ -55,7 +56,9 @@ public class QuarryInventory {
 
         @Override
         public boolean canInsert(ItemStack stack) {
-            return super.canInsert(stack) && EnergyStorageUtil.isEnergyStorage(stack);
+            EnergyStorage energyStorage = ContainerItemContext.withConstant(stack).find(EnergyStorage.ITEM);
+
+            return super.canInsert(stack) && energyStorage != null && energyStorage.supportsExtraction();
         }
     }
     public static class MachineUpgrades extends ReferencedQuarryInventory {
