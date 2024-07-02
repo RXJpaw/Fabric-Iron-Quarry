@@ -495,20 +495,13 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
             //only drop item if required mining level is present
             if(drillItem.getMiningLevel() >= blockActress.getRequiredMiningLevel()) {
                 List<ItemStack> droppedStacks = blockActress.getDroppedStacks(quarryBlockState, quarryPos, mockPickaxe);
-                List<ItemStack> stacksToAward = new ArrayList<>();
 
-                //TODO: can result in loss of drops
-                for (ItemStack drop : droppedStacks) {
-                    if(!OutputInventory.canInsert(drop)) {
-                        return drillResults;
-                    } else {
-                        stacksToAward.add(drop);
-                    }
+                if(OutputInventory.canInsertAll(droppedStacks)) {
+                    droppedStacks.forEach(OutputInventory::addStack);
+                } else {
+                    return drillResults;
                 }
-
-                stacksToAward.forEach(OutputInventory::addStack);
             }
-
 
             //mining
             BlockPosState blockPosState = blockActress.toBlockPosState();
