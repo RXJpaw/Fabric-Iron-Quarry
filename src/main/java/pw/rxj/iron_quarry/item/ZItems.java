@@ -2,7 +2,6 @@ package pw.rxj.iron_quarry.item;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.registry.Registry;
 import pw.rxj.iron_quarry.Main;
@@ -23,14 +22,12 @@ public class ZItems {
     public static final ItemEntryBuilder CONDUCTIVE_AMETHYST = new ItemEntryBuilder()
             .setItem(new Item(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(64)))
             .setIdentifier(Main.MOD_ID, "conductive_amethyst");
-    public static final ItemEntryBuilder SUPERCONDUCTIVE_AMETHYST = new ItemEntryBuilder()
-            .setItem(new Item(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(64)) {
-                @Override
-                public boolean hasGlint(ItemStack stack) {
-                    return true;
-                }
-            })
-            .setIdentifier(Main.MOD_ID, "superconductive_amethyst");
+    public static final ItemEntryBuilder ADVANCED_AMETHYST = new ItemEntryBuilder()
+            .setItem(new Item(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(64)))
+            .setIdentifier(Main.MOD_ID, "advanced_amethyst");
+    public static final ItemEntryBuilder ULTIMATE_AMETHYST = new ItemEntryBuilder()
+            .setItem(new Item(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(64)))
+            .setIdentifier(Main.MOD_ID, "ultimate_amethyst");
 
     public static final ItemEntryBuilder AUGMENT = new ItemEntryBuilder()
             .setItem(new AugmentItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1)))
@@ -85,7 +82,8 @@ public class ZItems {
             BLUEPRINT,
 
             CONDUCTIVE_AMETHYST,
-            SUPERCONDUCTIVE_AMETHYST,
+            ADVANCED_AMETHYST,
+            ULTIMATE_AMETHYST,
 
             AUGMENT,
             CHEST_LOOTING_AUGMENT,

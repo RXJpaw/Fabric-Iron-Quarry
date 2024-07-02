@@ -12,7 +12,8 @@
     "block.iron_quarry.reinforced_lapis_block": "Reinforced Block of Lapis Lazuli",
 
     "item.iron_quarry.conductive_amethyst": "Conductive Amethyst Shard",
-    "item.iron_quarry.superconductive_amethyst": "Superconductive Amethyst Shard",
+    "item.iron_quarry.advanced_amethyst": "Advanced Amethyst Shard",
+    "item.iron_quarry.ultimate_amethyst": "Ultimate Amethyst Shard",
 
     "item.iron_quarry.copper_drill": "Copper Drill",
     "item.iron_quarry.iron_drill": "Iron Drill",

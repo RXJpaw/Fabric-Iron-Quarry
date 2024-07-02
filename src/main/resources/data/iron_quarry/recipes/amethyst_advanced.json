@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "MSM",
+        "OBO",
+        "MSM"
+    ],
+    "key": {
+        "O": {
+            "item": "iron_quarry:conductive_amethyst"
+        },
+        "B": {
+            "item": "minecraft:copper_ingot"
+        },
+        "S": {
+            "item": "minecraft:glowstone_dust"
+        },
+        "M": {
+            "item": "minecraft:prismarine_crystals"
+        }
+    },
+    "result": {
+        "item": "iron_quarry:advanced_amethyst"
+    }
+}
