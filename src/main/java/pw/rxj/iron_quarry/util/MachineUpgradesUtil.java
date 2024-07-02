@@ -30,8 +30,8 @@ public class MachineUpgradesUtil {
                 AugmentType augmentType = augmentItem.getType(stack);
                 if(augmentType.isDisabled()) continue;
 
-                float multiplier = augmentItem.getAmount(stack) * augmentType.getMultiplier();
-                float inefficiency = augmentItem.getAmount(stack) * augmentType.getInefficiency();
+                float multiplier = augmentType.multiply(augmentItem.getAmount(stack));
+                float inefficiency = augmentType.ineff(multiplier);
 
                 switch (augmentType) {
                     case SPEED -> this.speedMultiplier += multiplier/100;
@@ -45,10 +45,9 @@ public class MachineUpgradesUtil {
                 int efficiencyLevel = Math.min(EnchantmentHelper.getLevel(Enchantments.EFFICIENCY, stack), Enchantments.EFFICIENCY.getMaxLevel());
                 if(efficiencyLevel <= 0) continue;
 
-                float inefficiencyMultiplier = AugmentType.SPEED.getInefficiency() / AugmentType.SPEED.getMultiplier();;
                 float speedMultiplier = (float) Math.pow(1.3, efficiencyLevel) - 1.0F;
 
-                this.inefficiency += speedMultiplier * inefficiencyMultiplier;
+                this.inefficiency += AugmentType.SPEED.ineff(speedMultiplier);
                 this.speedMultiplier += speedMultiplier;
             }
         }
@@ -58,7 +57,7 @@ public class MachineUpgradesUtil {
         return new MachineUpgradesUtil(inventory);
     }
     public static MachineUpgradesUtil from(List<ItemStack> stacks) {
-        return from(new SimpleInventory(stacks.toArray(stacks.toArray(new ItemStack[0]))));
+        return from(new SimpleInventory(stacks.toArray(new ItemStack[0])));
     }
 
     public boolean hasSilkTouch() { return this.hasSilkTouch; }

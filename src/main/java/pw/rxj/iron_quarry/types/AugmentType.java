@@ -1,13 +1,14 @@
 package pw.rxj.iron_quarry.types;
 
 import pw.rxj.iron_quarry.resource.Config;
+import pw.rxj.iron_quarry.util.MathUtil;
 
 import java.util.List;
 
 public enum AugmentType {
     EMPTY(0, "empty", "energy", 1, 0.0F, 0.0F, false),
-    SPEED(1, "speed", "energy", 1000, 0.10F, 0.05F, false),
-    FORTUNE(2, "fortune", "energy", 1500, 2.0F/225.0F, 1.0F/75.0F, false),
+    SPEED(1, "speed", "energy", 1000, 1194.1878449451583F, 0.5F, false),
+    FORTUNE(2, "fortune", "energy", 1500, 135.73132372061485F, 1.5F, false),
     SILK_TOUCH(3, "silk_touch", "energy", 0, 0.0F, 180.0F, false),
     CHEST_LOOTING(4, "chest_looting", "time", 0, 0.0F, 0.0F, false);
 
@@ -60,7 +61,21 @@ public enum AugmentType {
      *  C(U) = B * (1 + 0.25 * U * (U + 1))
      */
     public int getCapacity(int capacityUpgrades) {
-        return (int) (this.getBaseAmount() * (1 + 0.25F * capacityUpgrades * (capacityUpgrades + 1)));
+        return Math.round(this.getBaseAmount() * (1 + 0.56F * capacityUpgrades * (capacityUpgrades + 1)));
+    }
+
+    /**
+     *  R(A) = log_2(log_2(2 + A / 10 000)) * M
+     */
+    public float multiply(int amount) {
+        if(this.multiplier == 0) return 0.0F;
+
+        return (float) (MathUtil.log2(MathUtil.log2(2 + (double) amount / 10_000)) * (double) this.multiplier);
+    }
+    public float ineff(float amount) {
+        if(this.multiplier == 0) return this.inefficiency;
+
+        return amount * this.inefficiency;
     }
 
     public static AugmentType from(String name){

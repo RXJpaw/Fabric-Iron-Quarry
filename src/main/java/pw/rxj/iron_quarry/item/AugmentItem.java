@@ -147,6 +147,7 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
         AugmentType augmentType = this.getType(stack);
         int capacity = this.getCapacity(stack);
         int stored = this.getAmount(stack);
+        float multiplied = augmentType.multiply(stored);
 
         if(augmentType.isPresent()) {
             if(!this.isUnique()) {
@@ -154,10 +155,10 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
                 tooltip.add(LORE_UNUSED);
             }
 
-            MutableText LORE_BENEFITS = ReadableString.translatable("item.iron_quarry.augment.lore.benefit." + augmentType.getName(), ZUtil.expandableFixedFloat(stored * augmentType.getMultiplier()));
+            MutableText LORE_BENEFITS = ReadableString.translatable("item.iron_quarry.augment.lore.benefit." + augmentType.getName(), ZUtil.expandableFixedFloat(multiplied));
             tooltip.add(LORE_BENEFITS);
 
-            MutableText LORE_DRAWBACK = ReadableString.translatable("item.iron_quarry.augment.lore.drawback." + augmentType.getDrawbackKey(), ZUtil.expandableFixedFloat(stored * augmentType.getInefficiency()));
+            MutableText LORE_DRAWBACK = ReadableString.translatable("item.iron_quarry.augment.lore.drawback." + augmentType.getDrawbackKey(), ZUtil.expandableFixedFloat(augmentType.ineff(multiplied)));
             tooltip.add(LORE_DRAWBACK);
         } else if(!this.isUnique()) {
             MutableText LORE_EMPTY = ReadableString.translatable("item.iron_quarry.lore.use_rei", stored, capacity);
@@ -448,8 +449,8 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
 
         if(!this.isUnique() && this.isIn(group)) {
             stacks.add(this.withAllCapacityEnhancers());
-            if(!AugmentType.SPEED.isDisabled()) for (int i = 0; i < CAPACITY_UPGRADE_SLOTS; i++) stacks.add(this.withCapacity(AugmentType.SPEED, i + 1));
-            if(!AugmentType.FORTUNE.isDisabled()) for (int i = 0; i < CAPACITY_UPGRADE_SLOTS; i++) stacks.add(this.withCapacity(AugmentType.FORTUNE, i + 1));
+            if(!AugmentType.SPEED.isDisabled()) for (int i = 0; i < CAPACITY_UPGRADE_SLOTS + 1; i++) stacks.add(this.withCapacity(AugmentType.SPEED, i));
+            if(!AugmentType.FORTUNE.isDisabled()) for (int i = 0; i < CAPACITY_UPGRADE_SLOTS + 1; i++) stacks.add(this.withCapacity(AugmentType.FORTUNE, i));
         }
     }
 }
