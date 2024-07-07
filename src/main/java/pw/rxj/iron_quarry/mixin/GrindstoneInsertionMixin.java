@@ -13,7 +13,7 @@ import pw.rxj.iron_quarry.util.ZUtil;
 @Mixin(targets = {"net.minecraft.screen.GrindstoneScreenHandler$2", "net.minecraft.screen.GrindstoneScreenHandler$3"})
 public abstract class GrindstoneInsertionMixin {
     @Inject(method = "canInsert", at = @At(value = "RETURN"), cancellable = true)
-    private void onTakeOutput(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+    private void canInsert(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
         if(ZUtil.getBlockOrItem(stack) instanceof IHandledGrinding handledGrinding) {
             if(handledGrinding.isGrindable(stack)) cir.setReturnValue(true);
         }
