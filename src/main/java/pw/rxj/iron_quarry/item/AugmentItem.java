@@ -449,8 +449,11 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
 
         if(!this.isUnique() && this.isIn(group)) {
             stacks.add(this.withAllCapacityEnhancers());
-            if(!AugmentType.SPEED.isDisabled()) for (int i = 0; i < CAPACITY_UPGRADE_SLOTS + 1; i++) stacks.add(this.withCapacity(AugmentType.SPEED, i));
-            if(!AugmentType.FORTUNE.isDisabled()) for (int i = 0; i < CAPACITY_UPGRADE_SLOTS + 1; i++) stacks.add(this.withCapacity(AugmentType.FORTUNE, i));
+
+            for (int i = 0; i < CAPACITY_UPGRADE_SLOTS + 1; i++) {
+                if(!AugmentType.SPEED.isDisabled()) stacks.add(this.withCapacity(AugmentType.SPEED, i));
+                if(!AugmentType.FORTUNE.isDisabled()) stacks.add(this.withCapacity(AugmentType.FORTUNE, i));
+            }
         }
     }
 }
