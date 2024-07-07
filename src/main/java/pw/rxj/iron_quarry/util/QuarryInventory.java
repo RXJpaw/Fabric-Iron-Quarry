@@ -1,6 +1,7 @@
 package pw.rxj.iron_quarry.util;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import pw.rxj.iron_quarry.blockentity.QuarryBlockEntity;
@@ -21,6 +22,13 @@ public class QuarryInventory {
 
         public @Nullable QuarryBlockEntity ref() {
             return this.ref;
+        }
+
+        @Override
+        public boolean canPlayerUse(PlayerEntity player) {
+            QuarryBlockEntity quarryBlockEntity = this.ref();
+
+            return quarryBlockEntity != null && quarryBlockEntity.canPlayerUse(player);
         }
 
         @Override
