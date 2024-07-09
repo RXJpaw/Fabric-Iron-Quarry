@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import pw.rxj.iron_quarry.interfaces.ICustomDurability;
 import pw.rxj.iron_quarry.interfaces.ICustomEnchantabilityProvider;
-import pw.rxj.iron_quarry.resource.Config;
+import pw.rxj.iron_quarry.resource.config.server.QuarryDrillStatsConfig;
 import pw.rxj.iron_quarry.util.ReadableString;
 import pw.rxj.iron_quarry.util.ZUtil;
 
@@ -24,14 +24,14 @@ public class DrillItem extends Item implements ICustomEnchantabilityProvider, IC
     private int miningLevel;
     private int maxCDamage;
 
-    public DrillItem(Item.Settings settings, Config.Server.QuarryDrillStatsConfig.Entry entry) {
+    public DrillItem(Item.Settings settings, QuarryDrillStatsConfig.Entry entry) {
         super(settings);
 
         this.enchantability = entry.enchantability;
         this.miningLevel = entry.miningLevel;
         this.maxCDamage = entry.durability;
     }
-    public void override(Config.Server.QuarryDrillStatsConfig.Entry quarryDrillStats) {
+    public void override(QuarryDrillStatsConfig.Entry quarryDrillStats) {
         this.enchantability = quarryDrillStats.enchantability;
         this.miningLevel = quarryDrillStats.miningLevel;
         this.maxCDamage = quarryDrillStats.durability;

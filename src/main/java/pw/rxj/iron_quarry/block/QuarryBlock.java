@@ -54,8 +54,8 @@ import pw.rxj.iron_quarry.network.KeyedActionPacket;
 import pw.rxj.iron_quarry.network.ZNetwork;
 import pw.rxj.iron_quarry.recipe.HandledCraftingRecipe;
 import pw.rxj.iron_quarry.records.TexturePosition;
-import pw.rxj.iron_quarry.resource.Config;
 import pw.rxj.iron_quarry.resource.ResourceReloadListener;
+import pw.rxj.iron_quarry.resource.config.server.QuarryStatsConfig;
 import pw.rxj.iron_quarry.types.ActionGoal;
 import pw.rxj.iron_quarry.types.Face;
 import pw.rxj.iron_quarry.util.*;
@@ -71,7 +71,7 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
     private int energyCapacity;
     private int augmentLimit;
 
-    protected QuarryBlock(Block reference, String texRef, Config.Server.QuarryStatsConfig.Entry entry) {
+    protected QuarryBlock(Block reference, String texRef, QuarryStatsConfig.Entry entry) {
         super(FabricBlockSettings.copyOf(reference));
         this.textureReference = texRef;
 
@@ -84,7 +84,7 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
         this.energyCapacity = entry.energyCapacity;
         this.augmentLimit = entry.augmentLimit;
     }
-    public void override(Config.Server.QuarryStatsConfig.Entry quarryStats) {
+    public void override(QuarryStatsConfig.Entry quarryStats) {
         this.ticksPerOperation = quarryStats.ticksPerOperation;
         this.baseConsumption = quarryStats.baseConsumption;
         this.energyCapacity = quarryStats.energyCapacity;
@@ -184,8 +184,8 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
                 .then(() -> "per_operation")
                 .or(() -> "per_tick");
         SupplicableAlt<String> PER_UNIT = HasShiftDown.<String>copy()
-                .then(() -> ZUtil.expandableFixedFloat(energy_usage * 20 / operations))
-                .or(() -> ReadableString.intFrom(energy_usage));
+                .then(() -> ZUtil.expandableFixedInt((int) (energy_usage * 20 / operations)))
+                .or(() -> ReadableString.cIntFrom(energy_usage));
 
         MutableText LORE_USAGE_DETAIL = ReadableString.translatable("item.iron_quarry.lore.energy." + PER_TYPE.get(), PER_UNIT.get());
         MutableText LORE_USAGE = ReadableString.translatable("item.iron_quarry.quarry_block.lore.usage", LORE_USAGE_DETAIL);

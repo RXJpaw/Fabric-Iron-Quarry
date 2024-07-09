@@ -5,7 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.registry.Registry;
 import pw.rxj.iron_quarry.Main;
-import pw.rxj.iron_quarry.resource.ConfigHandler;
+import pw.rxj.iron_quarry.resource.config.server.QuarryDrillStatsConfig;
 import pw.rxj.iron_quarry.types.AugmentType;
 import pw.rxj.iron_quarry.types.DynamicText;
 import pw.rxj.iron_quarry.util.ItemEntry;
@@ -13,7 +13,7 @@ import pw.rxj.iron_quarry.util.ItemEntry;
 import java.util.List;
 
 public class ZItems {
-    private static final ConfigHandler.QuarryDrillStatsConfigHandler QuarryDrillConfig = Main.CONFIG.getQuarryDrillStatsConfig();
+    private static final QuarryDrillStatsConfig.Handler QUARRY_DRILL_STATS_CONFIG = Main.CONFIG.getQuarryDrillStatsConfig();
 
     public static final ItemEntry<BlueprintItem> BLUEPRINT = ItemEntry.<BlueprintItem>build()
             .withItem(new BlueprintItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1)))
@@ -47,22 +47,22 @@ public class ZItems {
 
 
     public static final ItemEntry<DrillItem> COPPER_DRILL = ItemEntry.<DrillItem>build()
-            .withItem(new DrillItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1), QuarryDrillConfig.getCopperDrill()))
+            .withItem(new DrillItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1), QUARRY_DRILL_STATS_CONFIG.getCopperDrill()))
             .withId(Main.MOD_ID, "copper_drill");
     public static final ItemEntry<DrillItem> IRON_DRILL = ItemEntry.<DrillItem>build()
-            .withItem(new DrillItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1), QuarryDrillConfig.getIronDrill()))
+            .withItem(new DrillItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1), QUARRY_DRILL_STATS_CONFIG.getIronDrill()))
             .withId(Main.MOD_ID, "iron_drill");
     public static final ItemEntry<DrillItem> DIAMOND_DRILL = ItemEntry.<DrillItem>build()
-            .withItem(new DrillItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1), QuarryDrillConfig.getDiamondDrill()))
+            .withItem(new DrillItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1), QUARRY_DRILL_STATS_CONFIG.getDiamondDrill()))
             .withId(Main.MOD_ID, "diamond_drill");
     public static final ItemEntry<DrillItem> NETHERITE_DRILL = ItemEntry.<DrillItem>build()
-            .withItem(new DrillItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1), QuarryDrillConfig.getNetheriteDrill()))
+            .withItem(new DrillItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1), QUARRY_DRILL_STATS_CONFIG.getNetheriteDrill()))
             .withId(Main.MOD_ID, "netherite_drill");
     public static final ItemEntry<DrillItem> SHULKER_DRILL = ItemEntry.<DrillItem>build()
-            .withItem(new DrillItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1), QuarryDrillConfig.getShulkerDrill()))
+            .withItem(new DrillItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1), QUARRY_DRILL_STATS_CONFIG.getShulkerDrill()))
             .withId(Main.MOD_ID, "shulker_drill");
     public static final ItemEntry<DrillItem> NETHER_STAR_DRILL = ItemEntry.<DrillItem>build()
-            .withItem(new DrillItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1).rarity(Rarity.UNCOMMON), QuarryDrillConfig.getNetherStarDrill()))
+            .withItem(new DrillItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1).rarity(Rarity.UNCOMMON), QUARRY_DRILL_STATS_CONFIG.getNetherStarDrill()))
             .withId(Main.MOD_ID, "nether_star_drill");
 
     public static final ItemEntry<QuarryMonitorItem> IRON_QUARRY_MONITOR = ItemEntry.<QuarryMonitorItem>build()

@@ -11,11 +11,11 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import pw.rxj.iron_quarry.Main;
-import pw.rxj.iron_quarry.resource.ConfigHandler;
+import pw.rxj.iron_quarry.resource.config.client.BlockBreakingConfig;
 import pw.rxj.iron_quarry.util.ComplexOption;
 
 public class ClientConfigScreen extends GameOptionsScreen {
-    private static final ConfigHandler.BlockBreakingConfigHandler BlockBreakingConfig = Main.CONFIG.getBlockBreakingConfig();
+    private static final BlockBreakingConfig.Handler BLOCK_BREAKING_CONFIG = Main.CONFIG.getBlockBreakingConfig();
     private final Screen parent;
     private ButtonListWidget list;
 
@@ -25,16 +25,16 @@ public class ClientConfigScreen extends GameOptionsScreen {
             ComplexOption.valueDivider("%.0f", 1),
             true,
             0, 64,
-            BlockBreakingConfig.getOptionDistance(),
-            BlockBreakingConfig::setOptionDistance
+            BLOCK_BREAKING_CONFIG.getOptionDistance(),
+            BLOCK_BREAKING_CONFIG::setOptionDistance
     );
     public static SimpleOption<Integer> BLOCK_BREAK_VOLUME_OPTION = ComplexOption.sliderOptionFrom(
             "screen.iron_quarry.client_config.block_break_volume",
             ComplexOption.valueDivider("%.0f", 1),
             true,
             0, 100,
-            BlockBreakingConfig.getOptionVolume(),
-            BlockBreakingConfig::setOptionVolume
+            BLOCK_BREAKING_CONFIG.getOptionVolume(),
+            BLOCK_BREAKING_CONFIG::setOptionVolume
     );
 
 

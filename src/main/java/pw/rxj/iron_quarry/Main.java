@@ -32,7 +32,7 @@ import pw.rxj.iron_quarry.item.ZItems;
 import pw.rxj.iron_quarry.network.ZNetwork;
 import pw.rxj.iron_quarry.recipe.HandledCraftingRecipe;
 import pw.rxj.iron_quarry.recipe.HandledSmithingRecipe;
-import pw.rxj.iron_quarry.resource.ConfigHandler;
+import pw.rxj.iron_quarry.resource.config.ConfigHandler;
 import pw.rxj.iron_quarry.screen.QuarryBlockScreenHandler;
 import pw.rxj.iron_quarry.types.AugmentType;
 import pw.rxj.iron_quarry.util.ChunkLoadingManager;
@@ -58,7 +58,6 @@ public class Main implements ModInitializer {
 		}
 	);
 	public static final ConfigHandler CONFIG = ConfigHandler.bake(FabricLoader.getInstance().getConfigDir().resolve(MOD_ID));
-
 
 	public static final ScreenHandlerType<QuarryBlockScreenHandler> QUARRY_BLOCK_SCREEN_HANDLER = new ExtendedScreenHandlerType<>(QuarryBlockScreenHandler::new);
 

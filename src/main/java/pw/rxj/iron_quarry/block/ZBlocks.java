@@ -9,36 +9,36 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.registry.Registry;
 import pw.rxj.iron_quarry.Main;
-import pw.rxj.iron_quarry.resource.ConfigHandler;
+import pw.rxj.iron_quarry.resource.config.server.QuarryStatsConfig;
 import pw.rxj.iron_quarry.util.BlockEntry;
 
 import java.util.List;
 
 public class ZBlocks {
-    private static final ConfigHandler.QuarryStatsConfigHandler QuarryStatsConfig = Main.CONFIG.getQuarryStatsConfig();
+    private static final QuarryStatsConfig.Handler QUARRY_STATS_CONFIG = Main.CONFIG.getQuarryStatsConfig();
 
     public static final BlockEntry<QuarryBlock, BlockItem> COPPER_QUARRY = BlockEntry.buildQuarryBlock()
-            .withBlock(new QuarryBlock(Blocks.COPPER_BLOCK, "block/copper_quarry", QuarryStatsConfig.getCopperQuarry()))
+            .withBlock(new QuarryBlock(Blocks.COPPER_BLOCK, "block/copper_quarry", QUARRY_STATS_CONFIG.getCopperQuarry()))
             .withBlockItemSettings(new FabricItemSettings().group(Main.ITEM_GROUP))
             .withId(Main.MOD_ID, "copper_quarry");
     public static final BlockEntry<QuarryBlock, BlockItem> IRON_QUARRY = BlockEntry.buildQuarryBlock()
-            .withBlock(new QuarryBlock(Blocks.IRON_BLOCK, "block/iron_quarry", QuarryStatsConfig.getIronQuarry()))
+            .withBlock(new QuarryBlock(Blocks.IRON_BLOCK, "block/iron_quarry", QUARRY_STATS_CONFIG.getIronQuarry()))
             .withBlockItemSettings(new FabricItemSettings().group(Main.ITEM_GROUP))
             .withId(Main.MOD_ID, "iron_quarry");
     public static final BlockEntry<QuarryBlock, BlockItem> GOLD_QUARRY = BlockEntry.buildQuarryBlock()
-            .withBlock(new QuarryBlock(Blocks.GOLD_BLOCK, "block/gold_quarry", QuarryStatsConfig.getGoldQuarry()))
+            .withBlock(new QuarryBlock(Blocks.GOLD_BLOCK, "block/gold_quarry", QUARRY_STATS_CONFIG.getGoldQuarry()))
             .withBlockItemSettings(new FabricItemSettings().group(Main.ITEM_GROUP))
             .withId(Main.MOD_ID, "gold_quarry");
     public static final BlockEntry<QuarryBlock, BlockItem> DIAMOND_QUARRY = BlockEntry.buildQuarryBlock()
-            .withBlock(new QuarryBlock(Blocks.DIAMOND_BLOCK, "block/diamond_quarry", QuarryStatsConfig.getDiamondQuarry()))
+            .withBlock(new QuarryBlock(Blocks.DIAMOND_BLOCK, "block/diamond_quarry", QUARRY_STATS_CONFIG.getDiamondQuarry()))
             .withBlockItemSettings(new FabricItemSettings().group(Main.ITEM_GROUP))
             .withId(Main.MOD_ID, "diamond_quarry");
     public static final BlockEntry<QuarryBlock, BlockItem> NETHERITE_QUARRY = BlockEntry.buildQuarryBlock()
-            .withBlock(new QuarryBlock(Blocks.NETHERITE_BLOCK, "block/netherite_quarry", QuarryStatsConfig.getNetheriteQuarry()))
+            .withBlock(new QuarryBlock(Blocks.NETHERITE_BLOCK, "block/netherite_quarry", QUARRY_STATS_CONFIG.getNetheriteQuarry()))
             .withBlockItemSettings(new FabricItemSettings().group(Main.ITEM_GROUP).rarity(Rarity.UNCOMMON).fireproof())
             .withId(Main.MOD_ID, "netherite_quarry");
     public static final BlockEntry<QuarryBlock, BlockItem> NETHER_STAR_QUARRY = BlockEntry.buildQuarryBlock()
-            .withBlock(new QuarryBlock(Blocks.NETHERITE_BLOCK, "block/nether_star_quarry", QuarryStatsConfig.getNetherStarQuarry()))
+            .withBlock(new QuarryBlock(Blocks.NETHERITE_BLOCK, "block/nether_star_quarry", QUARRY_STATS_CONFIG.getNetherStarQuarry()))
             .withBlockItemSettings(new FabricItemSettings().group(Main.ITEM_GROUP).rarity(Rarity.RARE).fireproof())
             .withId(Main.MOD_ID, "nether_star_quarry");
     public static final List<QuarryBlock> quarryBlockList = List.of(

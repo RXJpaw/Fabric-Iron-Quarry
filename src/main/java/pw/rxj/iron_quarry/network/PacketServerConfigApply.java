@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pw.rxj.iron_quarry.Main;
 import pw.rxj.iron_quarry.network.packet.ByteArrayPacket;
-import pw.rxj.iron_quarry.resource.ConfigHandler;
+import pw.rxj.iron_quarry.resource.config.ConfigHandler;
 
 public class PacketServerConfigApply extends ComplexPacketHandler<ByteArrayPacket> {
     protected static PacketServerConfigApply INSTANCE = new PacketServerConfigApply();

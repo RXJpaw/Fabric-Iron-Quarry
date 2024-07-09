@@ -1,6 +1,6 @@
 package pw.rxj.iron_quarry.types;
 
-import pw.rxj.iron_quarry.resource.Config;
+import pw.rxj.iron_quarry.resource.config.server.AugmentStatsConfig;
 import pw.rxj.iron_quarry.util.MathUtil;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public enum AugmentType {
         this.inefficiency = inefficiency;
         this.disabled = disabled;
     }
-    public void override(Config.Server.AugmentStatsConfig.Entry augmentStats) {
+    public void override(AugmentStatsConfig.Entry augmentStats) {
         this.disabled = augmentStats.disabled;
         this.baseAmount = augmentStats.baseAmount;
         this.multiplier = augmentStats.multiplier;

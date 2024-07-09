@@ -9,12 +9,12 @@ import net.minecraft.village.TradeOffer;
 import net.minecraft.village.VillagerProfession;
 import pw.rxj.iron_quarry.Main;
 import pw.rxj.iron_quarry.item.ZItems;
-import pw.rxj.iron_quarry.resource.ConfigHandler;
+import pw.rxj.iron_quarry.resource.config.server.SilkTouchAugmentConfig;
 
 import java.util.Optional;
 
 public class ZTradeOffers {
-    private static final ConfigHandler.SilkTouchAugmentConfigHandler SilkTouchAugmentConfig = Main.CONFIG.getSilkTouchAugmentConfig();
+    private static final SilkTouchAugmentConfig.Handler SILK_TOUCH_AUGMENT_CONFIG = Main.CONFIG.getSilkTouchAugmentConfig();
 
     public static TradeOffer SILK_TOUCH_AUGMENT(Entity entity, Random random) {
         ItemStack base = new ItemStack(Items.EMERALD_BLOCK, random.nextBetween(7, 21));
@@ -26,15 +26,15 @@ public class ZTradeOffers {
 
     //TODO: configurable villager profession for modpacks
     public static void register() {
-        Optional<VillagerProfession> villagerProfession = SilkTouchAugmentConfig.getVillagerProfession();
+        Optional<VillagerProfession> villagerProfession = SILK_TOUCH_AUGMENT_CONFIG.getVillagerProfession();
         if(villagerProfession.isEmpty()) throw new Error("Invalid villager profession");
 
-        TradeOfferHelper.registerVillagerOffers(villagerProfession.get(), SilkTouchAugmentConfig.getVillagerLevel(), factories -> {
+        TradeOfferHelper.registerVillagerOffers(villagerProfession.get(), SILK_TOUCH_AUGMENT_CONFIG.getVillagerLevel(), factories -> {
             factories.add(ZTradeOffers::SILK_TOUCH_AUGMENT);
         });
 
-        if(SilkTouchAugmentConfig.isWanderingVillagerEnabled()) {
-            TradeOfferHelper.registerWanderingTraderOffers(SilkTouchAugmentConfig.getWanderingVillagerLevel(), factories -> {
+        if(SILK_TOUCH_AUGMENT_CONFIG.isWanderingVillagerEnabled()) {
+            TradeOfferHelper.registerWanderingTraderOffers(SILK_TOUCH_AUGMENT_CONFIG.getWanderingVillagerLevel(), factories -> {
                 factories.add(ZTradeOffers::SILK_TOUCH_AUGMENT);
             });
         }

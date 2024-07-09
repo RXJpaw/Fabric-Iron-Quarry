@@ -34,6 +34,9 @@ dependencies {
 	modApi("com.terraformersmc:modmenu:${project.modmenu_version}")
 	modApi("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
 	modApi("dev.architectury:architectury-fabric:${project.architectury_version}")
+
+	compileOnly 'org.projectlombok:lombok:1.18.34'
+	annotationProcessor 'org.projectlombok:lombok:1.18.34'
 }
 
 configurations.all {

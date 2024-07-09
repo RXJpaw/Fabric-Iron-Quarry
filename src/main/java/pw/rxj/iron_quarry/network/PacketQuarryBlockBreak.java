@@ -15,10 +15,10 @@ import org.jetbrains.annotations.Nullable;
 import pw.rxj.iron_quarry.Main;
 import pw.rxj.iron_quarry.network.packet.BooleanBlockPosStatePacket;
 import pw.rxj.iron_quarry.render.RenderUtil;
-import pw.rxj.iron_quarry.resource.ConfigHandler;
+import pw.rxj.iron_quarry.resource.config.client.BlockBreakingConfig;
 
 public class PacketQuarryBlockBreak extends ComplexPacketHandler<BooleanBlockPosStatePacket> {
-    private static final ConfigHandler.BlockBreakingConfigHandler BlockBreakingConfig = Main.CONFIG.getBlockBreakingConfig();
+    private static final BlockBreakingConfig.Handler BLOCK_BREAKING_CONFIG = Main.CONFIG.getBlockBreakingConfig();
     protected static PacketQuarryBlockBreak INSTANCE = new PacketQuarryBlockBreak();
 
     private PacketQuarryBlockBreak() { }
@@ -40,14 +40,14 @@ public class PacketQuarryBlockBreak extends ComplexPacketHandler<BooleanBlockPos
         BlockState blockState = packet.blockState;
 
         Vec3d blockPosVec = RenderUtil.vec3dFrom(blockPos);
-        if(client.player.getPos().distanceTo(blockPosVec) > BlockBreakingConfig.getDistance()) return;
+        if(client.player.getPos().distanceTo(blockPosVec) > BLOCK_BREAKING_CONFIG.getDistance()) return;
         
         if (!blockState.isAir() && blockState.getFluidState().isEmpty()) {
             BlockSoundGroup blockSoundGroup = blockState.getSoundGroup();
             client.world.addBlockBreakParticles(blockPos, blockState);
 
             if(packet.bool) {
-                float volume = ((blockSoundGroup.getVolume() + 1.0F) / 2.0F) * BlockBreakingConfig.getVolume();
+                float volume = ((blockSoundGroup.getVolume() + 1.0F) / 2.0F) * BLOCK_BREAKING_CONFIG.getVolume();
                 float pitch = blockSoundGroup.getPitch() * 0.8F;
 
                 if(volume > 0) {

@@ -1,4 +1,4 @@
-package pw.rxj.iron_quarry.resource;
+package pw.rxj.iron_quarry.resource.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -7,22 +7,19 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.village.VillagerProfession;
 import pw.rxj.iron_quarry.Main;
-import pw.rxj.iron_quarry.block.ZBlocks;
-import pw.rxj.iron_quarry.item.DrillItem;
-import pw.rxj.iron_quarry.item.ZItems;
 import pw.rxj.iron_quarry.network.PacketServerConfigApply;
 import pw.rxj.iron_quarry.network.ZNetwork;
-import pw.rxj.iron_quarry.types.AugmentType;
+import pw.rxj.iron_quarry.resource.config.client.BlockBreakingConfig;
+import pw.rxj.iron_quarry.resource.config.server.AugmentStatsConfig;
+import pw.rxj.iron_quarry.resource.config.server.QuarryDrillStatsConfig;
+import pw.rxj.iron_quarry.resource.config.server.QuarryStatsConfig;
+import pw.rxj.iron_quarry.resource.config.server.SilkTouchAugmentConfig;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Optional;
 
 public class ConfigHandler {
     private final Path clientConfigPath;
@@ -52,161 +49,27 @@ public class ConfigHandler {
         return ConfigHandler.of(this.clientConfigPath, this.serverConfigPath, this.gson);
     }
 
-
-    public class BlockBreakingConfigHandler {
-        private final Config.Client clientConfig = ConfigHandler.this.config.CLIENT;
-        private BlockBreakingConfigHandler() { }
-
-        public void setVolume(float volume) {
-            this.clientConfig.blockBreaking.volume = volume;
-        }
-        public float getVolume() {
-            return this.clientConfig.blockBreaking.volume;
-        }
-        public void setOptionVolume(int volume) {
-            this.setVolume(volume / 100.0F);
-        }
-        public int getOptionVolume() {
-            return (int) (this.getVolume() * 100);
-        }
-
-        public void setDistance(float distance) {
-            this.clientConfig.blockBreaking.distance = distance;
-        }
-        public float getDistance() {
-            return this.clientConfig.blockBreaking.distance;
-        }
-        public void setOptionDistance(int distance) {
-            this.setDistance(distance);
-        }
-        public int getOptionDistance() {
-            return (int) (this.getDistance());
-        }
-    }
-    public BlockBreakingConfigHandler getBlockBreakingConfig() {
-        return new BlockBreakingConfigHandler();
+    protected Config getConfig() {
+        return this.config;
     }
 
-    public class SilkTouchAugmentConfigHandler {
-        private final Config.Server serverConfig = ConfigHandler.this.config.SERVER;
-        private SilkTouchAugmentConfigHandler() { }
-
-        public Optional<VillagerProfession> getVillagerProfession() {
-            Identifier villagerProfession = Identifier.tryParse(this.serverConfig.silkTouchAugment.villagerProfession);
-
-            return Registry.VILLAGER_PROFESSION.getOrEmpty(villagerProfession);
-        }
-        public byte getVillagerLevel() {
-            return this.serverConfig.silkTouchAugment.villagerLevel;
-        }
-        public boolean isWanderingVillagerEnabled() {
-            return this.serverConfig.silkTouchAugment.wanderingVillager;
-        }
-        public byte getWanderingVillagerLevel() {
-            return this.serverConfig.silkTouchAugment.wanderingVillagerLevel;
-        }
+    //Client
+    public BlockBreakingConfig.Handler getBlockBreakingConfig() {
+        return BlockBreakingConfig.Handler.of(this);
     }
-    public SilkTouchAugmentConfigHandler getSilkTouchAugmentConfig() {
-        return new SilkTouchAugmentConfigHandler();
+    //Server
+    public SilkTouchAugmentConfig.Handler getSilkTouchAugmentConfig() {
+        return SilkTouchAugmentConfig.Handler.of(this);
     }
-
-    public class QuarryStatsConfigHandler {
-        private final Config.Server serverConfig = ConfigHandler.this.config.SERVER;
-        private QuarryStatsConfigHandler() { }
-
-        public Config.Server.QuarryStatsConfig.Entry getCopperQuarry() {
-            return serverConfig.quarryStats.copperQuarry;
-        }
-        public Config.Server.QuarryStatsConfig.Entry getIronQuarry() {
-            return serverConfig.quarryStats.ironQuarry;
-        }
-        public Config.Server.QuarryStatsConfig.Entry getGoldQuarry() {
-            return serverConfig.quarryStats.goldQuarry;
-        }
-        public Config.Server.QuarryStatsConfig.Entry getDiamondQuarry() {
-            return serverConfig.quarryStats.diamondQuarry;
-        }
-        public Config.Server.QuarryStatsConfig.Entry getNetheriteQuarry() {
-            return serverConfig.quarryStats.netheriteQuarry;
-        }
-        public Config.Server.QuarryStatsConfig.Entry getNetherStarQuarry() {
-            return serverConfig.quarryStats.netherStarQuarry;
-        }
-
-        public void applyChanges() {
-            ZBlocks.COPPER_QUARRY.getBlock().override(this.getCopperQuarry());
-            ZBlocks.IRON_QUARRY.getBlock().override(this.getIronQuarry());
-            ZBlocks.GOLD_QUARRY.getBlock().override(this.getGoldQuarry());
-            ZBlocks.DIAMOND_QUARRY.getBlock().override(this.getDiamondQuarry());
-            ZBlocks.NETHERITE_QUARRY.getBlock().override(this.getNetheriteQuarry());
-            ZBlocks.NETHER_STAR_QUARRY.getBlock().override(this.getNetherStarQuarry());
-        }
+    public QuarryStatsConfig.Handler getQuarryStatsConfig() {
+        return QuarryStatsConfig.Handler.of(this);
     }
-    public QuarryStatsConfigHandler getQuarryStatsConfig() {
-        return new QuarryStatsConfigHandler();
+    public AugmentStatsConfig.Handler getAugmentStatsConfig() {
+        return AugmentStatsConfig.Handler.of(this);
     }
-
-    public class AugmentStatsConfigHandler {
-        private final Config.Server serverConfig = ConfigHandler.this.config.SERVER;
-        private AugmentStatsConfigHandler() { }
-
-        public Config.Server.AugmentStatsConfig.Entry getSpeed() {
-            return serverConfig.augmentStats.speed;
-        }
-        public Config.Server.AugmentStatsConfig.Entry getFortune() {
-            return serverConfig.augmentStats.fortune;
-        }
-        public Config.Server.AugmentStatsConfig.Entry getSilkTouch() {
-            return serverConfig.augmentStats.silkTouch;
-        }
-        public Config.Server.AugmentStatsConfig.Entry getChestLooting() {
-            return serverConfig.augmentStats.chestLooting;
-        }
-
-        public void applyChanges() {
-            AugmentType.SPEED.override(this.getSpeed());
-            AugmentType.FORTUNE.override(this.getFortune());
-            AugmentType.SILK_TOUCH.override(this.getSilkTouch());
-            AugmentType.CHEST_LOOTING.override(this.getChestLooting());
-        }
+    public QuarryDrillStatsConfig.Handler getQuarryDrillStatsConfig() {
+        return QuarryDrillStatsConfig.Handler.of(this);
     }
-    public AugmentStatsConfigHandler getAugmentStatsConfig() {
-        return new AugmentStatsConfigHandler();
-    }
-
-    public class QuarryDrillStatsConfigHandler {
-        private final Config.Server serverConfig = ConfigHandler.this.config.SERVER;
-        private QuarryDrillStatsConfigHandler() {}
-
-        public Config.Server.QuarryDrillStatsConfig.Entry getCopperDrill() {
-            return serverConfig.quarryDrillStats.copperDrill;
-        }
-        public Config.Server.QuarryDrillStatsConfig.Entry getIronDrill() {
-            return serverConfig.quarryDrillStats.ironDrill;
-        }
-        public Config.Server.QuarryDrillStatsConfig.Entry getDiamondDrill() {
-            return serverConfig.quarryDrillStats.diamondDrill;
-        }
-        public Config.Server.QuarryDrillStatsConfig.Entry getNetheriteDrill() {
-            return serverConfig.quarryDrillStats.netheriteDrill;
-        }
-        public Config.Server.QuarryDrillStatsConfig.Entry getShulkerDrill() {
-            return serverConfig.quarryDrillStats.shulkerDrill;
-        }
-        public Config.Server.QuarryDrillStatsConfig.Entry getNetherStarDrill() {
-            return serverConfig.quarryDrillStats.netherStarDrill;
-        }
-
-        public void applyChanges() {
-            ((DrillItem) ZItems.COPPER_DRILL.getItem()).override(this.getCopperDrill());
-            ((DrillItem) ZItems.IRON_DRILL.getItem()).override(this.getIronDrill());
-            ((DrillItem) ZItems.DIAMOND_DRILL.getItem()).override(this.getDiamondDrill());
-            ((DrillItem) ZItems.NETHERITE_DRILL.getItem()).override(this.getNetheriteDrill());
-            ((DrillItem) ZItems.SHULKER_DRILL.getItem()).override(this.getShulkerDrill());
-            ((DrillItem) ZItems.NETHER_STAR_DRILL.getItem()).override(this.getNetherStarDrill());
-        }
-    }
-    public QuarryDrillStatsConfigHandler getQuarryDrillStatsConfig() { return new QuarryDrillStatsConfigHandler(); }
 
     public void read(EnvType environment) {
         if(environment.equals(EnvType.CLIENT)) {
