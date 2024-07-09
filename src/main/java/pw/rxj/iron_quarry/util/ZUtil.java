@@ -50,6 +50,13 @@ public class ZUtil {
         return ReadableString.cIntFrom(input);
     }
 
+    public static <E extends Enum<E>> @Nullable E safeEnumConstant(Class<E> clazz, int index) {
+        E[] enumList = clazz.getEnumConstants();
+        if(index >= enumList.length) return null;
+
+        return enumList[index];
+    }
+
     public static @Nullable BlockEntity getBlockEntity(WorldChunk worldChunk, BlockState blockState, BlockPos blockPos) {
         if(!blockState.hasBlockEntity()) return null;
         return worldChunk.getBlockEntity(blockPos);

@@ -20,6 +20,7 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.screen.NamedScreenHandlerFactory;
@@ -46,12 +47,16 @@ import pw.rxj.iron_quarry.gui.ITooltipDataProvider;
 import pw.rxj.iron_quarry.gui.TooltipAugmentInventoryData;
 import pw.rxj.iron_quarry.interfaces.IEnergyContainer;
 import pw.rxj.iron_quarry.interfaces.IHandledCrafting;
+import pw.rxj.iron_quarry.interfaces.IHandledKeyedAction;
 import pw.rxj.iron_quarry.interfaces.IHandledUseBlock;
 import pw.rxj.iron_quarry.item.ZItemTags;
+import pw.rxj.iron_quarry.network.KeyedActionPacket;
+import pw.rxj.iron_quarry.network.ZNetwork;
 import pw.rxj.iron_quarry.recipe.HandledCraftingRecipe;
 import pw.rxj.iron_quarry.records.TexturePosition;
 import pw.rxj.iron_quarry.resource.Config;
 import pw.rxj.iron_quarry.resource.ResourceReloadListener;
+import pw.rxj.iron_quarry.types.ActionGoal;
 import pw.rxj.iron_quarry.types.Face;
 import pw.rxj.iron_quarry.util.*;
 
@@ -59,7 +64,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IEnergyContainer, ITooltipDataProvider, IHandledUseBlock {
+public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IEnergyContainer, ITooltipDataProvider, IHandledUseBlock, IHandledKeyedAction {
     private final String textureReference;
     private int ticksPerOperation;
     private int baseConsumption;
@@ -243,16 +248,8 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
 
         if (blockEntity instanceof QuarryBlockEntity quarryBlockEntity) {
             if(itemStack.isIn(ZItemTags.C_WRENCHES)) {
-                //TODO: make packet because MinecraftClient cannot be used on server {ServerPlayNetworkHandler#onPlayerInteractBlock}
-                if(MinecraftClient.getInstance().options.sneakKey.isPressed()) {
-                    this.onBreak(world, blockPos, blockState, player);
-                    boolean removed = world.removeBlock(blockPos, false);
-                    if(removed) this.onBroken(world, blockPos, blockState);
-
-                    if(!player.isCreative()) {
-                        itemStack.postMine(world, blockState, blockPos, player);
-                        this.afterBreak(world, player, blockPos, blockState, blockEntity, itemStack.copy());
-                    }
+                if(world.isClient() && MinecraftClient.getInstance().options.sneakKey.isPressed()) {
+                    ZNetwork.sendToServer(KeyedActionPacket.bake("key.sneak", hand, ActionGoal.USE_ON_BLOCK, hitResult));
                 } else {
                     MachineConfiguration Configuration = quarryBlockEntity.Configuration;
                     Face face = Face.from(side, blockState.get(FACING));
@@ -266,6 +263,33 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
 
         return ActionResult.PASS;
     }
+
+    @Override
+    public void keyedUseOnBlock(String keyName, ItemUsageContext context, BlockState blockState) {
+        if(!keyName.equals("key.sneak")) return;
+
+        PlayerEntity player = context.getPlayer();
+        if(player == null) return;
+
+        BlockPos blockPos = context.getBlockPos();
+        if(player.squaredDistanceTo((double)blockPos.getX() + 0.5, (double)blockPos.getY() + 0.5, (double)blockPos.getZ() + 0.5) > 64.0) return;
+
+        World world = context.getWorld();
+        ItemStack stack = context.getStack();
+        BlockEntity blockEntity = world.getBlockEntity(blockPos);
+
+        if(stack.isIn(ZItemTags.C_WRENCHES)) {
+            this.onBreak(world, blockPos, blockState, player);
+            boolean removed = world.removeBlock(blockPos, false);
+            if(removed) this.onBroken(world, blockPos, blockState);
+
+            if(!player.isCreative()) {
+                stack.postMine(world, blockState, blockPos, player);
+                this.afterBreak(world, player, blockPos, blockState, blockEntity, stack.copy());
+            }
+        }
+    }
+
     @Override
     public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         BlockEntity blockEntity = world.getBlockEntity(pos);

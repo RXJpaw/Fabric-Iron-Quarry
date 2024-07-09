@@ -22,7 +22,8 @@ public class ZNetwork {
     private static final List<ComplexPacketHandler<?>> packetList = List.of(
             PacketServerConfigApply.INSTANCE,
             PacketQuarryBlockBreak.INSTANCE,
-            PacketBlueprintExpand.INSTANCE
+            PacketBlueprintExpand.INSTANCE,
+            KeyedActionPacket.INSTANCE
     );
 
     @Environment(EnvType.CLIENT)

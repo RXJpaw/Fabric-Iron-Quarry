@@ -19,25 +19,22 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Rarity;
+import net.minecraft.util.*;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.*;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pw.rxj.iron_quarry.interfaces.*;
+import pw.rxj.iron_quarry.network.KeyedActionPacket;
 import pw.rxj.iron_quarry.network.PacketBlueprintExpand;
 import pw.rxj.iron_quarry.network.ZNetwork;
 import pw.rxj.iron_quarry.recipe.HandledSmithingRecipe;
 import pw.rxj.iron_quarry.render.Cuboid;
 import pw.rxj.iron_quarry.screen.QuarryBlockScreen;
+import pw.rxj.iron_quarry.types.ActionGoal;
 import pw.rxj.iron_quarry.types.ScrollDirection;
 import pw.rxj.iron_quarry.util.ReadableString;
 import pw.rxj.iron_quarry.util.ZUtil;
@@ -46,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmithing, IHandledGrinding, IHandledItemEntity, IHandledMainHandScrolling, IAlwaysRenderItemName {
+public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmithing, IHandledGrinding, IHandledItemEntity, IHandledMainHandScrolling, IAlwaysRenderItemName, IHandledKeyedAction {
     public BlueprintItem(Settings settings) {
         super(settings);
     }
@@ -321,22 +318,47 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
 
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
-        if(!context.getHand().equals(Hand.MAIN_HAND)) return ActionResult.PASS;
-
         PlayerEntity player = context.getPlayer();
         if(player == null) return ActionResult.FAIL;
+
+        if(!context.getHand().equals(Hand.MAIN_HAND)) return ActionResult.PASS;
+        if(player.isCreative() && MinecraftClient.getInstance().options.sneakKey.isPressed()) return ActionResult.PASS;
+
         ItemStack stack = context.getStack();
         if(this.isSealed(stack)) return ActionResult.FAIL;
 
         BlockPos targetedPos = context.getBlockPos();
-
         this.setSecondPos(stack, context.getWorld(), targetedPos);
-
         Text secondPosText = ReadableString.textFrom(targetedPos).orElse(ReadableString.ERROR);
 
         player.sendMessage(ReadableString.translatable("item.iron_quarry.blueprint.overlay.second_pos_set", secondPosText), true);
 
         return ActionResult.SUCCESS;
+    }
+    @Override
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+        ItemStack stack = user.getStackInHand(hand);
+        if(!world.isClient()) return TypedActionResult.fail(stack);
+        if(!hand.equals(Hand.MAIN_HAND) || !user.isCreative()) return TypedActionResult.fail(stack);
+
+        if(MinecraftClient.getInstance().options.sneakKey.isPressed()) {
+            ZNetwork.sendToServer(KeyedActionPacket.bake("key.sneak", hand, ActionGoal.USE, BlockHitResult.createMissed(Vec3d.ZERO, Direction.UP, BlockPos.ORIGIN)));
+            return TypedActionResult.success(stack, false);
+        }
+
+        return TypedActionResult.pass(stack);
+    }
+    @Override
+    public void keyedUse(String keyName, ItemUsageContext context) {
+        if(!keyName.equals("key.sneak")) return;
+
+        ItemStack stack = context.getStack();
+        PlayerEntity player = context.getPlayer();
+
+        if(player != null && player.isCreative()) {
+            this.setSealed(stack, !this.isSealed(stack));
+            this.resetMinedChunks(stack);
+        }
     }
     @Override
     public ActionResult attackOnBlock(PlayerEntity player, World world, Hand hand, BlockPos targetedPos, Direction direction) {
@@ -441,6 +463,12 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
         long mined = this.getMinedChunks(stack);
 
         return mined == mineable;
+    }
+    public void resetMinedChunks(ItemStack stack) {
+        NbtCompound nbt = stack.getNbt();
+        if(nbt == null) return;
+
+        nbt.remove("MinedChunks");
     }
     public void increaseMinedChunks(ItemStack stack) {
         this.increaseMinedChunks(stack, 1);
