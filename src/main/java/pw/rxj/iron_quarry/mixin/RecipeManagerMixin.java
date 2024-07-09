@@ -34,7 +34,5 @@ public abstract class RecipeManagerMixin {
             map.remove(Identifier.of(Main.MOD_ID, "augment_fortune_tier2"));
             map.remove(Identifier.of(Main.MOD_ID, "augment_fortune_tier3"));
         }
-
-        Main.LOGGER.info("{} {}", AugmentType.SPEED.isDisabled(), AugmentType.FORTUNE.isDisabled());
     }
 }
