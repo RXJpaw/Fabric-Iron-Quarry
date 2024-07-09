@@ -15,6 +15,7 @@
         "SmithingScreenHandlerMixin"
     ],
     "client": [
+        "CustomDurabilityBarMixin",
         "DynamicItemNameRendererMixin",
         "EnergyBarMixin",
         "InGameHudMixin",

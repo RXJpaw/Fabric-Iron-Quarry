@@ -19,7 +19,6 @@ import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.chunk.WorldChunk;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.DecimalFormat;
 import java.util.HashSet;
 
 public class ZUtil {
@@ -32,12 +31,23 @@ public class ZUtil {
     }
 
     public static String expandableFixedFloat(float input) {
-        if(Screen.hasShiftDown()) return new DecimalFormat("#,##0.00").format(input);
+        if(Screen.hasShiftDown()) return ReadableString.getDecimalFormatter("#,##0.00").format(input);
 
-        if(input < 10 && input > -10) return new DecimalFormat("#,##0.00").format(input);
-        if(input < 100 && input > -100) return new DecimalFormat("#,##0.0").format(input);
+        float inputAbs = Math.abs(input);
+        String inputSign = input >= 0 ? "" : "-";
 
-        return new DecimalFormat("#,##0").format(input);
+        String _10 = ReadableString.getDecimalFormatter("#,##0.00").format(inputAbs);
+        if(_10.length() <= 4) return inputSign + _10;
+
+        String _100 = ReadableString.getDecimalFormatter("#,##0.0").format(inputAbs);
+        if(_100.length() <= 4) return inputSign + _100;
+
+        return ReadableString.cIntFrom(input);
+    }
+    public static String expandableFixedInt(int input) {
+        if(Screen.hasShiftDown()) return ReadableString.intFrom(input);
+
+        return ReadableString.cIntFrom(input);
     }
 
     public static @Nullable BlockEntity getBlockEntity(WorldChunk worldChunk, BlockState blockState, BlockPos blockPos) {

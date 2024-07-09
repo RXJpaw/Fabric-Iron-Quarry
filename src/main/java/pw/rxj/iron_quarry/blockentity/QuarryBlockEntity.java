@@ -517,7 +517,7 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
             EnergyContainer.useEnergy(energyConsumption);
             blockActress.setBlockState(Blocks.AIR);
 
-            boolean drillBroke = drillStack.damage(1, serverWorldToBreak.getRandom(), null);
+            boolean drillBroke = drillItem.cdamage(drillStack, 1, serverWorldToBreak.getRandom(), null);
             if(drillBroke) {
                 double x = quarryPos.getX() + 0.5;
                 double y = quarryPos.getY() + 0.5;

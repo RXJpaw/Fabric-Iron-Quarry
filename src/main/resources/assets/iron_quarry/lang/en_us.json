@@ -30,6 +30,9 @@
     "mining_level.iron_quarry.4": "Netherite",
     "mining_level.iron_quarry.5": "Tier 5",
     "mining_level.iron_quarry.6": "Tier 6",
+    "mining_level.iron_quarry.7": "Tier 7",
+    "mining_level.iron_quarry.8": "Tier 8",
+    "mining_level.iron_quarry.9": "Tier 9",
 
     "item.iron_quarry.iron_quarry_monitor": "Iron Quarry Monitor",
     "item.iron_quarry.diamond_quarry_monitor": "Diamond Quarry Monitor",
@@ -92,6 +95,8 @@
     "item.iron_quarry.lore.details": "§{RGB_LIGHT_GRAY Hold} §{RGB_WEAK_HIGHLIGHT Left Shift} §{RGB_LIGHT_GRAY for more information}",
     "item.iron_quarry.lore.use_rei": "§{RGB_WARNING Press U in EMI/JEI/REI to view recipes.}",
     "item.iron_quarry.lore.disabled": "§{RGB_MC_NOPERMS <This item is disabled by server config>}",
+    "item.iron_quarry.lore.mining_level": "§{RGB_LIGHT_GRAY Mining Level:} §{RGB_WEAK_HIGHLIGHT %s}",
+    "item.iron_quarry.lore.custom_durability": "§{RGB_LIGHT_GRAY Durability:} §{RGB_WEAK_HIGHLIGHT %s/%s (%s%%)}",
 
     "screen.iron_quarry.quarry_block.tooltip.locked_augment_slot": "§{RGB_TAB_TITLE Upgrade the quarry to unlock this augment slot!}",
     "screen.iron_quarry.quarry_block.tooltip.blueprint_info": "§{RGB_TAB_TITLE Insert §lSealed Blueprint§r to start the quarry.}",

@@ -14,13 +14,25 @@ import pw.rxj.iron_quarry.render.Cuboid;
 import pw.rxj.iron_quarry.types.DynamicText;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ReadableString {
-    private static DecimalFormat getIntegerFormatter() {
-        return new DecimalFormat("#,##0");
+    public static DecimalFormat getDecimalFormatter(String pattern) {
+        return new DecimalFormat(pattern, DecimalFormatSymbols.getInstance(Locale.UK));
+    }
+    public static DecimalFormat getIntegerFormatter() {
+        return new DecimalFormat("#,##0", DecimalFormatSymbols.getInstance(Locale.UK));
+    }
+    public static NumberFormat getCompactIntegerFormatter() {
+        NumberFormat formatter = NumberFormat.getCompactNumberInstance(Locale.UK, NumberFormat.Style.SHORT);
+        formatter.setMinimumFractionDigits(1);
+
+        return formatter;
     }
     public static String intFrom(int number) {
         return getIntegerFormatter().format(number);
@@ -33,6 +45,18 @@ public class ReadableString {
     }
     public static String intFrom(double number) {
         return getIntegerFormatter().format(number);
+    }
+    public static String cIntFrom(int number) {
+        return getCompactIntegerFormatter().format(number).toLowerCase();
+    }
+    public static String cIntFrom(long number) {
+        return getCompactIntegerFormatter().format(number).toLowerCase();
+    }
+    public static String cIntFrom(float number) {
+        return getCompactIntegerFormatter().format(number).toLowerCase();
+    }
+    public static String cIntFrom(double number) {
+        return getCompactIntegerFormatter().format(number).toLowerCase();
     }
 
     public static Text ERROR = Text.of("<error>");
@@ -126,5 +150,9 @@ public class ReadableString {
         }
 
         return parsed.append(string.substring(offset));
+    }
+
+    public static MutableText empty() {
+        return Text.literal(" ");
     }
 }
