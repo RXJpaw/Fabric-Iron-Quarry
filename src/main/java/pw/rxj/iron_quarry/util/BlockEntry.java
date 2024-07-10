@@ -3,10 +3,11 @@ package pw.rxj.iron_quarry.util;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.util.Identifier;
 import pw.rxj.iron_quarry.block.QuarryBlock;
 
-public class BlockEntry<T extends Block, S extends BlockItem> {
+public class BlockEntry<T extends Block, S extends BlockItem> implements ItemConvertible {
     private T block;
     private S blockItem;
     private Identifier id;
@@ -48,6 +49,10 @@ public class BlockEntry<T extends Block, S extends BlockItem> {
 
     public T getBlock() {
         return block;
+    }
+    @Override
+    public S asItem() {
+        return blockItem;
     }
     public S getBlockItem() {
         return blockItem;
