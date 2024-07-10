@@ -63,10 +63,10 @@ public class QuarryInventory {
         }
 
         @Override
-        public boolean canInsert(ItemStack stack) {
+        public boolean isValid(int slot, ItemStack stack) {
             EnergyStorage energyStorage = ContainerItemContext.withConstant(stack).find(EnergyStorage.ITEM);
 
-            return super.canInsert(stack) && energyStorage != null && energyStorage.supportsExtraction();
+            return energyStorage != null && energyStorage.supportsExtraction();
         }
     }
     public static class MachineUpgrades extends ReferencedQuarryInventory {
@@ -86,8 +86,8 @@ public class QuarryInventory {
             return 1;
         }
         @Override
-        public boolean canInsert(ItemStack stack) {
-            return super.canInsert(stack) && stack.getItem() instanceof AugmentItem;
+        public boolean isValid(int slot, ItemStack stack) {
+            return stack.getItem() instanceof AugmentItem;
         }
     }
     public static class Blueprint extends ReferencedQuarryInventory {
@@ -102,8 +102,8 @@ public class QuarryInventory {
         }
 
         @Override
-        public boolean canInsert(ItemStack stack) {
-            return super.canInsert(stack) && stack.getItem() instanceof BlueprintItem;
+        public boolean isValid(int slot, ItemStack stack) {
+            return stack.getItem() instanceof BlueprintItem;
         }
     }
     public static class Drill extends ReferencedQuarryInventory {
@@ -118,8 +118,8 @@ public class QuarryInventory {
         }
 
         @Override
-        public boolean canInsert(ItemStack stack) {
-            return super.canInsert(stack) && stack.getItem() instanceof DrillItem;
+        public boolean isValid(int slot, ItemStack stack) {
+            return stack.getItem() instanceof DrillItem;
         }
     }
 }

@@ -35,6 +35,10 @@ public class ComplexInventory extends SimpleInventory {
             return true;
         }
     }
+    @Override
+    public boolean canInsert(ItemStack stack) {
+        return this.isValid(0, stack) && super.canInsert(stack);
+    }
 
     public NbtList write(){
         NbtList items = new NbtList();
@@ -69,7 +73,7 @@ public class ComplexInventory extends SimpleInventory {
 
     @Override
     public boolean isValid(int slot, ItemStack stack) {
-        return super.isValid(slot, stack) && this.canInsert(stack);
+        return super.isValid(slot, stack);
     }
 
     protected ComplexInventory copy() {

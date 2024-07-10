@@ -15,9 +15,9 @@ public class ManagedSlot extends Slot {
 
     @Override
     public boolean canInsert(ItemStack stack) {
-        boolean canSimpleInsert = !(inventory instanceof SimpleInventory simpleInventory) || simpleInventory.canInsert(stack);
+        boolean isValid = !(inventory instanceof SimpleInventory simpleInventory) || simpleInventory.isValid(0, stack);
 
-        return super.canInsert(stack) && !this.isLocked() && canSimpleInsert;
+        return super.canInsert(stack) && !this.isLocked() && isValid;
     }
     @Override
     public boolean isEnabled() {
