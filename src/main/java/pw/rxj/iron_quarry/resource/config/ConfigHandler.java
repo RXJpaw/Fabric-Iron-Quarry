@@ -11,10 +11,7 @@ import pw.rxj.iron_quarry.Main;
 import pw.rxj.iron_quarry.network.PacketServerConfigApply;
 import pw.rxj.iron_quarry.network.ZNetwork;
 import pw.rxj.iron_quarry.resource.config.client.BlockBreakingConfig;
-import pw.rxj.iron_quarry.resource.config.server.AugmentStatsConfig;
-import pw.rxj.iron_quarry.resource.config.server.QuarryDrillStatsConfig;
-import pw.rxj.iron_quarry.resource.config.server.QuarryStatsConfig;
-import pw.rxj.iron_quarry.resource.config.server.SilkTouchAugmentConfig;
+import pw.rxj.iron_quarry.resource.config.server.*;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -58,9 +55,6 @@ public class ConfigHandler {
         return BlockBreakingConfig.Handler.of(this);
     }
     //Server
-    public SilkTouchAugmentConfig.Handler getSilkTouchAugmentConfig() {
-        return SilkTouchAugmentConfig.Handler.of(this);
-    }
     public QuarryStatsConfig.Handler getQuarryStatsConfig() {
         return QuarryStatsConfig.Handler.of(this);
     }
@@ -69,6 +63,12 @@ public class ConfigHandler {
     }
     public QuarryDrillStatsConfig.Handler getQuarryDrillStatsConfig() {
         return QuarryDrillStatsConfig.Handler.of(this);
+    }
+    public SilkTouchAugmentConfig.Handler getSilkTouchAugmentConfig() {
+        return SilkTouchAugmentConfig.Handler.of(this);
+    }
+    public ChestLootingAugmentConfig.Handler getChestLootingAugmentConfig() {
+        return ChestLootingAugmentConfig.Handler.of(this);
     }
 
     public void read(EnvType environment) {

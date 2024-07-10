@@ -24,6 +24,7 @@ import pw.rxj.iron_quarry.block.ZBlocks;
 import pw.rxj.iron_quarry.blockentity.QuarryBlockEntity;
 import pw.rxj.iron_quarry.blockentity.ZBlockEntities;
 import pw.rxj.iron_quarry.event.GameLifecycleCallback;
+import pw.rxj.iron_quarry.factory.ZLootTables;
 import pw.rxj.iron_quarry.factory.ZTradeOffers;
 import pw.rxj.iron_quarry.interfaces.IBlockAttackable;
 import pw.rxj.iron_quarry.interfaces.IHandledItemEntity;
@@ -75,6 +76,7 @@ public class Main implements ModInitializer {
 		ZItems.register();
 
 		GameLifecycleCallback.IMMINENT_FIRST_RELOAD.register(ZTradeOffers::register);
+		GameLifecycleCallback.IMMINENT_FIRST_RELOAD.register(ZLootTables::register);
 
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
 			if(ZUtil.getBlockOrItem(player.getStackInHand(hand)) instanceof IBlockAttackable itemStack) {
