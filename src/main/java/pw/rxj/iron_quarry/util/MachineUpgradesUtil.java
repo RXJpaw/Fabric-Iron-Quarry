@@ -64,12 +64,58 @@ public class MachineUpgradesUtil {
     public boolean hasChestLooting() { return this.hasChestLooting; }
 
     public float getFortuneMultiplier() {
-        return Math.min(fortuneMultiplier, FORTUNE_LIMIT);
+        return Math.min(this.fortuneMultiplier, FORTUNE_LIMIT);
     }
     public float getSpeedMultiplier() {
-        return Math.min(speedMultiplier, SPEED_LIMIT);
+        return Math.min(this.speedMultiplier, SPEED_LIMIT);
     }
     public float getInefficiency() {
-        return inefficiency;
+        return this.inefficiency;
+    }
+
+    //conflicts
+    public static final int CONFLICT_SPEED = 0;
+    public static final int CONFLICT_FORTUNE = 1;
+    public static final int CONFLICT_SILK_TOUCH = 2;
+    public static boolean hasConflicts(int flag) {
+        return flag != 0;
+    }
+    public static boolean hasConflict(int flag, int conflict) {
+        conflict = 1 << conflict;
+
+        return (flag & conflict) == conflict;
+    }
+
+    public boolean[] getConflictList() {
+        return new boolean[] { this.exceedsSpeedLimit(), this.exceedsFortuneLimit(), this.conflictsWithSilkTouch() };
+    }
+    public int getConflictAmount() {
+        int amount = 0;
+
+        for (boolean hasConflict : this.getConflictList()) {
+            if(hasConflict) amount++;
+        }
+
+        return amount;
+    }
+    public int getConflictFlag() {
+        boolean[] list = this.getConflictList();
+        int flag = 0;
+
+        if(list[CONFLICT_SPEED]) flag += 1 << CONFLICT_SPEED;
+        if(list[CONFLICT_FORTUNE]) flag += 1 << CONFLICT_FORTUNE;
+        if(list[CONFLICT_SILK_TOUCH]) flag += 1 << CONFLICT_SILK_TOUCH;
+
+        return flag;
+    }
+
+    public boolean exceedsSpeedLimit() {
+        return this.speedMultiplier > SPEED_LIMIT;
+    }
+    public boolean exceedsFortuneLimit() {
+        return this.fortuneMultiplier > FORTUNE_LIMIT;
+    }
+    public boolean conflictsWithSilkTouch() {
+        return this.hasSilkTouch && this.fortuneMultiplier > 1;
     }
 }

@@ -31,11 +31,17 @@ public class QuarryInventory {
             return quarryBlockEntity != null && quarryBlockEntity.canPlayerUse(player);
         }
 
+        public boolean mustUpdateListeners() {
+            return false;
+        }
         @Override
         public void markDirty() {
             if(ref == null) return;
 
             this.ref.markDirty();
+            if(this.mustUpdateListeners()) {
+                this.ref.updateListeners();
+            }
         }
     }
 
@@ -89,6 +95,10 @@ public class QuarryInventory {
         public boolean isValid(int slot, ItemStack stack) {
             return stack.getItem() instanceof AugmentItem;
         }
+        @Override
+        public boolean mustUpdateListeners() {
+            return true;
+        }
     }
     public static class Blueprint extends ReferencedQuarryInventory {
         private Blueprint(@Nullable QuarryBlockEntity ref) {
@@ -120,6 +130,10 @@ public class QuarryInventory {
         @Override
         public boolean isValid(int slot, ItemStack stack) {
             return stack.getItem() instanceof DrillItem;
+        }
+        @Override
+        public boolean mustUpdateListeners() {
+            return true;
         }
     }
 }

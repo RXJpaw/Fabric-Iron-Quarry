@@ -1,12 +1,14 @@
 package pw.rxj.iron_quarry.util;
 
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -38,7 +40,8 @@ public class TrackableZone {
     private float ticks;
 
     public @NotNull Zone zone = Zone.empty();
-    private @NotNull Supplier<MutableText> supplier = Text::empty;
+    private @NotNull Supplier<List<Text>> textSupplier = ArrayList::new;
+    private @NotNull Supplier<Integer> intSupplier = () -> 0;
 
     private int mouseX;
     private int mouseY;
@@ -111,10 +114,18 @@ public class TrackableZone {
 
         return this;
     }
-    public void supplyText(Supplier<MutableText> supplier) {
-        this.supplier = supplier;
+    public void supplyLine(Supplier<Text> supplier) {
+        this.textSupplier = () -> Collections.singletonList(supplier.get());
     }
-    public MutableText getSuppliedText() {
-        return this.supplier.get();
+    public void supplyText(Supplier<List<Text>> supplier) {
+        this.textSupplier = supplier;
     }
+    public List<Text> getSuppliedText() {
+        return this.textSupplier.get();
+    }
+
+    public void supplyInt(Supplier<Integer> supplier) {
+        this.intSupplier = supplier;
+    }
+    public int getSuppliedInt() { return this.intSupplier.get(); }
 }

@@ -3,9 +3,11 @@ package pw.rxj.iron_quarry.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Style;
@@ -36,6 +38,7 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
     public static final Identifier OPTIONS_CONFIGURATION_TEXTURE = new Identifier(Main.MOD_ID, "textures/gui/options_configuration.png");
     public static final Identifier AUGMENTATION_CONFIGURATION_TEXTURE = new Identifier(Main.MOD_ID, "textures/gui/augmentation_configuration.png");
 
+    private final TrackableZone InfoDisplay = TrackableZone.empty();
     private final TrackableZone EnergyDisplay = TrackableZone.empty();
     private final TrackableZone AugmentsConfig = TrackableZone.empty()
             .onTickDelta(2.5F, (zone, ticks) -> {
@@ -85,14 +88,14 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
 
         this.expandableMenuWidth = Compat.REI_LOADED ? 0 : 100;
         this.realBackgroundWidth = 176;
-        this.realBackgroundHeight = 224;
+        this.realBackgroundHeight = 226;
 
         this.backgroundWidth = this.realBackgroundWidth + this.expandableMenuWidth;
         this.backgroundHeight = this.realBackgroundHeight;
 
         this.titleY = 6;
         this.titleX = 8;
-        this.playerInventoryTitleY = 131;
+        this.playerInventoryTitleY = 132;
         this.playerInventoryTitleX = 8;
 
         blockPos = handler.getPos();
@@ -114,8 +117,12 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
         QuarryBlock block = blockEntity.getQuarryBlock();
         if(block == null) return;
 
+        ItemStack stack = new ItemStack(block);
+        blockEntity.setStackNbt(stack);
+
         ComplexEnergyContainer EnergyContainer = blockEntity.EnergyContainer;
         MachineConfiguration MachineConfiguration = blockEntity.Configuration;
+        MachineUpgradesUtil machineUpgradesUtil = MachineUpgradesUtil.from(block.getMachineUpgradeStacks(stack));
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -129,20 +136,46 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
         //Energy-Fill-% rendering
         if(EnergyContainer.getStored() > 0) {
             int chargedPixels = Math.max(0, Math.min(40, (int) (EnergyContainer.getFillPercent() * 40)));
-            drawTexture(matrices, backgroundX + 10, backgroundY + 57 - chargedPixels, 179, 57 - chargedPixels, 12, chargedPixels);
+            drawTexture(matrices, backgroundX + 10, backgroundY + 58 - chargedPixels, 179, 57 - chargedPixels, 12, chargedPixels);
         }
 
         //Battery Slot rendering
         if(!BATTERY_SLOT.hasStack()){
-            drawTexture(matrices, backgroundX + 11, backgroundY + 63, 180, 60, 10, 14);
+            drawTexture(matrices, backgroundX + 11, backgroundY + 64, 180, 60, 10, 14);
         }
 
         //Energy-Fill-% tooltip
-        EnergyDisplay.consume(TrackableZone.Zone.from(backgroundX + 9, backgroundY + 16, 14, 42), mouseX, mouseY);
-        EnergyDisplay.supplyText(() -> ReadableString.translatable("item.iron_quarry.lore.energy.capacity",
-                ReadableString.intFrom(EnergyContainer.getStored()),
-                ReadableString.intFrom(EnergyContainer.getCapacity())
+        EnergyDisplay.consume(TrackableZone.Zone.from(backgroundX + 9, backgroundY + 17, 14, 42), mouseX, mouseY);
+        EnergyDisplay.supplyLine(() -> ReadableString.translatable("item.iron_quarry.lore.energy.capacity",
+                ZUtil.expandableFixedInt(EnergyContainer.getStored()),
+                ZUtil.expandableFixedInt(EnergyContainer.getCapacity())
         ).setStyle(Style.EMPTY.withColor(Global.RGB_RF_PURPLE)));
+
+        //Info tooltip
+        InfoDisplay.consume(TrackableZone.Zone.from(backgroundX + titleX + this.textRenderer.getWidth(this.title) - 1, backgroundY + titleY/2, 13, 13), mouseX, mouseY);
+        InfoDisplay.supplyText(() -> {
+            List<Text> tooltip = new ArrayList<>();
+
+            tooltip.add(ReadableString.translatable("screen.iron_quarry.quarry_block.title.info_display"));
+            block.appendTooltip(stack, blockEntity.getWorld(), tooltip, TooltipContext.Default.NORMAL);
+
+            int conflictAmount = machineUpgradesUtil.getConflictAmount();
+
+            return tooltip.subList(0, conflictAmount > 0 ? 5 + conflictAmount : 4);
+        });
+
+        drawTexture(matrices, InfoDisplay.zone.x + 5, InfoDisplay.zone.y + 2, 179, 5, 3, 9);
+        if(machineUpgradesUtil.getConflictAmount() > 0) {
+            double alpha = Math.sin(System.currentTimeMillis() / 100.0) + 0.5;
+
+            RenderSystem.enableBlend();
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, (float) alpha);
+
+            drawTexture(matrices, InfoDisplay.zone.x + 5, InfoDisplay.zone.y + 2, 182, 5, 3, 9);
+
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.defaultBlendFunc();
+        }
 
         //Augmentation Configuration
         TrackableZone.Zone augmentsMenuZone = AugmentsConfig.zone;
@@ -209,7 +242,7 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
 
                 //Battery Slot rendering
                 if(!BATTERY_SLOT.hasStack()){
-                    drawTexture(matrices, backgroundX + 11, backgroundY + 63, 180, 60, 10, 14);
+                    drawTexture(matrices, backgroundX + 11, backgroundY + 64, 180, 60, 10, 14);
                 }
 
                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -286,6 +319,8 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
 
         if(EnergyDisplay.isMouseOver(mouseX, mouseY)) {
             this.renderTooltip(matrices, EnergyDisplay.getSuppliedText(), mouseX, mouseY);
+        } else if(InfoDisplay.isMouseOver(mouseX, mouseY)) {
+            this.renderTooltip(matrices, InfoDisplay.getSuppliedText(), mouseX, mouseY);
         } else if(BLUEPRINT_SLOT.getStack().isEmpty() && TrackableZone.isMouseOver(BLUEPRINT_SLOT, this.x, this.y, mouseX, mouseY)) {
             this.renderTooltip(matrices, ReadableString.translatable("screen.iron_quarry.quarry_block.tooltip.blueprint_info"), mouseX, mouseY);
         } else if(DRILL_SLOT.getStack().isEmpty() && TrackableZone.isMouseOver(DRILL_SLOT, this.x, this.y, mouseX, mouseY)) {

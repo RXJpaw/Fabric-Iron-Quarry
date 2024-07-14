@@ -98,12 +98,17 @@
     "item.iron_quarry.lore.mining_level": "§{RGB_LIGHT_GRAY Mining Level:} §{RGB_WEAK_HIGHLIGHT %s}",
     "item.iron_quarry.lore.custom_durability": "§{RGB_LIGHT_GRAY Durability:} §{RGB_WEAK_HIGHLIGHT %s/%s (%s%%)}",
 
+    "item.iron_quarry.conflict.speed_limit": "§{RGB_TAB_TITLE ⚠ Speed Augments are limited to +%s%% speed}",
+    "item.iron_quarry.conflict.fortune_limit": "§{RGB_TAB_TITLE ⚠ Fortune Augments are limited to +%s%% yield}",
+    "item.iron_quarry.conflict.silk_touch_fortune": "§{RGB_TAB_TITLE ⚠ Silk Touch overrides Fortune Augment}",
+
     "screen.iron_quarry.quarry_block.tooltip.locked_augment_slot": "§{RGB_TAB_TITLE Upgrade the quarry to unlock this augment slot!}",
     "screen.iron_quarry.quarry_block.tooltip.blueprint_info": "§{RGB_TAB_TITLE Insert §lSealed Blueprint§r to start the quarry.}",
     "screen.iron_quarry.quarry_block.tooltip.battery_info": "§{RGB_TAB_TITLE Insert §la Battery§r to charge the quarry externally.}",
     "screen.iron_quarry.quarry_block.tooltip.drill_info": "§{RGB_TAB_TITLE Insert §lany Drill§r to start the quarry.}",
     "screen.iron_quarry.quarry_block.title.configuration": "§{RGB_TAB_TITLE Configuration}",
     "screen.iron_quarry.quarry_block.title.augmentation": "§{RGB_TAB_TITLE Augmentation}",
+    "screen.iron_quarry.quarry_block.title.info_display": "§{RGB_WEAK_HIGHLIGHT Quarry Details}",
 
     "screen.iron_quarry.client_config.title": "Iron Quarry: Client Config",
     "screen.iron_quarry.client_config.block_break_volume": "Block Break Volume: %s%%",

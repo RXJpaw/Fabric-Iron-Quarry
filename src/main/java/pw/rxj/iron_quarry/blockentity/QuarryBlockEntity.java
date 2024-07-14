@@ -621,7 +621,7 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
         return createNbt();
     }
 
-    private void updateListeners(){
+    public void updateListeners(){
         if(world == null) return;
 
         world.updateListeners(this.pos, this.getCachedState(), this.getCachedState(), Block.NOTIFY_LISTENERS);

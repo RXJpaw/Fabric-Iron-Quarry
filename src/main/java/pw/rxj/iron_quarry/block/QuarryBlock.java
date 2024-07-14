@@ -200,6 +200,21 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
         tooltip.add(LORE_SPEED);
         tooltip.add(LORE_YIELD);
 
+        int conflictFlag = machineUpgradesUtil.getConflictFlag();
+        if(MachineUpgradesUtil.hasConflicts(conflictFlag)) {
+            tooltip.add(Text.empty());
+
+            if(MachineUpgradesUtil.hasConflict(conflictFlag, MachineUpgradesUtil.CONFLICT_SPEED)) {
+                tooltip.add(ReadableString.translatable("item.iron_quarry.conflict.speed_limit", ZUtil.expandableFixedFloat((MachineUpgradesUtil.SPEED_LIMIT-1)*100)));
+            }
+            if(MachineUpgradesUtil.hasConflict(conflictFlag, MachineUpgradesUtil.CONFLICT_FORTUNE)) {
+                tooltip.add(ReadableString.translatable("item.iron_quarry.conflict.fortune_limit", ZUtil.expandableFixedFloat((MachineUpgradesUtil.FORTUNE_LIMIT-1)*100)));
+            }
+            if(MachineUpgradesUtil.hasConflict(conflictFlag, MachineUpgradesUtil.CONFLICT_SILK_TOUCH)) {
+                tooltip.add(ReadableString.translatable("item.iron_quarry.conflict.silk_touch_fortune"));
+            }
+        }
+
         if(HasShiftDown.test()) {
             long capacity = this.getEnergyCapacity();
             long stored = this.getEnergyStored(stack);

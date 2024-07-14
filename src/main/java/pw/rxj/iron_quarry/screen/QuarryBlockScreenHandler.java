@@ -83,31 +83,31 @@ public class QuarryBlockScreenHandler extends ScreenHandler {
         }
 
         //Blueprint Inventory
-        this.addSlot(new ManagedSlot(blueprintInventory, 0, 80, 26));
+        this.addSlot(new ManagedSlot(blueprintInventory, 0, 80, 27));
 
         //Drill Inventory
-        this.addSlot(new ManagedSlot(drillInventory, 0, 80, 47));
+        this.addSlot(new ManagedSlot(drillInventory, 0, 80, 48));
 
         //Reborn Inventory
-        this.addSlot(new ManagedSlot(batteryInputInventory, 0, 8, 62));
+        this.addSlot(new ManagedSlot(batteryInputInventory, 0, 8, 63));
 
         //Output Inventory
         for (var row = 0; row < 2; ++row) {
             for (var slot = 0; slot < 9; ++slot) {
-                this.addSlot(new ManagedSlot(outputInventory, (row * 9) + slot, 8 + slot * SLOT_SIZE, 93 + row * SLOT_SIZE));
+                this.addSlot(new ManagedSlot(outputInventory, (row * 9) + slot, 8 + slot * SLOT_SIZE, 94 + row * SLOT_SIZE));
             }
         }
 
         //Player Inventory
         for (var row = 0; row < 3; ++row) {
             for (var slot = 0; slot < 9; ++slot) {
-                this.addSlot(new ManagedSlot(playerInventory, (row * 9) + slot + 9, 8 + slot * SLOT_SIZE, 142 + row * SLOT_SIZE));
+                this.addSlot(new ManagedSlot(playerInventory, (row * 9) + slot + 9, 8 + slot * SLOT_SIZE, 143 + row * SLOT_SIZE));
             }
         }
 
         //Player Hotbar
         for (var slot = 0; slot < 9; ++slot) {
-            this.addSlot(new ManagedSlot(playerInventory, slot, 8 + slot * SLOT_SIZE, 200));
+            this.addSlot(new ManagedSlot(playerInventory, slot, 8 + slot * SLOT_SIZE, 201));
         }
     }
 

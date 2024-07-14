@@ -44,10 +44,10 @@ public class ZUtil {
 
         return ReadableString.cIntFrom(input);
     }
-    public static String expandableFixedInt(int input) {
-        if(Screen.hasShiftDown()) return ReadableString.intFrom(input);
+    public static <T extends Number> String expandableFixedInt(T number) {
+        if(Screen.hasShiftDown()) return ReadableString.intFrom(number);
 
-        return ReadableString.cIntFrom(input);
+        return ReadableString.cIntFrom(number);
     }
 
     public static <E extends Enum<E>> @Nullable E safeEnumConstant(Class<E> clazz, int index) {

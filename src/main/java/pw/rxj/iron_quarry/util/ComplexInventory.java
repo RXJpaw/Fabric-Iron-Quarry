@@ -61,6 +61,8 @@ public class ComplexInventory extends SimpleInventory {
     }
 
     public void read(NbtList items){
+        this.stacks.clear();
+
         for(int i = 0; i < items.size(); ++i) {
             NbtCompound item = items.getCompound(i);
 

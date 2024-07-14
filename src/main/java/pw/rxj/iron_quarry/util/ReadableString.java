@@ -23,40 +23,18 @@ import java.util.regex.Pattern;
 
 public class ReadableString {
     public static DecimalFormat getDecimalFormatter(String pattern) {
-        return new DecimalFormat(pattern, DecimalFormatSymbols.getInstance(Locale.UK));
+        return new DecimalFormat(pattern, DecimalFormatSymbols.getInstance(Locale.ROOT));
     }
-    public static DecimalFormat getIntegerFormatter() {
-        return new DecimalFormat("#,##0", DecimalFormatSymbols.getInstance(Locale.UK));
+    public static <T extends Number> String intFrom(T number) {
+        DecimalFormat formatter = new DecimalFormat("#,##0", DecimalFormatSymbols.getInstance(Locale.ROOT));
+
+        return formatter.format(number);
     }
-    public static NumberFormat getCompactIntegerFormatter() {
-        NumberFormat formatter = NumberFormat.getCompactNumberInstance(Locale.UK, NumberFormat.Style.SHORT);
+    public static <T extends Number> String cIntFrom(T number) {
+        NumberFormat formatter = NumberFormat.getCompactNumberInstance(Locale.ROOT, NumberFormat.Style.SHORT);
         formatter.setMinimumFractionDigits(1);
 
-        return formatter;
-    }
-    public static String intFrom(int number) {
-        return getIntegerFormatter().format(number);
-    }
-    public static String intFrom(long number) {
-        return getIntegerFormatter().format(number);
-    }
-    public static String intFrom(float number) {
-        return getIntegerFormatter().format(number);
-    }
-    public static String intFrom(double number) {
-        return getIntegerFormatter().format(number);
-    }
-    public static String cIntFrom(int number) {
-        return getCompactIntegerFormatter().format(number).toLowerCase();
-    }
-    public static String cIntFrom(long number) {
-        return getCompactIntegerFormatter().format(number).toLowerCase();
-    }
-    public static String cIntFrom(float number) {
-        return getCompactIntegerFormatter().format(number).toLowerCase();
-    }
-    public static String cIntFrom(double number) {
-        return getCompactIntegerFormatter().format(number).toLowerCase();
+        return formatter.format(number).replace("K", "k");
     }
 
     public static Text ERROR = Text.of("<error>");
