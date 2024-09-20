@@ -1,5 +1,6 @@
 package pw.rxj.iron_quarry.screen;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -8,8 +9,11 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import pw.rxj.iron_quarry.Main;
 import pw.rxj.iron_quarry.block.QuarryBlock;
+import pw.rxj.iron_quarry.blockentity.QuarryBlockEntity;
 import pw.rxj.iron_quarry.types.Face;
 import pw.rxj.iron_quarry.util.*;
 
@@ -25,6 +29,7 @@ public class QuarryBlockScreenHandler extends ScreenHandler {
     private final ComplexInventory MachineUpgradesInventory;
     private QuarryBlock quarryBlock;
     private BlockPos blockPos;
+    private World world;
 
     //This constructor gets called on the client when the server wants it to open the screenHandler,
     //The client will call the other constructor with an empty Inventory and the screenHandler will automatically
@@ -35,6 +40,7 @@ public class QuarryBlockScreenHandler extends ScreenHandler {
 
         this.quarryBlock = (QuarryBlock) Registry.BLOCK.get(buffer.readIdentifier());
         this.blockPos = buffer.readBlockPos();
+        this.world = playerInventory.player.getWorld();
     }
 
     //This constructor gets called from the BlockEntity on the server without calling the other constructor first, the server knows the inventory of the container
@@ -45,6 +51,7 @@ public class QuarryBlockScreenHandler extends ScreenHandler {
 
         this.quarryBlock = quarryBlock;
         this.blockPos = BlockPos.ORIGIN;
+        this.world = playerInventory.player.getWorld();
 
         checkSize(machineUpgradesInventory, 6);
         checkSize(blueprintInventory, 1);
@@ -112,8 +119,21 @@ public class QuarryBlockScreenHandler extends ScreenHandler {
     }
 
     //This getter will be used by our Screen class
-    public BlockPos getPos() {
-        return blockPos;
+    public BlockPos getBlockPos() {
+        return this.blockPos;
+    }
+    public QuarryBlock getQuarryBlock() {
+        return this.quarryBlock;
+    }
+    public @Nullable World getWorld() {
+        return this.world;
+    }
+    public @Nullable QuarryBlockEntity getQuarryBlockEntity() {
+        World world = this.getWorld();
+        if(world == null) return null;
+
+        BlockEntity blockEntity = world.getBlockEntity(this.getBlockPos());
+        return blockEntity instanceof QuarryBlockEntity quarryBlockEntity ? quarryBlockEntity : null;
     }
 
     @Override

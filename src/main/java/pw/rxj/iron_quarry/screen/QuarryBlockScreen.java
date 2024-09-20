@@ -98,7 +98,7 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
         this.playerInventoryTitleY = 132;
         this.playerInventoryTitleX = 8;
 
-        blockPos = handler.getPos();
+        blockPos = handler.getBlockPos();
 
         for (int i = 0; i < 6; i++) AUGMENT_SLOTS.add((ManagedSlot) handler.getSlot(i));
         BLUEPRINT_SLOT = (ManagedSlot) handler.getSlot(6);
@@ -111,7 +111,7 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         if(minecraftClient.world == null) return;
 
-        QuarryBlockEntity blockEntity = (QuarryBlockEntity) minecraftClient.world.getBlockEntity(blockPos);
+        QuarryBlockEntity blockEntity = handler.getQuarryBlockEntity();
         if(blockEntity == null) return;
 
         QuarryBlock block = blockEntity.getQuarryBlock();
@@ -358,10 +358,10 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        MinecraftClient MinecraftInstance = MinecraftClient.getInstance();
-        if(MinecraftInstance.world == null) return false;
+        MinecraftClient minecraftClient = MinecraftClient.getInstance();
+        if(minecraftClient.world == null) return false;
 
-        QuarryBlockEntity blockEntity = (QuarryBlockEntity) MinecraftInstance.world.getBlockEntity(blockPos);
+        QuarryBlockEntity blockEntity = handler.getQuarryBlockEntity();
         if(blockEntity == null) return false;
 
         QuarryBlock block = blockEntity.getQuarryBlock();
@@ -369,7 +369,7 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
 
         if(this.client == null) return false;
         if(this.client.interactionManager == null) return false;
-        if(MinecraftInstance.cameraEntity == null) return false;
+        if(minecraftClient.cameraEntity == null) return false;
 
         if(IoConfig.isUsed()) {
             IO_OPTIONS.forEach(ioOption -> {
@@ -383,7 +383,7 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
                 TrackableZone ioButton = TrackableZone.bake(ioButtonZone, (int) mouseX, (int) mouseY);
 
                 if(ioButton.isMouseOver()) {
-                    MinecraftInstance.cameraEntity.playSound(SoundEvents.UI_BUTTON_CLICK, 0.2F, 1.0F);
+                    minecraftClient.cameraEntity.playSound(SoundEvents.UI_BUTTON_CLICK, 0.2F, 1.0F);
 
                     Optional<Byte> id = QuarryBlockScreenHandler.Buttons.toByte(0, ioOption.frontFace().getId(), button);
                     if(id.isEmpty()) return;
