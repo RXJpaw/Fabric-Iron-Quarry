@@ -27,6 +27,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pw.rxj.iron_quarry.Main;
 import pw.rxj.iron_quarry.interfaces.*;
 import pw.rxj.iron_quarry.network.KeyedActionPacket;
 import pw.rxj.iron_quarry.network.PacketBlueprintExpand;
@@ -182,19 +183,6 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
         return true;
     }
 
-    private NbtCompound getBlockPosNbt(BlockPos blockPos) {
-        int x = blockPos.getX();
-        int y = blockPos.getY();
-        int z = blockPos.getZ();
-
-        NbtCompound blockPosNbt = new NbtCompound();
-        blockPosNbt.putInt("x", x);
-        blockPosNbt.putInt("y", y);
-        blockPosNbt.putInt("z", z);
-
-        return blockPosNbt;
-    }
-
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         RegistryKey<World> worldKey = this.getWorldRegistryKey(stack).orElse(null);
@@ -338,6 +326,7 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getStackInHand(hand);
+        Main.LOGGER.info(user.shouldCancelInteraction());
         if(!world.isClient()) return TypedActionResult.fail(stack);
         if(!hand.equals(Hand.MAIN_HAND) || !user.isCreative()) return TypedActionResult.fail(stack);
 
@@ -418,7 +407,7 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
             throw new IllegalStateException("BlueprintItem#setWorld has to be called first if no world is supplied.");
         }
 
-        stack.getOrCreateNbt().put(position.getNbtLiteral(), this.getBlockPosNbt(blockPos));
+        stack.getOrCreateNbt().put(position.getNbtLiteral(), ZUtil.toBlockPosNbt(blockPos));
     }
     public Optional<BlockPos> getFirstPos(ItemStack stack) {
         return Optional.ofNullable(this.getPosition(Position.FIRST, stack));

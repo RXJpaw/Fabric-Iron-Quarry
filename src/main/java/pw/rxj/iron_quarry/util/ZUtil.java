@@ -30,6 +30,15 @@ public class ZUtil {
         return stack.getItem();
     }
 
+    public static NbtCompound toBlockPosNbt(BlockPos blockPos) {
+        NbtCompound blockPosNbt = new NbtCompound();
+        blockPosNbt.putInt("x", blockPos.getX());
+        blockPosNbt.putInt("y", blockPos.getY());
+        blockPosNbt.putInt("z", blockPos.getZ());
+
+        return blockPosNbt;
+    }
+
     public static String expandableFixedFloat(float input) {
         if(Screen.hasShiftDown()) return ReadableString.getDecimalFormatter("#,##0.00").format(input);
 
