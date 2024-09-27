@@ -49,6 +49,7 @@ import pw.rxj.iron_quarry.interfaces.IEnergyContainer;
 import pw.rxj.iron_quarry.interfaces.IHandledCrafting;
 import pw.rxj.iron_quarry.interfaces.IHandledKeyedAction;
 import pw.rxj.iron_quarry.interfaces.IHandledUseBlock;
+import pw.rxj.iron_quarry.item.QuarryMonitorItem;
 import pw.rxj.iron_quarry.item.ZItemTags;
 import pw.rxj.iron_quarry.network.KeyedActionPacket;
 import pw.rxj.iron_quarry.network.ZNetwork;
@@ -259,10 +260,10 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
 
         BlockEntity blockEntity = world.getBlockEntity(blockPos);
         BlockState blockState = world.getBlockState(blockPos);
-        ItemStack itemStack = player.getStackInHand(hand);
+        ItemStack stack = player.getStackInHand(hand);
 
         if (blockEntity instanceof QuarryBlockEntity quarryBlockEntity) {
-            if(itemStack.isIn(ZItemTags.C_WRENCHES)) {
+            if(stack.isIn(ZItemTags.C_WRENCHES)) {
                 if(world.isClient() && MinecraftClient.getInstance().options.sneakKey.isPressed()) {
                     ZNetwork.sendToServer(KeyedActionPacket.bake("key.sneak", hand, ActionGoal.USE_ON_BLOCK, hitResult));
                 } else {
@@ -270,6 +271,15 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
                     Face face = Face.from(side, blockState.get(FACING));
 
                     Configuration.setIoState(face, Configuration.getNextIoState(face));
+                }
+
+                return ActionResult.SUCCESS;
+            } else if(stack.getItem() instanceof QuarryMonitorItem) {
+                return ActionResult.PASS;
+            } else if(!player.shouldCancelInteraction()) {
+                if (!world.isClient()) {
+                    NamedScreenHandlerFactory screenHandlerFactory = blockState.createScreenHandlerFactory(world, blockPos);
+                    if (screenHandlerFactory != null) player.openHandledScreen(screenHandlerFactory);
                 }
 
                 return ActionResult.SUCCESS;
@@ -452,21 +462,6 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
     @Override
     public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.MODEL;
-    }
-
-    @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (!world.isClient) {
-            //This will call the createScreenHandlerFactory method from BlockWithEntity, which will return our blockEntity cast to
-            //a namedScreenHandlerFactory. If your block class does not extend BlockWithEntity, it needs to implement createScreenHandlerFactory.
-            NamedScreenHandlerFactory screenHandlerFactory = state.createScreenHandlerFactory(world, pos);
-
-            if (screenHandlerFactory != null) {
-                //With this call the server will request the client to open the appropriate ScreenHandler
-                player.openHandledScreen(screenHandlerFactory);
-            }
-        }
-        return ActionResult.SUCCESS;
     }
 
     @Override
