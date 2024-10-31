@@ -44,6 +44,8 @@
     "item.iron_quarry.quarry_block.lore.yield": "§{RGB_LIGHT_GRAY Yield:} §{RGB_BENEFIT %s}",
     "item.iron_quarry.quarry_block.lore.stored": "§{RGB_LIGHT_GRAY Stored:} §{RGB_WEAK_HIGHLIGHT %s}",
     "item.iron_quarry.quarry_block.lore.capacity": "§{RGB_LIGHT_GRAY Capacity:} §{RGB_WEAK_HIGHLIGHT %s}",
+    "item.iron_quarry.quarry_block.lore.stored": "§{RGB_LIGHT_GRAY Energy stored:} §{RGB_WEAK_HIGHLIGHT %s}",
+    "item.iron_quarry.quarry_block.lore.capacity": "§{RGB_LIGHT_GRAY Energy capacity:} §{RGB_WEAK_HIGHLIGHT %s}",
 
     "item.iron_quarry.augment": "Empty Augment",
     "item.iron_quarry.silk_touch_augment": "Silk Touch Augment",
