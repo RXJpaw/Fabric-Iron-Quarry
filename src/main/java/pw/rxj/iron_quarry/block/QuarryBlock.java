@@ -44,7 +44,7 @@ import pw.rxj.iron_quarry.blockentity.QuarryBlockEntity;
 import pw.rxj.iron_quarry.blockentity.ZBlockEntities;
 import pw.rxj.iron_quarry.gui.CustomTooltipData;
 import pw.rxj.iron_quarry.gui.ITooltipDataProvider;
-import pw.rxj.iron_quarry.gui.TooltipAugmentInventoryData;
+import pw.rxj.iron_quarry.gui.TooltipQuarryInventoryData;
 import pw.rxj.iron_quarry.interfaces.IEnergyContainer;
 import pw.rxj.iron_quarry.interfaces.IHandledCrafting;
 import pw.rxj.iron_quarry.interfaces.IHandledKeyedAction;
@@ -166,10 +166,28 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
 
         return BlueprintInventory.getStack(0);
     }
+    public @NotNull ItemStack getDrillStack(ItemStack stack) {
+        ComplexInventory DrillInventory = new ComplexInventory(1);
+
+        if(stack == null) return ItemStack.EMPTY;
+        NbtCompound tag = stack.getNbt();
+        if(tag == null) return ItemStack.EMPTY;
+
+        NbtCompound Storage = tag.getCompound("BlockEntityTag").getCompound("rxj.pw/Storage");
+        NbtCompound StorageDrillInventoryInventory = Storage.getCompound("DrillInventory");
+        DrillInventory.read(StorageDrillInventoryInventory.getList("Items", NbtElement.COMPOUND_TYPE));
+
+        return DrillInventory.getStack(0);
+    }
 
     @Override
     public Optional<TooltipData> getTooltipData(ItemStack stack) {
-        return Screen.hasShiftDown() ? Optional.of(TooltipAugmentInventoryData.from(this.getAugmentInventory(stack), this.getAugmentLimit())) : Optional.empty();
+        return Screen.hasShiftDown() ? Optional.of(TooltipQuarryInventoryData.from(
+                this.getBlueprintStack(stack),
+                this.getDrillStack(stack),
+                this.getAugmentInventory(stack),
+                this.getAugmentLimit()))
+            : Optional.empty();
     }
     @Override
     public void appendTooltip(ItemStack stack, @Nullable BlockView world, List<Text> tooltip, TooltipContext options) {
