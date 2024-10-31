@@ -36,6 +36,7 @@ import pw.rxj.iron_quarry.recipe.HandledSmithingRecipe;
 import pw.rxj.iron_quarry.render.Cuboid;
 import pw.rxj.iron_quarry.screen.QuarryBlockScreen;
 import pw.rxj.iron_quarry.types.ActionGoal;
+import pw.rxj.iron_quarry.types.DualPosition;
 import pw.rxj.iron_quarry.types.ScrollDirection;
 import pw.rxj.iron_quarry.util.ReadableString;
 import pw.rxj.iron_quarry.util.ZUtil;
@@ -390,16 +391,16 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
         NbtCompound nbt = stack.getNbt();
         if(nbt == null) return;
 
-        nbt.remove(Position.FIRST.getNbtLiteral());
-        nbt.remove(Position.SECOND.getNbtLiteral());
+        nbt.remove(DualPosition.FIRST.getNbtLiteral());
+        nbt.remove(DualPosition.SECOND.getNbtLiteral());
     }
     public void setFirstPos(ItemStack stack, @Nullable World world, BlockPos blockPos) {
-        this.setPosition(Position.FIRST, stack, world, blockPos);
+        this.setPosition(DualPosition.FIRST, stack, world, blockPos);
     }
     public void setSecondPos(ItemStack stack, @Nullable World world, BlockPos blockPos) {
-        this.setPosition(Position.SECOND, stack, world, blockPos);
+        this.setPosition(DualPosition.SECOND, stack, world, blockPos);
     }
-    private void setPosition(Position position, ItemStack stack, @Nullable World world, BlockPos blockPos) {
+    private void setPosition(DualPosition position, ItemStack stack, @Nullable World world, BlockPos blockPos) {
         if(world != null) {
             this.setWorld(stack, world);
             blockPos = ZUtil.limitInsideWorldBounds(blockPos, world);
@@ -410,19 +411,19 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
         stack.getOrCreateNbt().put(position.getNbtLiteral(), ZUtil.toBlockPosNbt(blockPos));
     }
     public Optional<BlockPos> getFirstPos(ItemStack stack) {
-        return Optional.ofNullable(this.getPosition(Position.FIRST, stack));
+        return Optional.ofNullable(this.getPosition(DualPosition.FIRST, stack));
     }
     public Optional<BlockPos> getSecondPos(ItemStack stack) {
-        return Optional.ofNullable(this.getPosition(Position.SECOND, stack));
+        return Optional.ofNullable(this.getPosition(DualPosition.SECOND, stack));
     }
-    private @Nullable BlockPos getPosition(Position position, ItemStack stack) {
+    private @Nullable BlockPos getPosition(DualPosition position, ItemStack stack) {
         NbtCompound itemNbt = stack.getNbt();
         if(itemNbt == null) return null;
 
         NbtCompound positionNbt = itemNbt.getCompound(position.getNbtLiteral());
         if(positionNbt.isEmpty()) return null;
 
-        return new BlockPos(positionNbt.getInt("x"), positionNbt.getInt("y"), positionNbt.getInt("z"));
+        return ZUtil.nbtToBlockPos(positionNbt);
     }
 
     public long getMinedChunks(ItemStack stack) {
@@ -527,26 +528,6 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
             this.setSealed(stack, true);
 
             stacks.add(stack);
-        }
-    }
-
-    private enum Position {
-        FIRST(0, "FirstPosition"),
-        SECOND(1, "SecondPosition");
-
-        private final int id;
-        private final String nbtLiteral;
-
-        private Position(int id, String nbtLiteral) {
-            this.id = id;
-            this.nbtLiteral = nbtLiteral;
-        }
-
-        public int getId() {
-            return id;
-        }
-        public String getNbtLiteral() {
-            return nbtLiteral;
         }
     }
 }

@@ -38,6 +38,9 @@ public class ZUtil {
 
         return blockPosNbt;
     }
+    public static BlockPos nbtToBlockPos(NbtCompound nbt) {
+        return new BlockPos(nbt.getInt("x"), nbt.getInt("y"), nbt.getInt("z"));
+    }
 
     public static String expandableFixedFloat(float input) {
         if(Screen.hasShiftDown()) return ReadableString.getDecimalFormatter("#,##0.00").format(input);
