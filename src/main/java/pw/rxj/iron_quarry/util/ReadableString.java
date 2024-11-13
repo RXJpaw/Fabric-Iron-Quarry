@@ -22,6 +22,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ReadableString {
+    public static Text ERROR = Text.of("<error>");
+
     public static DecimalFormat getDecimalFormatter(String pattern) {
         return new DecimalFormat(pattern, DecimalFormatSymbols.getInstance(Locale.ROOT));
     }
@@ -36,8 +38,6 @@ public class ReadableString {
 
         return formatter.format(number).replace("K", "k");
     }
-
-    public static Text ERROR = Text.of("<error>");
 
     public static Optional<String> from(BlockPos blockPos) {
         if(blockPos == null) return Optional.empty();
@@ -89,6 +89,28 @@ public class ReadableString {
             };
         } else {
             return keyBinding.getBoundKeyLocalizedText();
+        }
+    }
+
+    public static MutableText toTimeAgo(long timestamp) {
+        long seconds = (System.currentTimeMillis() - timestamp) / 1000;
+
+        if(seconds < 10) {
+            return Text.translatable("time.unit.c.a_moment");
+        } else if (seconds < 60) {
+            return Text.translatable("time.unit.c.second.plural", seconds);
+        } else if (seconds < 120) {
+            return Text.translatable("time.unit.c.minute.singular", seconds / 60);
+        } else if (seconds < 3_600) {
+            return Text.translatable("time.unit.c.minute.plural", seconds / 60);
+        } else if (seconds < 7_200) {
+            return Text.translatable("time.unit.c.hour.singular", seconds / 3_600);
+        } else if (seconds < 86_400) {
+            return Text.translatable("time.unit.c.hour.plural", seconds / 3_600);
+        } else if (seconds < 172_800) {
+            return Text.translatable("time.unit.c.day.singular", seconds / 86_400);
+        } else {
+            return Text.translatable("time.unit.c.day.plural", seconds / 86_400);
         }
     }
 
