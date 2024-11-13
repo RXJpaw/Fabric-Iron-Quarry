@@ -2,11 +2,17 @@ package pw.rxj.iron_quarry.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.Window;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.*;
+import org.lwjgl.opengl.GL11;
+
+import java.util.List;
 
 public class RenderUtil {
+    public static final int MAX_VIEW_DISTANCE = 32;
+
     public static void enableScaledScissor(int x, int y, int width, int height) {
         int scaleFactor = (int) MinecraftClient.getInstance().getWindow().getScaleFactor();
 
@@ -55,5 +61,56 @@ public class RenderUtil {
     public static boolean isOutsideRange(Vec3d pos, double range) {
         return pos.x < -range || pos.y < -range || pos.z < -range ||
                pos.x >  range || pos.y >  range || pos.z >  range;
+    }
+
+    public static void drawZBufferedCuboid(Cuboid cuboid, MatrixStack matrices, int viewDistance) {
+        double squaredViewDistance = Math.pow(viewDistance, 2);
+
+        Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+
+        RenderSystem.defaultBlendFunc();
+
+        //Outlines
+        RenderSystem.setShader(GameRenderer::getRenderTypeLinesShader);
+        RenderSystem.lineWidth(3.0F);
+        RenderSystem.enableBlend();
+        RenderSystem.disableCull();
+
+        List<SpriteVec2f> boxLines = cuboid.getLines();
+        List<SpriteVec2f> splitBoxLines = boxLines.stream().map(vec -> vec.autoSplit(8.0F)).flatMap(List::stream).toList();
+        List<SpriteVec2f> filteredSplitBoxLines = splitBoxLines.stream().filter(vec -> vec.squaredDistanceTo(Vec3f.ZERO) <= squaredViewDistance).toList();
+
+        //Visible Outlines
+        RenderSystem.depthFunc(GL11.GL_LESS);
+        buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+
+        for (SpriteVec2f line : filteredSplitBoxLines) {
+            Vec3f n = line.normalize();
+
+            buffer.vertex(positionMatrix, line.from.getX(), line.from.getY(), line.from.getZ()).color(1.0F, 1.0F, 1.0F, 1.0F).normal(matrices.peek().getNormalMatrix(), n.getX(), n.getY(), n.getZ()).next();
+            buffer.vertex(positionMatrix, line.to.getX(), line.to.getY(), line.to.getZ()).color(1.0F, 1.0F, 1.0F, 1.0F).normal(matrices.peek().getNormalMatrix(), n.getX(), n.getY(), n.getZ()).next();
+        }
+
+        tessellator.draw();
+
+        //Hidden Outlines
+        RenderSystem.depthFunc(GL11.GL_GREATER);
+        buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+
+        for (SpriteVec2f line : filteredSplitBoxLines) {
+            Vec3f n = line.normalize();
+
+            buffer.vertex(positionMatrix, line.from.getX(), line.from.getY(), line.from.getZ()).color(1.0F, 1.0F, 1.0F, 0.2F).normal(matrices.peek().getNormalMatrix(), n.getX(), n.getY(), n.getZ()).next();
+            buffer.vertex(positionMatrix, line.to.getX(), line.to.getY(), line.to.getZ()).color(1.0F, 1.0F, 1.0F, 0.2F).normal(matrices.peek().getNormalMatrix(), n.getX(), n.getY(), n.getZ()).next();
+        }
+
+        tessellator.draw();
+
+        RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        RenderSystem.lineWidth(1.0F);
+        RenderSystem.disableBlend();
+        RenderSystem.enableCull();
     }
 }

@@ -7,19 +7,21 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.Camera;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.GL11;
-import oshi.util.tuples.Triplet;
+import oshi.util.tuples.Quartet;
 import pw.rxj.iron_quarry.Main;
 import pw.rxj.iron_quarry.block.QuarryBlock;
 import pw.rxj.iron_quarry.event.InGameHudRenderCallback;
@@ -27,6 +29,7 @@ import pw.rxj.iron_quarry.item.BlueprintItem;
 import pw.rxj.iron_quarry.resource.ResourceReloadListener;
 import pw.rxj.iron_quarry.util.ZUtil;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,10 +37,15 @@ import java.util.List;
 public class BlueprintPreviewRenderer {
     public static final Identifier BLUEPRINT_POSITIONS_TEXTURE = Identifier.of(Main.MOD_ID, "textures/gui/blueprint_positions.png");
 
-    private static final List<Triplet<ScreenPos, Double, Vec2f>> screenPositions = new ArrayList<>();
+    private static class ScreenPosData extends Quartet<ScreenPos, Double, Vec2f, Float> {
+        public ScreenPosData(ScreenPos screenPos, Double distance, Vec2f texUV, Float alpha) {
+            super(screenPos, distance, texUV, alpha);
+        }
+    }
+    private static final List<ScreenPosData> screenPosList = new ArrayList<>();
 
     private static void renderInWorld(WorldRenderContext context) {
-        screenPositions.clear();
+        screenPosList.clear();
 
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         if(minecraftClient.options.hudHidden) return;
@@ -79,8 +87,7 @@ public class BlueprintPreviewRenderer {
         if(firstPos == null || secondPos == null) return;
 
         float tickDelta = context.tickDelta();
-        double viewDistance = Math.min(minecraftClient.options.getClampedViewDistance() * 16 * 3, 1536.0);
-        double squaredViewDistance = Math.pow(viewDistance, 2);
+        int viewDistance = Math.min(minecraftClient.options.getClampedViewDistance() * 16 * 3, RenderUtil.MAX_VIEW_DISTANCE * 16 * 3);
 
         Vec3d lerpedPlayerPos = player.getLerpedPos(tickDelta);
 
@@ -94,57 +101,11 @@ public class BlueprintPreviewRenderer {
         Vec3d playerToCameraPos = lerpedPlayerPos.subtract(camera.getPos());
         matrices.translate(playerToCameraPos.x, playerToCameraPos.y, playerToCameraPos.z);
 
-        Matrix4f positionMatrix = matrices.peek().getPositionMatrix();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-
         // WorldRenderEvents.END doesn't call this when the world border is rendered.
         // Resulting in color, transparency and brightness being way off.
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderColor(0.976F, 0.718F, 0.192F, 0.667F);
 
-        //Outlines
-        RenderSystem.setShader(GameRenderer::getRenderTypeLinesShader);
-        RenderSystem.lineWidth(3.0F);
-        RenderSystem.enableBlend();
-        RenderSystem.disableCull();
-
-        double outlineOffset = 0.02;
-
-        List<SpriteVec2f> boxLines = limitedCuboid.inflate(outlineOffset).getLines();
-        List<SpriteVec2f> splitBoxLines = boxLines.stream().map(vec -> vec.autoSplit(8.0F)).flatMap(List::stream).toList();
-        List<SpriteVec2f> filteredSplitBoxLines = splitBoxLines.stream().filter(vec -> vec.squaredDistanceTo(Vec3f.ZERO) <= squaredViewDistance).toList();
-
-        //Visible Outlines
-        RenderSystem.depthFunc(GL11.GL_LESS);
-        buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
-
-        for (SpriteVec2f line : filteredSplitBoxLines) {
-            Vec3f n = line.normalize();
-
-            buffer.vertex(positionMatrix, line.from.getX(), line.from.getY(), line.from.getZ()).color(1.0F, 1.0F, 1.0F, 1.0F).normal(matrices.peek().getNormalMatrix(), n.getX(), n.getY(), n.getZ()).next();
-            buffer.vertex(positionMatrix, line.to.getX(), line.to.getY(), line.to.getZ()).color(1.0F, 1.0F, 1.0F, 1.0F).normal(matrices.peek().getNormalMatrix(), n.getX(), n.getY(), n.getZ()).next();
-        }
-
-        tessellator.draw();
-
-        //Hidden Outlines
-        RenderSystem.depthFunc(GL11.GL_GREATER);
-        buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
-
-        for (SpriteVec2f line : filteredSplitBoxLines) {
-            Vec3f n = line.normalize();
-
-            buffer.vertex(positionMatrix, line.from.getX(), line.from.getY(), line.from.getZ()).color(1.0F, 1.0F, 1.0F, 0.2F).normal(matrices.peek().getNormalMatrix(), n.getX(), n.getY(), n.getZ()).next();
-            buffer.vertex(positionMatrix, line.to.getX(), line.to.getY(), line.to.getZ()).color(1.0F, 1.0F, 1.0F, 0.2F).normal(matrices.peek().getNormalMatrix(), n.getX(), n.getY(), n.getZ()).next();
-        }
-
-        tessellator.draw();
-
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
-        RenderSystem.lineWidth(1.0F);
-        RenderSystem.disableBlend();
-        RenderSystem.enableCull();
+        RenderUtil.drawZBufferedCuboid(limitedCuboid.inflate(0.02), matrices, viewDistance);
 
         matrices.pop();
     }
@@ -153,25 +114,43 @@ public class BlueprintPreviewRenderer {
         if(firstPos != null) {
             Vec3d pos1 = RenderUtil.vec3dFrom(firstPos);
 
-            screenPositions.add(new Triplet<>(
+            screenPosList.add(new ScreenPosData(
                     RenderUtil.worldToScreen(pos1, matrices.peek().getPositionMatrix(), projectionMatrix),
                     pos1.distanceTo(camera.getPos()),
-                    new Vec2f(0, 0)
+                    new Vec2f(0, 0),
+                    1.0F
             ));
         }
 
         if(secondPos != null) {
             Vec3d pos2 = RenderUtil.vec3dFrom(secondPos);
 
-            screenPositions.add(new Triplet<>(
+            screenPosList.add(new ScreenPosData(
                     RenderUtil.worldToScreen(pos2, matrices.peek().getPositionMatrix(), projectionMatrix),
                     pos2.distanceTo(camera.getPos()),
-                    new Vec2f(13, 0)
+                    new Vec2f(13, 0),
+                    1.0F
             ));
         }
 
         if(firstPos != null && secondPos != null) {
-            screenPositions.sort((a, b) -> Double.compare(b.getB(), a.getB()));
+            screenPosList.sort((a, b) -> Double.compare(b.getB(), a.getB()));
+
+            ScreenPosData background = screenPosList.get(0);
+            ScreenPosData foreground = screenPosList.get(1);
+
+            float distance = (float) background.getA().distanceTo(foreground.getA());
+
+            if(foreground.getA().isAhead() && distance < 20.0F) {
+                float alpha = Math.max(Math.min(1.0F, (distance - 4.0F) / 16.0F), 0.2F);
+
+                screenPosList.set(0, new ScreenPosData(
+                        background.getA(),
+                        background.getB(),
+                        background.getC(),
+                        alpha
+                ));
+            }
         }
     }
 
@@ -179,33 +158,35 @@ public class BlueprintPreviewRenderer {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         TextRenderer textRenderer = minecraftClient.textRenderer;
 
-        for (Triplet<ScreenPos, Double, Vec2f> pair : screenPositions) {
+        for (ScreenPosData pair : screenPosList) {
             ScreenPos screenPos = pair.getA();
             if(screenPos.isBehind()) continue;
             double distance = pair.getB();
-            Vec2f uv = pair.getC();
+            Vec2f texUV = pair.getC();
+            float alpha = pair.getD();
 
             float scale = (float) Math.max(1.0, (3.0 / Math.pow(distance, 0.6)));
             //Adjust scale for low resolution displays that default to GUI scale 1.
             if(minecraftClient.getWindow().getScaleFactor() <= 1) scale *= 1.5F;
 
             RenderSystem.enableBlend();
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
             RenderSystem.setShaderTexture(0, BLUEPRINT_POSITIONS_TEXTURE);
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
             matrices.push();
+
             matrices.translate(screenPos.x, screenPos.y, 90.0);
             matrices.scale(scale, scale, scale);
-            //Align on full pixel to prevent AA artifacts. ^1
             matrices.translate(-6, -6, 0.0);
 
-            DrawableHelper.drawTexture(matrices, 0, 0, 0, uv.x, uv.y, 13, 13, 36, 36);
+            DrawableHelper.drawTexture(matrices, 0, 0, 0, texUV.x, texUV.y, 13, 13, 36, 36);
 
             matrices.pop();
 
             //Add 1 to shift the center, because the texture had to be offset.
             if(screenPos.add(1, 1).distanceToCenter() <= 14 * scale) {
                 matrices.push();
+
                 matrices.translate(screenPos.x, screenPos.y + 9 * scale, 90.0);
 
                 MutableText text = Text.literal(String.format("%,.1fm", distance));
@@ -217,7 +198,7 @@ public class BlueprintPreviewRenderer {
                 matrices.translate(1 + width / -2.0F, 0.0, 0.0);
 
                 DrawableHelper.fill(matrices, -2, -2, width + 1, height + 1, 1409286144);
-                textRenderer.draw(matrices, text, 0, 0, -1);
+                textRenderer.draw(matrices, text, 0, 0, new Color(1.0F, 1.0F, 1.0F, alpha).getRGB());
 
                 matrices.pop();
             }
