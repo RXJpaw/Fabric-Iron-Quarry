@@ -185,6 +185,19 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
     }
 
     @Override
+    public boolean isItemBarVisible(ItemStack stack) {
+        return this.isSealed(stack) & this.getMinedChunks(stack) > 0;
+    }
+    @Override
+    public int getItemBarColor(ItemStack stack) {
+        return 0x5980DF;
+    }
+    @Override
+    public int getItemBarStep(ItemStack stack) {
+        return (int) Math.ceil(((double) this.getMinedChunks(stack) / this.getMineableChunks(stack)) * 13.0);
+    }
+
+    @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         RegistryKey<World> worldKey = this.getWorldRegistryKey(stack).orElse(null);
         Identifier worldId = worldKey != null ? worldKey.getValue() : null;
