@@ -11,9 +11,13 @@
     "block.iron_quarry.reinforced_redstone_block": "Reinforced Block of Redstone",
     "block.iron_quarry.reinforced_lapis_block": "Reinforced Block of Lapis Lazuli",
 
-    "item.iron_quarry.conductive_amethyst": "Conductive Amethyst Shard",
-    "item.iron_quarry.advanced_amethyst": "Advanced Amethyst Shard",
-    "item.iron_quarry.ultimate_amethyst": "Ultimate Amethyst Shard",
+    "item.iron_quarry.circuit_blank": "Blank Circuit Board",
+    "item.iron_quarry.circuit_mk1": "Lesser Circuit Board",
+    "item.iron_quarry.circuit_mk2": "Greater Circuit Board",
+    "item.iron_quarry.circuit_mk2e": "Refined Circuit Board",
+    "item.iron_quarry.circuit_mk3": "Supreme Circuit Board",
+    "item.iron_quarry.circuit_mk4": "Divine Circuit Board",
+    "item.iron_quarry.circuit_mk5": "Celestial Circuit Board",
 
     "item.iron_quarry.copper_drill": "Copper Drill",
     "item.iron_quarry.iron_drill": "Iron Drill",

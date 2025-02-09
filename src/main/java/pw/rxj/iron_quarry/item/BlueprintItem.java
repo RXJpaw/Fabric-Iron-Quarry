@@ -11,10 +11,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.text.MutableText;
@@ -76,7 +73,7 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
     public ItemStack getSmithingOutputPreview(Ingredient base, Ingredient addition, ItemStack output) {
         ItemStack preview = output.copy();
 
-        if(addition.test(ZItems.CONDUCTIVE_AMETHYST.getItem().getDefaultStack())) {
+        if(addition.test(Items.AMETHYST_SHARD.getDefaultStack())) {
             this.setSealed(preview, true);
 
             return preview;

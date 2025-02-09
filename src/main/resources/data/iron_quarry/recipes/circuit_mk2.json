@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PMS",
+        "MPM",
+        "SMP"
+    ],
+    "key": {
+        "M": {
+            "item": "iron_quarry:circuit_mk1"
+        },
+        "P": {
+            "item": "minecraft:iron_ingot"
+        },
+        "S": {
+            "item": "minecraft:prismarine_shard"
+        }
+    },
+    "result": {
+        "item": "iron_quarry:circuit_mk2",
+        "count": 2
+    }
+}

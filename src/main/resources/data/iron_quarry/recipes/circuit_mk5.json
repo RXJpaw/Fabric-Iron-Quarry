@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "SMT",
+        "MPM",
+        "TMS"
+    ],
+    "key": {
+        "M": {
+            "item": "iron_quarry:circuit_mk4"
+        },
+        "P": {
+            "item": "minecraft:nether_star"
+        },
+        "S": {
+            "item": "minecraft:echo_shard"
+        },
+        "T": {
+            "item": "minecraft:dragon_breath"
+        }
+    },
+    "result": {
+        "item": "iron_quarry:circuit_mk5",
+        "count": 1
+    }
+}

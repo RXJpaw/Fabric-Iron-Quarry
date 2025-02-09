@@ -21,15 +21,27 @@ public class ZItems {
             .withItem(new BlueprintItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1)))
             .withId(Main.MOD_ID, "blueprint");
 
-    public static final ItemEntry<Item> CONDUCTIVE_AMETHYST = ItemEntry.build()
+    public static final ItemEntry<Item> CIRCUIT_BLANK = ItemEntry.build()
             .withItem(new Item(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(64)))
-            .withId(Main.MOD_ID, "conductive_amethyst");
-    public static final ItemEntry<Item> ADVANCED_AMETHYST = ItemEntry.build()
+            .withId(Main.MOD_ID, "circuit_blank");
+    public static final ItemEntry<Item> CIRCUIT_MK1 = ItemEntry.build()
             .withItem(new Item(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(64)))
-            .withId(Main.MOD_ID, "advanced_amethyst");
-    public static final ItemEntry<Item> ULTIMATE_AMETHYST = ItemEntry.build()
+            .withId(Main.MOD_ID, "circuit_mk1");
+    public static final ItemEntry<Item> CIRCUIT_MK2 = ItemEntry.build()
             .withItem(new Item(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(64)))
-            .withId(Main.MOD_ID, "ultimate_amethyst");
+            .withId(Main.MOD_ID, "circuit_mk2");
+    public static final ItemEntry<Item> CIRCUIT_MK2E = ItemEntry.build()
+            .withItem(new Item(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(64)))
+            .withId(Main.MOD_ID, "circuit_mk2e");
+    public static final ItemEntry<Item> CIRCUIT_MK3 = ItemEntry.build()
+            .withItem(new Item(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(64)))
+            .withId(Main.MOD_ID, "circuit_mk3");
+    public static final ItemEntry<Item> CIRCUIT_MK4 = ItemEntry.build()
+            .withItem(new Item(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(64)))
+            .withId(Main.MOD_ID, "circuit_mk4");
+    public static final ItemEntry<Item> CIRCUIT_MK5 = ItemEntry.build()
+            .withItem(new Item(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(64)))
+            .withId(Main.MOD_ID, "circuit_mk5");
 
     public static final ItemEntry<AugmentItem> AUGMENT = ItemEntry.<AugmentItem>build()
             .withItem(new AugmentItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1)))
@@ -68,24 +80,28 @@ public class ZItems {
             .withId(Main.MOD_ID, "nether_star_drill");
 
     public static final ItemEntry<QuarryMonitorItem> IRON_QUARRY_MONITOR = ItemEntry.<QuarryMonitorItem>build()
-            .withItem(new QuarryMonitorItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1)))
+            .withItem(new QuarryMonitorItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1), QUARRY_MONITOR_CONFIG.getIronMonitor()))
             .withId(Main.MOD_ID, "iron_quarry_monitor");
     public static final ItemEntry<QuarryMonitorItem> DIAMOND_QUARRY_MONITOR = ItemEntry.<QuarryMonitorItem>build()
-            .withItem(new QuarryMonitorItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1)))
+            .withItem(new QuarryMonitorItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1), QUARRY_MONITOR_CONFIG.getDiamondMonitor()))
             .withId(Main.MOD_ID, "diamond_quarry_monitor");
     public static final ItemEntry<QuarryMonitorItem> NETHERITE_QUARRY_MONITOR = ItemEntry.<QuarryMonitorItem>build()
-            .withItem(new QuarryMonitorItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1).fireproof()))
+            .withItem(new QuarryMonitorItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1).fireproof(), QUARRY_MONITOR_CONFIG.getNetheriteMonitor()))
             .withId(Main.MOD_ID, "netherite_quarry_monitor");
     public static final ItemEntry<QuarryMonitorItem> SCULK_QUARRY_MONITOR = ItemEntry.<QuarryMonitorItem>build()
-            .withItem(new QuarryMonitorItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1).fireproof()))
+            .withItem(new QuarryMonitorItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1).fireproof(), QUARRY_MONITOR_CONFIG.getSculkMonitor()))
             .withId(Main.MOD_ID, "sculk_quarry_monitor");
 
     private static final List<ItemEntry<?>> itemEntryList = List.of(
             BLUEPRINT,
 
-            CONDUCTIVE_AMETHYST,
-            ADVANCED_AMETHYST,
-            ULTIMATE_AMETHYST,
+            CIRCUIT_BLANK,
+            CIRCUIT_MK1,
+            CIRCUIT_MK2,
+            CIRCUIT_MK2E,
+            CIRCUIT_MK3,
+            CIRCUIT_MK4,
+            CIRCUIT_MK5,
 
             AUGMENT,
             CHEST_LOOTING_AUGMENT,

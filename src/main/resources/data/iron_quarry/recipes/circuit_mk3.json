@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PES",
+        "MPM",
+        "SEP"
+    ],
+    "key": {
+        "M": {
+            "item": "iron_quarry:circuit_mk2"
+        },
+        "E": {
+            "item": "iron_quarry:circuit_mk2e"
+        },
+        "P": {
+            "item": "minecraft:diamond"
+        },
+        "S": {
+            "item": "minecraft:glowstone_dust"
+        }
+    },
+    "result": {
+        "item": "iron_quarry:circuit_mk3",
+        "count": 2
+    }
+}

@@ -4,7 +4,7 @@
         "item": "iron_quarry:blueprint"
     },
     "addition": {
-        "item": "iron_quarry:conductive_amethyst"
+        "item": "minecraft:amethyst_shard"
     },
     "result": {
         "item": "iron_quarry:blueprint"

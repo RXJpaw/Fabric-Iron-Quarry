@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "UUU",
+        "MMM",
+        "DDD"
+    ],
+    "key": {
+        "U": {
+            "item": "minecraft:dark_prismarine"
+        },
+        "M": {
+            "item": "minecraft:copper_ingot"
+        },
+        "D": {
+            "item": "minecraft:amethyst_shard"
+        }
+    },
+    "result": {
+        "item": "iron_quarry:circuit_blank",
+        "count": 16
+    }
+}
