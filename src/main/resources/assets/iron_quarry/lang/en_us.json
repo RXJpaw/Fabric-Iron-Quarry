@@ -42,8 +42,6 @@
     "item.iron_quarry.quarry_block.lore.usage": "§{RGB_LIGHT_GRAY Usage:} §{RGB_DRAWBACK %s}",
     "item.iron_quarry.quarry_block.lore.speed": "§{RGB_LIGHT_GRAY Speed:} §{RGB_BENEFIT %s}",
     "item.iron_quarry.quarry_block.lore.yield": "§{RGB_LIGHT_GRAY Yield:} §{RGB_BENEFIT %s}",
-    "item.iron_quarry.quarry_block.lore.stored": "§{RGB_LIGHT_GRAY Stored:} §{RGB_WEAK_HIGHLIGHT %s}",
-    "item.iron_quarry.quarry_block.lore.capacity": "§{RGB_LIGHT_GRAY Capacity:} §{RGB_WEAK_HIGHLIGHT %s}",
     "item.iron_quarry.quarry_block.lore.stored": "§{RGB_LIGHT_GRAY Energy stored:} §{RGB_WEAK_HIGHLIGHT %s}",
     "item.iron_quarry.quarry_block.lore.capacity": "§{RGB_LIGHT_GRAY Energy capacity:} §{RGB_WEAK_HIGHLIGHT %s}",
 
@@ -84,6 +82,15 @@
     "item.iron_quarry.blueprint.overlay.first_pos_set": "First position set to: %s",
     "item.iron_quarry.blueprint.overlay.second_pos_set": "Second position set to: %s",
 
+    "item.iron_quarry.quarry_monitor.lore.range": "§{RGB_LIGHT_GRAY Update range:} §{RGB_WEAK_HIGHLIGHT %s blocks}",
+    "item.iron_quarry.quarry_monitor.lore.last_updated": "§{RGB_LIGHT_GRAY Last update:} §{RGB_WEAK_HIGHLIGHT %s ago}",
+    "item.iron_quarry.quarry_monitor.lore.never_updated": "§{RGB_LIGHT_GRAY Last update:} §{RGB_WEAK_HIGHLIGHT not yet used}",
+    "item.iron_quarry.quarry_monitor.lore.details": "§{RGB_LIGHT_GRAY Hold} §{RGB_WEAK_HIGHLIGHT Left Shift} §{RGB_LIGHT_GRAY for quarry information}",
+    "item.iron_quarry.quarry_monitor.lore.status.out_of_range": "§{RGB_LIGHT_GRAY Quarry out of range!}",
+    "item.iron_quarry.quarry_monitor.lore.status.unknown": "§{RGB_LIGHT_GRAY Quarry unloaded or destroyed!}",
+    "item.iron_quarry.quarry_monitor.name.unknown_quarry_type": "Unknown Quarry Type",
+    "item.iron_quarry.quarry_monitor.overlay.pos_set": "Position set to: %s",
+
     "item.iron_quarry.lore.energy.unit": "%s RF",
     "item.iron_quarry.lore.energy.capacity": "%s / %s RF",
     "item.iron_quarry.lore.energy.per_tick": "%s RF/tick",
@@ -121,6 +128,16 @@
     "short_key.mouse.c.0": "LMB",
     "short_key.mouse.c.1": "RMB",
     "short_key.mouse.c.2": "MMB",
+
+    "time.unit.c.a_moment": "a moment",
+    "time.unit.c.second.singular": "%s second",
+    "time.unit.c.second.plural": "%s seconds",
+    "time.unit.c.minute.singular": "%s minute",
+    "time.unit.c.minute.plural": "%s minutes",
+    "time.unit.c.hour.singular": "%s hour",
+    "time.unit.c.hour.plural": "%s hours",
+    "time.unit.c.day.singular": "%s day",
+    "time.unit.c.day.plural": "%s days",
 
     "kick_reason.iron_quarry.packet_blueprint_position_set.disallowed_distance": "Tried to expand blueprint position by an illegal amount. (Must be between %s and %s)"
 }

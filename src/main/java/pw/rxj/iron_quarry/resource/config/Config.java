@@ -25,6 +25,7 @@ public class Config {
     protected void overrideServer(Config.Server newServerConfig){
         this.SERVER.quarryStats = newServerConfig.quarryStats;
         this.SERVER.augmentStats = newServerConfig.augmentStats;
+        this.SERVER.quarryMonitor = newServerConfig.quarryMonitor;
         this.SERVER.quarryDrillStats = newServerConfig.quarryDrillStats;
         this.SERVER.silkTouchAugment = newServerConfig.silkTouchAugment;
         this.SERVER.chestLootingAugmentConfig = newServerConfig.chestLootingAugmentConfig;
@@ -47,6 +48,8 @@ public class Config {
         public QuarryStatsConfig quarryStats = new QuarryStatsConfig();
 
         public AugmentStatsConfig augmentStats = new AugmentStatsConfig();
+
+        public QuarryMonitorConfig quarryMonitor = new QuarryMonitorConfig();
 
         public QuarryDrillStatsConfig quarryDrillStats = new QuarryDrillStatsConfig();
 

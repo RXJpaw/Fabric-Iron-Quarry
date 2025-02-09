@@ -61,6 +61,9 @@ public class ConfigHandler {
     public AugmentStatsConfig.Handler getAugmentStatsConfig() {
         return AugmentStatsConfig.Handler.of(this);
     }
+    public QuarryMonitorConfig.Handler getQuarryMonitorConfig() {
+        return QuarryMonitorConfig.Handler.of(this);
+    }
     public QuarryDrillStatsConfig.Handler getQuarryDrillStatsConfig() {
         return QuarryDrillStatsConfig.Handler.of(this);
     }
@@ -200,6 +203,7 @@ public class ConfigHandler {
     public void applyServerChanges() {
         this.getQuarryStatsConfig().applyChanges();
         this.getAugmentStatsConfig().applyChanges();
+        this.getQuarryMonitorConfig().applyChanges();
         this.getQuarryDrillStatsConfig().applyChanges();
     }
     public void registerServer() {

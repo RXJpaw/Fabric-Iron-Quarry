@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
@@ -11,8 +12,11 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -29,6 +33,7 @@ import pw.rxj.iron_quarry.factory.ZTradeOffers;
 import pw.rxj.iron_quarry.interfaces.IBlockAttackable;
 import pw.rxj.iron_quarry.interfaces.IHandledItemEntity;
 import pw.rxj.iron_quarry.interfaces.IHandledUseBlock;
+import pw.rxj.iron_quarry.interfaces.ITickingInventoryItem;
 import pw.rxj.iron_quarry.item.ZItems;
 import pw.rxj.iron_quarry.network.ZNetwork;
 import pw.rxj.iron_quarry.recipe.HandledCraftingRecipe;
@@ -98,6 +103,20 @@ public class Main implements ModInitializer {
 			if(entity instanceof ItemEntity itemEntity) {
 				if(ZUtil.getBlockOrItem(itemEntity.getStack()) instanceof IHandledItemEntity handledItemEntity) {
 					handledItemEntity.handleItemEntity(itemEntity);
+				}
+			}
+		});
+
+		ServerTickEvents.START_WORLD_TICK.register(world -> {
+			for (ServerPlayerEntity player : world.getPlayers()) {
+				PlayerInventory inventory = player.getInventory();
+
+				for (int slot = 0; slot < inventory.size(); slot++) {
+					ItemStack stack = inventory.getStack(slot);
+
+					if(ZUtil.getBlockOrItem(stack) instanceof ITickingInventoryItem tickingInventoryItem) {
+						tickingInventoryItem.tick(player, world, stack);
+					}
 				}
 			}
 		});

@@ -6,6 +6,7 @@ import net.minecraft.util.Rarity;
 import net.minecraft.util.registry.Registry;
 import pw.rxj.iron_quarry.Main;
 import pw.rxj.iron_quarry.resource.config.server.QuarryDrillStatsConfig;
+import pw.rxj.iron_quarry.resource.config.server.QuarryMonitorConfig;
 import pw.rxj.iron_quarry.types.AugmentType;
 import pw.rxj.iron_quarry.types.DynamicText;
 import pw.rxj.iron_quarry.util.ItemEntry;
@@ -14,6 +15,7 @@ import java.util.List;
 
 public class ZItems {
     private static final QuarryDrillStatsConfig.Handler QUARRY_DRILL_STATS_CONFIG = Main.CONFIG.getQuarryDrillStatsConfig();
+    private static final QuarryMonitorConfig.Handler QUARRY_MONITOR_CONFIG = Main.CONFIG.getQuarryMonitorConfig();
 
     public static final ItemEntry<BlueprintItem> BLUEPRINT = ItemEntry.<BlueprintItem>build()
             .withItem(new BlueprintItem(new FabricItemSettings().group(Main.ITEM_GROUP).maxCount(1)))
