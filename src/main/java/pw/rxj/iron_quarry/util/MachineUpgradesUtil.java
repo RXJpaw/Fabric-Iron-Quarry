@@ -21,6 +21,7 @@ public class MachineUpgradesUtil {
     private float fortuneMultiplier = 1;
     private float speedMultiplier = 1;
     private float inefficiency = 1;
+    private float slowness = 1;
 
     private MachineUpgradesUtil(Inventory inventory){
         for (int i = 0; i < inventory.size(); i++) {
@@ -31,23 +32,30 @@ public class MachineUpgradesUtil {
                 if(augmentType.isDisabled()) continue;
 
                 float multiplier = augmentType.multiply(augmentItem.getAmount(stack));
-                float inefficiency = augmentType.ineff(multiplier);
+                float inefficiency = augmentType.energyIneff(multiplier);
 
                 switch (augmentType) {
                     case SPEED -> this.speedMultiplier += multiplier/100;
                     case FORTUNE -> this.fortuneMultiplier += multiplier/100;
-                    case SILK_TOUCH -> this.hasSilkTouch = true;
-                    case CHEST_LOOTING -> this.hasChestLooting = true;
+                    case SILK_TOUCH -> {
+                        if(this.hasSilkTouch) continue;
+                        this.hasSilkTouch = true;
+                    }
+                    case CHEST_LOOTING -> {
+                        if(this.hasChestLooting) continue;
+                        this.hasChestLooting = true;
+                    }
                 }
 
                 this.inefficiency += inefficiency/100;
+                this.slowness = augmentType.speedIneff(this.slowness);
             } else if(stack.getItem() instanceof DrillItem) {
                 int efficiencyLevel = Math.min(EnchantmentHelper.getLevel(Enchantments.EFFICIENCY, stack), Enchantments.EFFICIENCY.getMaxLevel());
                 if(efficiencyLevel <= 0) continue;
 
                 float speedMultiplier = (float) Math.pow(1.3, efficiencyLevel) - 1.0F;
 
-                this.inefficiency += AugmentType.SPEED.ineff(speedMultiplier);
+                this.inefficiency += AugmentType.SPEED.energyIneff(speedMultiplier);
                 this.speedMultiplier += speedMultiplier;
             }
         }
@@ -67,7 +75,7 @@ public class MachineUpgradesUtil {
         return Math.min(this.fortuneMultiplier, FORTUNE_LIMIT);
     }
     public float getSpeedMultiplier() {
-        return Math.min(this.speedMultiplier, SPEED_LIMIT);
+        return Math.min(this.speedMultiplier / this.slowness, SPEED_LIMIT);
     }
     public float getInefficiency() {
         return this.inefficiency;

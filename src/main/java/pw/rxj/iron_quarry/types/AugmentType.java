@@ -7,9 +7,9 @@ import java.util.List;
 
 public enum AugmentType {
     EMPTY(0, "empty", "energy", 1, 0.0F, 0.0F, false),
-    SPEED(1, "speed", "energy", 1000, 1194.1878449451583F, 0.5F, false),
-    FORTUNE(2, "fortune", "energy", 1500, 135.73132372061485F, 1.5F, false),
-    SILK_TOUCH(3, "silk_touch", "energy", 0, 0.0F, 180.0F, false),
+    SPEED(1, "speed", "energy", 1000, 1194.1878449451583F, 10.0F/6.0F, false),
+    FORTUNE(2, "fortune", "energy", 1500, 135.73132372061485F, 10.0F, false),
+    SILK_TOUCH(3, "silk_touch", "speed", 0, 0.0F, 2.0F, false),
     CHEST_LOOTING(4, "chest_looting", "time", 0, 0.0F, 0.0F, false);
 
     private final int id;
@@ -72,10 +72,21 @@ public enum AugmentType {
 
         return (float) (MathUtil.log2(MathUtil.log2(2 + (double) amount / 10_000)) * (double) this.multiplier);
     }
-    public float ineff(float amount) {
+
+    public float anyIneff(float amount) {
         if(this.multiplier == 0) return this.inefficiency;
 
         return amount * this.inefficiency;
+    }
+    public float energyIneff(float amount) {
+        if(!this.drawbackKey.equals("energy")) return 0;
+
+        return this.anyIneff(amount);
+    }
+    public float speedIneff(float amount) {
+        if(!this.drawbackKey.equals("speed")) return amount;
+
+        return this.anyIneff(amount);
     }
 
     public static AugmentType from(String name){

@@ -65,6 +65,7 @@
     "item.iron_quarry.augment.lore.benefit.silk_touch": "§{RGB_BENEFIT Mines blocks with Silk Touch}",
     "item.iron_quarry.augment.lore.benefit.chest_looting": "§{RGB_BENEFIT Pulls items from lootable containers}",
     "item.iron_quarry.augment.lore.drawback.energy": "§{RGB_DRAWBACK +%s%% energy usage}",
+    "item.iron_quarry.augment.lore.drawback.speed": "§{RGB_DRAWBACK Takes %s-times longer per operation}",
     "item.iron_quarry.augment.lore.drawback.time": "§{RGB_DRAWBACK Consumes 1 operation per 1 pulled item}",
 
     "item.iron_quarry.blueprint": "Blueprint",

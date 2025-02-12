@@ -124,7 +124,7 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
     public DynamicText getDynamicItemName(ItemStack stack) {
         if(this.hasDynamicName()) return this.getDynamicName();
 
-        if(getAmount(stack) >= getType(stack).getCapacity(CAPACITY_UPGRADE_SLOTS)) return DynamicText.RAINBOW;;
+        if(getAmount(stack) >= getType(stack).getCapacity(CAPACITY_UPGRADE_SLOTS)) return DynamicText.RAINBOW;
 
         return DynamicText.EMPTY;
     }
@@ -158,7 +158,11 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
             MutableText LORE_BENEFITS = ReadableString.translatable("item.iron_quarry.augment.lore.benefit." + augmentType.getName(), ZUtil.expandableFixedFloat(multiplied));
             tooltip.add(LORE_BENEFITS);
 
-            MutableText LORE_DRAWBACK = ReadableString.translatable("item.iron_quarry.augment.lore.drawback." + augmentType.getDrawbackKey(), ZUtil.expandableFixedFloat(augmentType.ineff(multiplied)));
+            float anyIneff = augmentType.anyIneff(multiplied);
+            String drawbackKey = augmentType.getDrawbackKey();
+            String drawbackFillIn = drawbackKey.equals("energy") ? ZUtil.expandableFixedFloat(anyIneff) : ReadableString.minPrecisionFloat(anyIneff);
+
+            MutableText LORE_DRAWBACK = ReadableString.translatable("item.iron_quarry.augment.lore.drawback." + augmentType.getDrawbackKey(), drawbackFillIn);
             tooltip.add(LORE_DRAWBACK);
         } else if(!this.isUnique()) {
             MutableText LORE_EMPTY = ReadableString.translatable("item.iron_quarry.lore.use_rei", stored, capacity);

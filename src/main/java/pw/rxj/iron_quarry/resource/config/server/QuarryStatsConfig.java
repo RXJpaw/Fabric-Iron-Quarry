@@ -8,12 +8,18 @@ import pw.rxj.iron_quarry.resource.config.ConfigHandler;
 
 @EqualsAndHashCode
 public class QuarryStatsConfig {
-    public final Entry copperQuarry = new Entry(0, 40, 6_000, 16); //640 RF ~ 50% Coal Generator
-    public final Entry ironQuarry = new Entry(1, 30, 40_000, 48); //1.440 RF ~ 12 Advanced Solar Panels (day/night average)
-    public final Entry goldQuarry = new Entry(2, 20, 260_000, 160); //3.200 RF ~ 16 Industrial Solar Panels (day/night average)
-    public final Entry diamondQuarry = new Entry(3, 10, 1_500_000, 640); //6.400 RF ~ 32 Ultimate Solar Panels (day/night average)
-    public final Entry netheriteQuarry = new Entry(4, 5, 7_000_000, 2_500); //12.500 RF ~ Nitro Reactor with Packed Ice
-    public final Entry netherStarQuarry = new Entry(6, 2, 50_000_000, 12_300); //24.600 RF ~ Nitro Reactor with Blue Ice
+//    public final Entry copperQuarry = new Entry(0, 40, 6_000, 16); //640 RF ~ 50% Coal Generator
+//    public final Entry ironQuarry = new Entry(1, 30, 40_000, 48); //1.440 RF ~ 12 Advanced Solar Panels (day/night average)
+//    public final Entry goldQuarry = new Entry(2, 20, 260_000, 160); //3.200 RF ~ 16 Industrial Solar Panels (day/night average)
+//    public final Entry diamondQuarry = new Entry(3, 10, 1_500_000, 640); //6.400 RF ~ 32 Ultimate Solar Panels (day/night average)
+//    public final Entry netheriteQuarry = new Entry(4, 5, 7_000_000, 2_500); //12.500 RF ~ Nitro Reactor with Packed Ice
+//    public final Entry netherStarQuarry = new Entry(6, 2, 50_000_000, 12_300); //24.600 RF ~ Nitro Reactor with Blue Ice
+    public final Entry copperQuarry = new Entry(0, 40, 20_000, 20);           //    110 RF/t * 200t |   800 RF ~ 1-2 Coal Generators
+    public final Entry ironQuarry = new Entry(1, 30, 100_000, 40);            //  1.200 RF/t * 100t | 1.200 RF ~ 10 Advanced Solar Panels (day/night average)
+    public final Entry goldQuarry = new Entry(2, 20, 500_000, 90);            //  5.500 RF/t * 100t | 1.800 RF ~ 10 Industrial Solar Panels (day/night average)
+    public final Entry diamondQuarry = new Entry(3, 10, 2_500_000, 270);      // 21.700 RF/t * 100t | 2.700 RF ~ 14 Ultimate Solar Panels (day/night average)
+    public final Entry netheriteQuarry = new Entry(4, 5, 10_000_000, 810);    // 85.500 RF/t * 100t | 4.050 RF ~  5 Quantum Solar Panels (day/night average)
+    public final Entry netherStarQuarry = new Entry(6, 2, 50_000_000, 3_040); //472.800 RF/t * 100t | 6.080 RF ~ 16 Quantum Solar Panels (day/night average)
 
     @EqualsAndHashCode
     @AllArgsConstructor

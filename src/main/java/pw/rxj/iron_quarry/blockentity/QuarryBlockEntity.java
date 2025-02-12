@@ -494,7 +494,7 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
             ItemStack mockPickaxe = Items.NETHERITE_PICKAXE.getDefaultStack();
 
             if(upgradesUtil.hasSilkTouch()) {
-                mockPickaxe.addEnchantment(Enchantments.SILK_TOUCH, 0);
+                mockPickaxe.addEnchantment(Enchantments.SILK_TOUCH, 1);
             } else {
                 int fortuneLevel = FortuneUtil.fromProbability(upgradesUtil.getFortuneMultiplier());
                 mockPickaxe.addEnchantment(Enchantments.FORTUNE, fortuneLevel);

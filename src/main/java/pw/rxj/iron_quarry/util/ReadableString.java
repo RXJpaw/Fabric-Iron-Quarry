@@ -39,6 +39,19 @@ public class ReadableString {
         return formatter.format(number).replace("K", "k");
     }
 
+    public static String minPrecisionFloat(float number) {
+        if(number == (int) number)
+            return String.format("%d", (int) number);
+        else
+            return String.format("%s", number);
+    }
+    public static String minPrecisionDouble(double number) {
+        if(number == (long) number)
+            return String.format("%d", (long) number);
+        else
+            return String.format("%s", number);
+    }
+
     public static Optional<String> from(BlockPos blockPos) {
         if(blockPos == null) return Optional.empty();
 
