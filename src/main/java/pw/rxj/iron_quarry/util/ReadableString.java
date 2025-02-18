@@ -52,6 +52,10 @@ public class ReadableString {
             return String.format("%s", number);
     }
 
+    public static MutableText space() {
+        return Text.literal(" ");
+    }
+
     public static Optional<String> from(BlockPos blockPos) {
         if(blockPos == null) return Optional.empty();
 

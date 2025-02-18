@@ -175,13 +175,13 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
 
                 MutableText LORE_INFO = ReadableString.translatable("item.iron_quarry.augment.lore.capacity_upgrades", used_upgrades.size(), CAPACITY_UPGRADE_SLOTS);
 
-                tooltip.add(Text.empty());
+                tooltip.add(ReadableString.space());
                 tooltip.add(LORE_INFO);
                 tooltip.add(CustomTooltipData.MARKER);
             } else {
                 MutableText LORE_DETAILS = ReadableString.translatable("item.iron_quarry.lore.details");
 
-                tooltip.add(Text.empty());
+                tooltip.add(ReadableString.space());
                 tooltip.add(LORE_DETAILS);
             }
         }
@@ -189,7 +189,7 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
         if(augmentType.isDisabled()) {
             MutableText LORE_DISABLED = ReadableString.translatable("item.iron_quarry.lore.disabled");
 
-            tooltip.add(Text.empty());
+            tooltip.add(ReadableString.space());
             tooltip.add(LORE_DISABLED);
         }
     }

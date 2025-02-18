@@ -125,7 +125,7 @@ public class QuarryMonitorItem extends Item implements ITickingInventoryItem, IT
 
                 int warningFlag = this.getWarningFlag(stack);
                 if(QuarryMonitorItem.hasWarnings(warningFlag)) {
-                    tooltip.add(Text.empty());
+                    tooltip.add(ReadableString.space());
 
                     if(QuarryMonitorItem.hasWarning(warningFlag, QuarryMonitorItem.WARNING_ENERGY_10)) {
                         tooltip.add(ReadableString.translatable("item.iron_quarry.warning.quarry_energy_10"));

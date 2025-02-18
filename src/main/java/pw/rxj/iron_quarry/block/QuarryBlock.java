@@ -221,7 +221,7 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
 
         int conflictFlag = machineUpgradesUtil.getConflictFlag();
         if(MachineUpgradesUtil.hasConflicts(conflictFlag)) {
-            tooltip.add(Text.empty());
+            tooltip.add(ReadableString.space());
 
             if(MachineUpgradesUtil.hasConflict(conflictFlag, MachineUpgradesUtil.CONFLICT_SPEED)) {
                 tooltip.add(ReadableString.translatable("item.iron_quarry.conflict.speed_limit", ZUtil.expandableFixedFloat((MachineUpgradesUtil.SPEED_LIMIT-1)*100)));
@@ -244,7 +244,7 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
             MutableText LORE_CAPACITY_DETAIL = ReadableString.translatable("item.iron_quarry.lore.energy.unit", ReadableString.intFrom(capacity));
             MutableText LORE_CAPACITY = ReadableString.translatable("item.iron_quarry.quarry_block.lore.capacity", LORE_CAPACITY_DETAIL);
 
-            tooltip.add(Text.empty());
+            tooltip.add(ReadableString.space());
             tooltip.add(LORE_STORED);
             tooltip.add(LORE_CAPACITY);
 
@@ -252,7 +252,7 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
         } else {
             MutableText LORE_DETAILS = ReadableString.translatable("item.iron_quarry.lore.details");
 
-            tooltip.add(Text.empty());
+            tooltip.add(ReadableString.space());
             tooltip.add(LORE_DETAILS);
         }
     }

@@ -220,7 +220,7 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
 
             MutableText LORE_MINED = ReadableString.translatable("item.iron_quarry.blueprint.lore.mined", mined, mineable, ZUtil.expandableFixedFloat(percentage * 100));
 
-            tooltip.add(Text.empty());
+            tooltip.add(ReadableString.space());
             tooltip.add(LORE_MINED);
 
             if(this.allChunksMined(stack)) {
@@ -233,10 +233,10 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
             if(minecraftClient.currentScreen instanceof QuarryBlockScreen) {
                 MutableText LORE_SEAL_FIRST = ReadableString.translatable("item.iron_quarry.blueprint.lore.seal_first");
 
-                tooltip.add(Text.empty());
+                tooltip.add(ReadableString.space());
                 tooltip.add(LORE_SEAL_FIRST);
             } else {
-                tooltip.add(Text.empty());
+                tooltip.add(ReadableString.space());
 
                 if(Screen.hasShiftDown()) {
                     GameOptions gameOptions = minecraftClient.options;
@@ -253,7 +253,7 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
                     MutableText LORE_MANUAL_4 = ReadableString.translatable("item.iron_quarry.blueprint.lore.manual.4");
 
                     tooltip.add(LORE_MANUAL_0);
-                    tooltip.add(Text.empty());
+                    tooltip.add(ReadableString.space());
                     tooltip.add(LORE_MANUAL_1);
                     tooltip.add(LORE_MANUAL_2);
                     tooltip.add(LORE_MANUAL_3);
