@@ -116,6 +116,12 @@
     "item.iron_quarry.conflict.fortune_limit": "§{RGB_TAB_TITLE ⚠ Fortune Augments are limited to +%s%% yield}",
     "item.iron_quarry.conflict.silk_touch_fortune": "§{RGB_TAB_TITLE ⚠ Silk Touch overrides Fortune Augment}",
 
+    "item.iron_quarry.warning.quarry_energy_10": "§{RGB_TAB_TITLE ⚠ Energy fully depleted}",
+    "item.iron_quarry.warning.quarry_energy_30": "§{RGB_TAB_TITLE ⚠ Energy almost depleted | <30%%}",
+    "item.iron_quarry.warning.quarry_inv_90": "§{RGB_TAB_TITLE ⚠ Output inventory full}",
+    "item.iron_quarry.warning.quarry_inv_70": "§{RGB_TAB_TITLE ⚠ Output inventory almost full | >70%%}",
+    "item.iron_quarry.warning.quarry_drill_empty": "§{RGB_TAB_TITLE ⚠ Drill slot empty}",
+
     "screen.iron_quarry.quarry_block.tooltip.locked_augment_slot": "§{RGB_TAB_TITLE Upgrade the quarry to unlock this augment slot!}",
     "screen.iron_quarry.quarry_block.tooltip.blueprint_info": "§{RGB_TAB_TITLE Insert §lSealed Blueprint§r to start the quarry.}",
     "screen.iron_quarry.quarry_block.tooltip.battery_info": "§{RGB_TAB_TITLE Insert §la Battery§r to charge the quarry externally.}",
