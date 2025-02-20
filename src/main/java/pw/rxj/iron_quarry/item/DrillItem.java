@@ -50,7 +50,7 @@ public class DrillItem extends Item implements ICustomEnchantabilityProvider, IC
         tooltip.add(LORE_DURABILITY);
 
         if(stack.hasEnchantments()) {
-            tooltip.add(ReadableString.empty());
+            tooltip.add(ReadableString.space());
         }
     }
 

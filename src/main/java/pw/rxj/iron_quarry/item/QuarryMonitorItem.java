@@ -144,7 +144,7 @@ public class QuarryMonitorItem extends Item implements ITickingInventoryItem, IT
                     }
                 }
 
-                tooltip.add(ReadableString.empty());
+                tooltip.add(ReadableString.space());
                 tooltip.add(ReadableString.translatable("item.iron_quarry.quarry_monitor.lore.details"));
             } else {
                 tooltip.add(ReadableString.translatable("item.iron_quarry.quarry_monitor.lore.never_updated"));

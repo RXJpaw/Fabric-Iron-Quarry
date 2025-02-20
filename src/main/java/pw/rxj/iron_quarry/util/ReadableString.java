@@ -168,8 +168,4 @@ public class ReadableString {
 
         return parsed.append(string.substring(offset));
     }
-
-    public static MutableText empty() {
-        return Text.literal(" ");
-    }
 }
