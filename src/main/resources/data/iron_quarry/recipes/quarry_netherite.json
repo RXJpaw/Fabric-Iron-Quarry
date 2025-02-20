@@ -1,19 +1,19 @@
 {
     "type": "iron_quarry:handled_crafting_recipe",
     "pattern": [
-        "III",
-        "BMB",
-        "BBB"
+        "BCB",
+        "CMC",
+        "BCB"
     ],
     "key": {
-        "B": {
-            "item": "minecraft:netherite_block"
-        },
-        "I": {
-            "item": "minecraft:netherite_ingot"
-        },
         "M": {
             "item": "iron_quarry:diamond_quarry"
+        },
+        "C": {
+            "item": "iron_quarry:circuit_mk4"
+        },
+        "B": {
+            "item": "minecraft:netherite_block"
         }
     },
     "result": {

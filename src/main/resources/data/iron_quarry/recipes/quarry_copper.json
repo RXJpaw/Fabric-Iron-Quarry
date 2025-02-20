@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "BCB",
+        "CMC",
+        "BCB"
+    ],
+    "key": {
+        "M": {
+            "item": "minecraft:chest"
+        },
+        "C": {
+            "item": "iron_quarry:circuit_mk1"
+        },
+        "B": {
+            "item": "minecraft:copper_block"
+        }
+    },
+    "result": {
+        "item": "iron_quarry:copper_quarry"
+    }
+}

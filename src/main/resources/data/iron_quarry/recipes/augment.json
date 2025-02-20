@@ -10,7 +10,7 @@
             "item": "minecraft:item_frame"
         },
         "C": {
-            "item": "iron_quarry:conductive_amethyst"
+            "item": "iron_quarry:circuit_mk2"
         }
     },
     "result": {

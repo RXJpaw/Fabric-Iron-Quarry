@@ -10,7 +10,7 @@
             "item": "minecraft:lapis_block"
         },
         "A": {
-            "item": "iron_quarry:conductive_amethyst"
+            "item": "iron_quarry:circuit_blank"
         }
     },
     "result": {

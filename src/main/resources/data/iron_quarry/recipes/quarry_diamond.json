@@ -1,19 +1,19 @@
 {
     "type": "iron_quarry:handled_crafting_recipe",
     "pattern": [
-        "III",
-        "BMB",
-        "BBB"
+        "BCB",
+        "CMC",
+        "BCB"
     ],
     "key": {
-        "B": {
-            "item": "minecraft:diamond_block"
-        },
-        "I": {
-            "item": "minecraft:diamond"
-        },
         "M": {
             "item": "iron_quarry:gold_quarry"
+        },
+        "C": {
+            "item": "iron_quarry:circuit_mk3"
+        },
+        "B": {
+            "item": "minecraft:diamond_block"
         }
     },
     "result": {

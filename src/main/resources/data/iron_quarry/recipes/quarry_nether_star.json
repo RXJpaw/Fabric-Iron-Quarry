@@ -1,16 +1,19 @@
 {
     "type": "iron_quarry:handled_crafting_recipe",
     "pattern": [
-        "BBB",
-        "BMB",
-        "BBB"
+        "BCB",
+        "CMC",
+        "BCB"
     ],
     "key": {
-        "B": {
-            "item": "minecraft:nether_star"
-        },
         "M": {
             "item": "iron_quarry:netherite_quarry"
+        },
+        "C": {
+            "item": "iron_quarry:circuit_mk5"
+        },
+        "B": {
+            "item": "minecraft:nether_star"
         }
     },
     "result": {
