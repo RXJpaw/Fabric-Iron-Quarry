@@ -11,6 +11,7 @@ import pw.rxj.iron_quarry.Main;
 import pw.rxj.iron_quarry.network.PacketServerConfigApply;
 import pw.rxj.iron_quarry.network.ZNetwork;
 import pw.rxj.iron_quarry.resource.config.client.BlockBreakingConfig;
+import pw.rxj.iron_quarry.resource.config.client.QuarryMonitorOverlayConfig;
 import pw.rxj.iron_quarry.resource.config.server.*;
 
 import java.io.BufferedReader;
@@ -53,6 +54,9 @@ public class ConfigHandler {
     //Client
     public BlockBreakingConfig.Handler getBlockBreakingConfig() {
         return BlockBreakingConfig.Handler.of(this);
+    }
+    public QuarryMonitorOverlayConfig.Handler getQuarryMonitorOverlayConfig() {
+        return QuarryMonitorOverlayConfig.Handler.of(this);
     }
     //Server
     public QuarryStatsConfig.Handler getQuarryStatsConfig() {

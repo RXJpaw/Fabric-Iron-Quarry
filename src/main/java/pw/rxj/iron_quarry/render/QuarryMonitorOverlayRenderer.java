@@ -16,9 +16,11 @@ import pw.rxj.iron_quarry.item.BlueprintItem;
 import pw.rxj.iron_quarry.item.DrillItem;
 import pw.rxj.iron_quarry.item.QuarryMonitorItem;
 import pw.rxj.iron_quarry.resource.ResourceReloadListener;
+import pw.rxj.iron_quarry.resource.config.client.QuarryMonitorOverlayConfig;
 import pw.rxj.iron_quarry.util.ZUtil;
 
 public class QuarryMonitorOverlayRenderer {
+    private static final QuarryMonitorOverlayConfig.Handler QUARRY_MONITOR_OVERLAY_CONFIG = Main.CONFIG.getQuarryMonitorOverlayConfig();
     public static final Identifier OVERLAY_TEXTURE = Identifier.of(Main.MOD_ID, "textures/gui/quarry_monitor_overlay.png");
 
     private static void renderOnScreen(MatrixStack matrices, double tickDelta) {
@@ -49,8 +51,8 @@ public class QuarryMonitorOverlayRenderer {
         ItemStack blueprintStack = quarryMonitorItem.getCachedBlueprintStack(quarryMonitorStack);
         ItemStack drillStack = quarryMonitorItem.getCachedDrillStack(quarryMonitorStack);
 
-        int x = 8;
-        int y = minecraftClient.getWindow().getScaledHeight() - 45 - 8;
+        int x = QUARRY_MONITOR_OVERLAY_CONFIG.getComputedWindowX(minecraftClient.getWindow(), 42);
+        int y = QUARRY_MONITOR_OVERLAY_CONFIG.getComputedWindowY(minecraftClient.getWindow(), 45);
 
         //texture render
 

@@ -2,6 +2,7 @@ package pw.rxj.iron_quarry.resource.config;
 
 import lombok.EqualsAndHashCode;
 import pw.rxj.iron_quarry.resource.config.client.BlockBreakingConfig;
+import pw.rxj.iron_quarry.resource.config.client.QuarryMonitorOverlayConfig;
 import pw.rxj.iron_quarry.resource.config.server.*;
 
 import java.util.Objects;
@@ -21,6 +22,7 @@ public class Config {
     }
     protected void overrideClient(Config.Client newClientConfig){
         this.CLIENT.blockBreaking = newClientConfig.blockBreaking;
+        this.CLIENT.quarryMonitorOverlay = newClientConfig.quarryMonitorOverlay;
     }
     protected void overrideServer(Config.Server newServerConfig){
         this.SERVER.quarryStats = newServerConfig.quarryStats;
@@ -40,6 +42,7 @@ public class Config {
         private Client() { }
 
         public BlockBreakingConfig blockBreaking = new BlockBreakingConfig();
+        public QuarryMonitorOverlayConfig quarryMonitorOverlay = new QuarryMonitorOverlayConfig();
     }
     @EqualsAndHashCode
     public static class Server {
