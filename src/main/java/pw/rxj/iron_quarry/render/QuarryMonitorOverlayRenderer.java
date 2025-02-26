@@ -85,7 +85,10 @@ public class QuarryMonitorOverlayRenderer {
 
         MatrixStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.push();
-        modelViewStack.translate(x, y, -1.0);
+        //z was -1.0 before for seemingly unknown reasons, which resulted in subtitles being rendered below gui item icons.
+        //setting z to -101.0 (-100.0 doesn't work) results in perfectly fine subtitles being rendered above gui item icons.
+        //last tested: 1.19.2 | feb 26th 2025
+        modelViewStack.translate(x, y, -101.0);
         RenderSystem.applyModelViewMatrix();
 
         if(blueprintStack.getItem() instanceof BlueprintItem) {
