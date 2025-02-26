@@ -127,20 +127,24 @@ public class QuarryMonitorItem extends Item implements ITickingInventoryItem, IT
                 if(QuarryMonitorItem.hasWarnings(warningFlag)) {
                     tooltip.add(ReadableString.space());
 
-                    if(QuarryMonitorItem.hasWarning(warningFlag, QuarryMonitorItem.WARNING_ENERGY_10)) {
-                        tooltip.add(ReadableString.translatable("item.iron_quarry.warning.quarry_energy_10"));
-                    } else if(QuarryMonitorItem.hasWarning(warningFlag, QuarryMonitorItem.WARNING_ENERGY_30)) {
-                        tooltip.add(ReadableString.translatable("item.iron_quarry.warning.quarry_energy_30"));
-                    }
+                    if(QuarryMonitorItem.hasWarning(warningFlag, QuarryMonitorItem.WARNING_QUARRY_UNKNOWN)) {
+                        tooltip.add(ReadableString.translatable("item.iron_quarry.warning.quarry_status_unknown"));
+                    } else {
+                        if(QuarryMonitorItem.hasWarning(warningFlag, QuarryMonitorItem.WARNING_ENERGY_10)) {
+                            tooltip.add(ReadableString.translatable("item.iron_quarry.warning.quarry_energy_10"));
+                        } else if(QuarryMonitorItem.hasWarning(warningFlag, QuarryMonitorItem.WARNING_ENERGY_30)) {
+                            tooltip.add(ReadableString.translatable("item.iron_quarry.warning.quarry_energy_30"));
+                        }
 
-                    if(QuarryMonitorItem.hasWarning(warningFlag, QuarryMonitorItem.WARNING_INV_90)) {
-                        tooltip.add(ReadableString.translatable("item.iron_quarry.warning.quarry_inv_90"));
-                    } else if(QuarryMonitorItem.hasWarning(warningFlag, QuarryMonitorItem.WARNING_INV_70)) {
-                        tooltip.add(ReadableString.translatable("item.iron_quarry.warning.quarry_inv_70"));
-                    }
+                        if(QuarryMonitorItem.hasWarning(warningFlag, QuarryMonitorItem.WARNING_INV_90)) {
+                            tooltip.add(ReadableString.translatable("item.iron_quarry.warning.quarry_inv_90"));
+                        } else if(QuarryMonitorItem.hasWarning(warningFlag, QuarryMonitorItem.WARNING_INV_70)) {
+                            tooltip.add(ReadableString.translatable("item.iron_quarry.warning.quarry_inv_70"));
+                        }
 
-                    if(QuarryMonitorItem.hasWarning(warningFlag, QuarryMonitorItem.WARNING_DRILL_EMPTY)) {
-                        tooltip.add(ReadableString.translatable("item.iron_quarry.warning.quarry_drill_empty"));
+                        if(QuarryMonitorItem.hasWarning(warningFlag, QuarryMonitorItem.WARNING_DRILL_EMPTY)) {
+                            tooltip.add(ReadableString.translatable("item.iron_quarry.warning.quarry_drill_empty"));
+                        }
                     }
                 }
 
@@ -377,11 +381,12 @@ public class QuarryMonitorItem extends Item implements ITickingInventoryItem, IT
 
     //warnings
 
-    public static final int WARNING_INV_70 = 0;
-    public static final int WARNING_INV_90 = 1;
-    public static final int WARNING_ENERGY_30 = 2;
-    public static final int WARNING_ENERGY_10 = 3;
-    public static final int WARNING_DRILL_EMPTY = 4;
+    public static final int WARNING_QUARRY_UNKNOWN = 0;
+    public static final int WARNING_INV_70 = 1;
+    public static final int WARNING_INV_90 = 2;
+    public static final int WARNING_ENERGY_30 = 3;
+    public static final int WARNING_ENERGY_10 = 4;
+    public static final int WARNING_DRILL_EMPTY = 5;
 
     public static boolean hasWarnings(int flag) {
         return flag != 0;
@@ -396,8 +401,9 @@ public class QuarryMonitorItem extends Item implements ITickingInventoryItem, IT
         float invPct = this.getCachedOutputInvPct(stack);
         float energyPct = this.getCachedEnergyPct(stack);
         boolean hasDrillStack = this.getCachedDrillStack(stack).getItem() instanceof DrillItem;
+        ItemStack quarryBlockStack = this.getCachedQuarryBlockStack(stack);
 
-        return new boolean[] { invPct >= 0.7F, invPct >= 0.9F, energyPct <= 0.3F, energyPct <= 0.1F, !hasDrillStack };
+        return new boolean[] { quarryBlockStack.isEmpty(), invPct >= 0.7F, invPct >= 0.9F, energyPct <= 0.3F, energyPct <= 0.1F, !hasDrillStack };
     }
     public int getWarningAmount(ItemStack stack) {
         int amount = 0;
@@ -412,6 +418,7 @@ public class QuarryMonitorItem extends Item implements ITickingInventoryItem, IT
         boolean[] list = this.getWarningList(stack);
         int flag = 0;
 
+        if(list[WARNING_QUARRY_UNKNOWN]) flag += 1 << WARNING_QUARRY_UNKNOWN;
         if(list[WARNING_INV_70]) flag += 1 << WARNING_INV_70;
         if(list[WARNING_INV_90]) flag += 1 << WARNING_INV_90;
         if(list[WARNING_ENERGY_30]) flag += 1 << WARNING_ENERGY_30;

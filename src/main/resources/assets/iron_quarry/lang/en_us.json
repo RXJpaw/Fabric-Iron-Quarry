@@ -116,6 +116,7 @@
     "item.iron_quarry.conflict.fortune_limit": "§{RGB_TAB_TITLE ⚠ Fortune Augments are limited to +%s%% yield}",
     "item.iron_quarry.conflict.silk_touch_fortune": "§{RGB_TAB_TITLE ⚠ Silk Touch overrides Fortune Augment}",
 
+    "item.iron_quarry.warning.quarry_status_unknown": "§{RGB_TAB_TITLE ⚠ Quarry unloaded or destroyed}",
     "item.iron_quarry.warning.quarry_energy_10": "§{RGB_TAB_TITLE ⚠ Energy fully depleted}",
     "item.iron_quarry.warning.quarry_energy_30": "§{RGB_TAB_TITLE ⚠ Energy almost depleted | <30%%}",
     "item.iron_quarry.warning.quarry_inv_90": "§{RGB_TAB_TITLE ⚠ Output inventory full}",
