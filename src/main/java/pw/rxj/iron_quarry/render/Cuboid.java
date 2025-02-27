@@ -1,6 +1,10 @@
 package pw.rxj.iron_quarry.render;
 
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3d;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -149,10 +153,10 @@ public class Cuboid {
         return lines;
     }
     public SpriteVec4f getAnchors(Direction direction) {
-        Vec3f anchor_tl = null;
-        Vec3f anchor_bl = null;
-        Vec3f anchor_br = null;
-        Vec3f anchor_tr = null;
+        Vector3f anchor_tl = null;
+        Vector3f anchor_bl = null;
+        Vector3f anchor_br = null;
+        Vector3f anchor_tr = null;
 
         float minX = (float) this.lowPos.x;
         float minY = (float) this.lowPos.y;
@@ -164,40 +168,40 @@ public class Cuboid {
 
         switch (direction) {
             case UP -> {
-                anchor_tl = new Vec3f(maxX, maxY, maxZ); //top left
-                anchor_bl = new Vec3f(maxX, maxY, minZ); //bottom left
-                anchor_br = new Vec3f(minX, maxY, minZ); //bottom right
-                anchor_tr = new Vec3f(minX, maxY, maxZ); //top right
+                anchor_tl = new Vector3f(maxX, maxY, maxZ); //top left
+                anchor_bl = new Vector3f(maxX, maxY, minZ); //bottom left
+                anchor_br = new Vector3f(minX, maxY, minZ); //bottom right
+                anchor_tr = new Vector3f(minX, maxY, maxZ); //top right
             }
             case NORTH -> {
-                anchor_tl = new Vec3f(maxX, maxY, minZ);
-                anchor_bl = new Vec3f(maxX, minY, minZ);
-                anchor_br = new Vec3f(minX, minY, minZ);
-                anchor_tr = new Vec3f(minX, maxY, minZ);
+                anchor_tl = new Vector3f(maxX, maxY, minZ);
+                anchor_bl = new Vector3f(maxX, minY, minZ);
+                anchor_br = new Vector3f(minX, minY, minZ);
+                anchor_tr = new Vector3f(minX, maxY, minZ);
             }
             case WEST -> {
-                anchor_tl = new Vec3f(minX, maxY, minZ);
-                anchor_bl = new Vec3f(minX, minY, minZ);
-                anchor_br = new Vec3f(minX, minY, maxZ);
-                anchor_tr = new Vec3f(minX, maxY, maxZ);
+                anchor_tl = new Vector3f(minX, maxY, minZ);
+                anchor_bl = new Vector3f(minX, minY, minZ);
+                anchor_br = new Vector3f(minX, minY, maxZ);
+                anchor_tr = new Vector3f(minX, maxY, maxZ);
             }
             case SOUTH -> {
-                anchor_tl = new Vec3f(minX, maxY, maxZ);
-                anchor_bl = new Vec3f(minX, minY, maxZ);
-                anchor_br = new Vec3f(maxX, minY, maxZ);
-                anchor_tr = new Vec3f(maxX, maxY, maxZ);
+                anchor_tl = new Vector3f(minX, maxY, maxZ);
+                anchor_bl = new Vector3f(minX, minY, maxZ);
+                anchor_br = new Vector3f(maxX, minY, maxZ);
+                anchor_tr = new Vector3f(maxX, maxY, maxZ);
             }
             case EAST -> {
-                anchor_tl = new Vec3f(maxX, maxY, maxZ);
-                anchor_bl = new Vec3f(maxX, minY, maxZ);
-                anchor_br = new Vec3f(maxX, minY, minZ);
-                anchor_tr = new Vec3f(maxX, maxY, minZ);
+                anchor_tl = new Vector3f(maxX, maxY, maxZ);
+                anchor_bl = new Vector3f(maxX, minY, maxZ);
+                anchor_br = new Vector3f(maxX, minY, minZ);
+                anchor_tr = new Vector3f(maxX, maxY, minZ);
             }
             case DOWN -> {
-                anchor_tl = new Vec3f(minX, minY, maxZ);
-                anchor_bl = new Vec3f(minX, minY, minZ);
-                anchor_br = new Vec3f(maxX, minY, minZ);
-                anchor_tr = new Vec3f(maxX, minY, maxZ);
+                anchor_tl = new Vector3f(minX, minY, maxZ);
+                anchor_bl = new Vector3f(minX, minY, minZ);
+                anchor_br = new Vector3f(maxX, minY, minZ);
+                anchor_tr = new Vector3f(maxX, minY, maxZ);
             }
         }
 

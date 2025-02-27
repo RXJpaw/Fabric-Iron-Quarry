@@ -124,7 +124,7 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
         MachineConfiguration MachineConfiguration = blockEntity.Configuration;
         MachineUpgradesUtil machineUpgradesUtil = MachineUpgradesUtil.from(block.getMachineUpgradeStacks(stack));
 
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         int backgroundX = this.x;
@@ -157,7 +157,7 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
             List<Text> tooltip = new ArrayList<>();
 
             tooltip.add(ReadableString.translatable("screen.iron_quarry.quarry_block.title.info_display"));
-            block.appendTooltip(stack, blockEntity.getWorld(), tooltip, TooltipContext.Default.NORMAL);
+            block.appendTooltip(stack, blockEntity.getWorld(), tooltip, TooltipContext.Default.BASIC);
 
             int conflictAmount = machineUpgradesUtil.getConflictAmount();
 
@@ -383,7 +383,7 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
                 TrackableZone ioButton = TrackableZone.bake(ioButtonZone, (int) mouseX, (int) mouseY);
 
                 if(ioButton.isMouseOver()) {
-                    minecraftClient.cameraEntity.playSound(SoundEvents.UI_BUTTON_CLICK, 0.2F, 1.0F);
+                    minecraftClient.cameraEntity.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.2F, 1.0F);
 
                     Optional<Byte> id = QuarryBlockScreenHandler.Buttons.toByte(0, ioOption.frontFace().getId(), button);
                     if(id.isEmpty()) return;

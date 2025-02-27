@@ -5,7 +5,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -36,15 +40,16 @@ public class RenderUtil {
         Camera camera = minecraftClient.gameRenderer.getCamera();
         Window window = minecraftClient.getWindow();
 
-        Vector4f relativeWorldPos = new Vector4f(new Vec3f(camera.getPos().negate().add(worldPos)));
-        relativeWorldPos.transform(positionMatrix);
-        relativeWorldPos.transform(projectionMatrix);
+        Vector4f relativeWorldPos = new Vector4f(camera.getPos().negate().add(worldPos).toVector3f(), 1.0F);
 
-        var depth = relativeWorldPos.getW();
-        if (depth != 0) relativeWorldPos.normalizeProjectiveCoordinates();
+        relativeWorldPos.mul(positionMatrix);
+        relativeWorldPos.mul(projectionMatrix);
 
-        float screenX = window.getScaledWidth() * (0.5F + relativeWorldPos.getX() * 0.5F);
-        float screenY = window.getScaledHeight() * (0.5F - relativeWorldPos.getY() * 0.5F);
+        float depth = relativeWorldPos.w;
+        if (depth != 0) relativeWorldPos.div(depth);
+
+        float screenX = window.getScaledWidth() * (0.5F + relativeWorldPos.x * 0.5F);
+        float screenY = window.getScaledHeight() * (0.5F - relativeWorldPos.y * 0.5F);
 
         return ScreenPos.from(screenX, screenY, depth);
     }
@@ -73,24 +78,24 @@ public class RenderUtil {
         RenderSystem.defaultBlendFunc();
 
         //Outlines
-        RenderSystem.setShader(GameRenderer::getRenderTypeLinesShader);
+        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
         RenderSystem.lineWidth(3.0F);
         RenderSystem.enableBlend();
         RenderSystem.disableCull();
 
         List<SpriteVec2f> boxLines = cuboid.getLines();
         List<SpriteVec2f> splitBoxLines = boxLines.stream().map(vec -> vec.autoSplit(8.0F)).flatMap(List::stream).toList();
-        List<SpriteVec2f> filteredSplitBoxLines = splitBoxLines.stream().filter(vec -> vec.squaredDistanceTo(Vec3f.ZERO) <= squaredViewDistance).toList();
+        List<SpriteVec2f> filteredSplitBoxLines = splitBoxLines.stream().filter(vec -> vec.squaredDistanceTo(new Vector3f()) <= squaredViewDistance).toList();
 
         //Visible Outlines
         RenderSystem.depthFunc(GL11.GL_LESS);
         buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
 
         for (SpriteVec2f line : filteredSplitBoxLines) {
-            Vec3f n = line.normalize();
+            Vector3f n = line.normalize();
 
-            buffer.vertex(positionMatrix, line.from.getX(), line.from.getY(), line.from.getZ()).color(1.0F, 1.0F, 1.0F, 1.0F).normal(matrices.peek().getNormalMatrix(), n.getX(), n.getY(), n.getZ()).next();
-            buffer.vertex(positionMatrix, line.to.getX(), line.to.getY(), line.to.getZ()).color(1.0F, 1.0F, 1.0F, 1.0F).normal(matrices.peek().getNormalMatrix(), n.getX(), n.getY(), n.getZ()).next();
+            buffer.vertex(positionMatrix, line.from.x, line.from.y, line.from.z).color(1.0F, 1.0F, 1.0F, 1.0F).normal(matrices.peek().getNormalMatrix(), n.x, n.y, n.z).next();
+            buffer.vertex(positionMatrix, line.to.x, line.to.y, line.to.z).color(1.0F, 1.0F, 1.0F, 1.0F).normal(matrices.peek().getNormalMatrix(), n.x, n.y, n.z).next();
         }
 
         tessellator.draw();
@@ -100,10 +105,10 @@ public class RenderUtil {
         buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
 
         for (SpriteVec2f line : filteredSplitBoxLines) {
-            Vec3f n = line.normalize();
+            Vector3f n = line.normalize();
 
-            buffer.vertex(positionMatrix, line.from.getX(), line.from.getY(), line.from.getZ()).color(1.0F, 1.0F, 1.0F, 0.2F).normal(matrices.peek().getNormalMatrix(), n.getX(), n.getY(), n.getZ()).next();
-            buffer.vertex(positionMatrix, line.to.getX(), line.to.getY(), line.to.getZ()).color(1.0F, 1.0F, 1.0F, 0.2F).normal(matrices.peek().getNormalMatrix(), n.getX(), n.getY(), n.getZ()).next();
+            buffer.vertex(positionMatrix, line.from.x, line.from.y, line.from.z).color(1.0F, 1.0F, 1.0F, 0.2F).normal(matrices.peek().getNormalMatrix(), n.x, n.y, n.z).next();
+            buffer.vertex(positionMatrix, line.to.x, line.to.y, line.to.z).color(1.0F, 1.0F, 1.0F, 0.2F).normal(matrices.peek().getNormalMatrix(), n.x, n.y, n.z).next();
         }
 
         tessellator.draw();

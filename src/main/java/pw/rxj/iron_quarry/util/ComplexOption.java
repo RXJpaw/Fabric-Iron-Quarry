@@ -1,6 +1,5 @@
 package pw.rxj.iron_quarry.util;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
@@ -25,7 +24,7 @@ public class ComplexOption {
                 write
         );
     }
-    public static SimpleOption<String> rotatingOptionFrom(String key, SimpleOption.TooltipFactoryGetter<String> tooltipFactory, List<String> optionList, String defaultValue, Consumer<String> write) {
+    public static SimpleOption<String> rotatingOptionFrom(String key, SimpleOption.TooltipFactory<String> tooltipFactory, List<String> optionList, String defaultValue, Consumer<String> write) {
         return new SimpleOption<>(
                 key,
                 tooltipFactory,
@@ -46,7 +45,7 @@ public class ComplexOption {
                 write
         );
     }
-    public static SimpleOption<Integer> sliderOptionFrom(String key, ValueFormatter<Integer> valueDivider, SimpleOption.TooltipFactoryGetter<Integer> tooltipFactory, int min, int max, int defaultValue, Consumer<Integer> write) {
+    public static SimpleOption<Integer> sliderOptionFrom(String key, ValueFormatter<Integer> valueDivider, SimpleOption.TooltipFactory<Integer> tooltipFactory, int min, int max, int defaultValue, Consumer<Integer> write) {
         return new SimpleOption<>(
                 key,
                 tooltipFactory,
@@ -58,8 +57,8 @@ public class ComplexOption {
         );
     }
 
-    public static <T> SimpleOption.TooltipFactoryGetter<T> emptyTooltip() {
-        return (client) -> (value) -> ImmutableList.of();
+    public static <T> SimpleOption.TooltipFactory<T> emptyTooltip() {
+        return (client) -> null;
     }
 
     public static <T extends Number> ValueFormatter<T> valueDivider(String formatter, double divider) {

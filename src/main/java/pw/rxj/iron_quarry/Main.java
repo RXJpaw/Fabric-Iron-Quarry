@@ -2,11 +2,11 @@ package pw.rxj.iron_quarry;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
@@ -15,11 +15,12 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.FormattedMessageFactory;
@@ -66,7 +67,7 @@ public class Main implements ModInitializer {
 
 	public static final ScreenHandlerType<QuarryBlockScreenHandler> QUARRY_BLOCK_SCREEN_HANDLER = new ExtendedScreenHandlerType<>(QuarryBlockScreenHandler::new);
 
-	public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.create(new Identifier(MOD_ID, "universal")).icon(() -> ZBlocks.NETHERITE_QUARRY.getBlockItem().getDefaultStack()).build();
+	public static final ItemGroup ITEM_GROUP = FabricItemGroup.builder(new Identifier(MOD_ID, "universal")).icon(() -> ZBlocks.NETHERITE_QUARRY.getBlockItem().getDefaultStack()).build();
 
 
 	@Override
@@ -125,10 +126,10 @@ public class Main implements ModInitializer {
 		FluidStorage.SIDED.registerForBlockEntity(QuarryBlockEntity::getFluidSideConfiguration, ZBlockEntities.QUARRY_BLOCK_ENTITY);
 		ItemStorage.SIDED.registerForBlockEntity(QuarryBlockEntity::getItemSideConfiguration, ZBlockEntities.QUARRY_BLOCK_ENTITY);
 
-		Registry.register(Registry.SCREEN_HANDLER, new Identifier(MOD_ID, "quarry_block_screen_handler"), QUARRY_BLOCK_SCREEN_HANDLER);
+		Registry.register(Registries.SCREEN_HANDLER, new Identifier(MOD_ID, "quarry_block_screen_handler"), QUARRY_BLOCK_SCREEN_HANDLER);
 
-		Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MOD_ID, "handled_crafting_recipe"), HandledCraftingRecipe.SERIALIZER);
-		Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MOD_ID, "handled_smithing_recipe"), HandledSmithingRecipe.SERIALIZER);
+		Registry.register(Registries.RECIPE_SERIALIZER, new Identifier(MOD_ID, "handled_crafting_recipe"), HandledCraftingRecipe.SERIALIZER);
+		Registry.register(Registries.RECIPE_SERIALIZER, new Identifier(MOD_ID, "handled_smithing_recipe"), HandledSmithingRecipe.SERIALIZER);
 
 		ZNetwork.registerServer();
 

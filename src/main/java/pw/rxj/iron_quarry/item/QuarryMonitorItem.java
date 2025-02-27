@@ -12,6 +12,8 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -22,8 +24,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 import org.jetbrains.annotations.Nullable;
@@ -269,7 +269,7 @@ public class QuarryMonitorItem extends Item implements ITickingInventoryItem, IT
 
         NbtCompound quarryCompound = new NbtCompound();
         quarryCompound.put("nbt", quarryCompoundNbt);
-        quarryCompound.putString("id", Registry.BLOCK.getId(quarryBlock).toString());
+        quarryCompound.putString("id", Registries.BLOCK.getId(quarryBlock).toString());
         quarryCompound.putLong("timestamp", System.currentTimeMillis());
 
         stack.getOrCreateNbt().put("CachedQuarry", quarryCompound);
@@ -300,7 +300,7 @@ public class QuarryMonitorItem extends Item implements ITickingInventoryItem, IT
         Identifier quarryBlockId = Identifier.tryParse(nbtCompound.getString("id"));
         if(quarryBlockId == null) return null;
 
-        Block block = Registry.BLOCK.getOrEmpty(quarryBlockId).orElse(null);
+        Block block = Registries.BLOCK.getOrEmpty(quarryBlockId).orElse(null);
         if(!(block instanceof QuarryBlock quarryBlock)) return null;
 
         return quarryBlock;

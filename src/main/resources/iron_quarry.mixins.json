@@ -18,6 +18,7 @@
         "CustomDurabilityBarMixin",
         "DynamicItemNameRendererMixin",
         "EnergyBarMixin",
+        "HoveredTooltipPositionerMixin",
         "InGameHudMixin",
         "MouseScrollMixin",
         "TooltipComponentMixin",

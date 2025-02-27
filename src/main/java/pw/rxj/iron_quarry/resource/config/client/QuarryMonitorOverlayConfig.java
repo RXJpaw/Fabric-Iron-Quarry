@@ -43,6 +43,7 @@ public class QuarryMonitorOverlayConfig {
             return switch (this.getAlignment()) {
                 case TOP_LEFT, BOTTOM_LEFT -> this.getX();
                 case TOP_RIGHT, BOTTOM_RIGHT -> window.getScaledWidth() - width - this.getX();
+                default -> 0;
             };
         }
 
@@ -56,6 +57,7 @@ public class QuarryMonitorOverlayConfig {
             return switch (this.getAlignment()) {
                 case TOP_LEFT, TOP_RIGHT -> this.getY();
                 case BOTTOM_LEFT, BOTTOM_RIGHT -> window.getScaledHeight() - height - this.getY();
+                default -> 0;
             };
         }
     }

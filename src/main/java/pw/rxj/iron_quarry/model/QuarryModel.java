@@ -1,6 +1,5 @@
 package pw.rxj.iron_quarry.model;
 
-import com.mojang.datafixers.util.Pair;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -18,15 +17,15 @@ import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockRenderView;
 import org.jetbrains.annotations.Nullable;
-import pw.rxj.iron_quarry.blockentity.QuarryBlockEntity;
 import pw.rxj.iron_quarry.block.QuarryBlock;
+import pw.rxj.iron_quarry.blockentity.QuarryBlockEntity;
 import pw.rxj.iron_quarry.types.Face;
 import pw.rxj.iron_quarry.types.IoState;
 import pw.rxj.iron_quarry.util.MachineConfiguration;
@@ -35,7 +34,6 @@ import pw.rxj.iron_quarry.util.ZUtil;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -52,7 +50,7 @@ public class QuarryModel implements ComplexModel {
     private final QuarryBlock quarryBlock;
 
     private QuarryModel(QuarryBlock quarryBlock) {
-        this.modelSource = Registry.BLOCK.getId(quarryBlock);
+        this.modelSource = Registries.BLOCK.getId(quarryBlock);
         this.quarryBlock = quarryBlock;
 
         this.PARTICLE_SPRITE_ID = quarryBlock.getParticleSpriteId();
@@ -138,13 +136,13 @@ public class QuarryModel implements ComplexModel {
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter, Set<Pair<String, String>> unresolvedTextureReferences) {
-        return List.of(PARTICLE_SPRITE_ID, QUARRY_SPRITE_ID, IO_SPRITE_ID);
+    public void setParents(Function<Identifier, UnbakedModel> modelLoader) {
+
     }
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+    public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
         PARTICLE_SPRITE = textureGetter.apply(PARTICLE_SPRITE_ID);
         QUARRY_SPRITE = textureGetter.apply(QUARRY_SPRITE_ID);
         IO_SPRITE = textureGetter.apply(IO_SPRITE_ID);

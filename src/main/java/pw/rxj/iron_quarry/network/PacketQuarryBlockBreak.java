@@ -51,7 +51,7 @@ public class PacketQuarryBlockBreak extends ComplexPacketHandler<BooleanBlockPos
                 float pitch = blockSoundGroup.getPitch() * 0.8F;
 
                 if(volume > 0) {
-                    client.world.playSound(blockPos, blockSoundGroup.getBreakSound(), SoundCategory.BLOCKS, volume, pitch, false);
+                    client.world.playSound(blockPos.getX(), blockPos.getY(), blockPos.getZ(), blockSoundGroup.getBreakSound(), SoundCategory.BLOCKS, volume, pitch, false);
                 }
             }
         }

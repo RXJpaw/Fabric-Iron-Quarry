@@ -3,7 +3,7 @@ package pw.rxj.iron_quarry.records;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.TagKey;
 import pw.rxj.iron_quarry.item.ZItemTags;
 import pw.rxj.iron_quarry.types.AugmentType;
 

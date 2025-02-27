@@ -1,38 +1,38 @@
 package pw.rxj.iron_quarry.render;
 
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SpriteVec2f {
-    public final Vec3f from;
-    public final Vec3f to;
+    public final Vector3f from;
+    public final Vector3f to;
 
-    private SpriteVec2f(Vec3f from, Vec3f to) {
+    private SpriteVec2f(Vector3f from, Vector3f to) {
         this.from = from;
         this.to = to;
     }
 
-    public static SpriteVec2f from(Vec3f from, Vec3f to) {
+    public static SpriteVec2f from(Vector3f from, Vector3f to) {
         return new SpriteVec2f(from, to);
     }
     public static SpriteVec2f from(Vec3d from, Vec3d to) {
-        return from(new Vec3f(from), new Vec3f(to));
+        return from(new Vector3f(from.toVector3f()), new Vector3f(to.toVector3f()));
     }
 
-    public Vec3f normalize() {
-        Vec3f normalized = this.to.copy();
-        normalized.subtract(this.from);
+    public Vector3f normalize() {
+        Vector3f normalized = new Vector3f(this.to);
+        normalized.sub(this.from);
         normalized.normalize();
 
         return normalized;
     }
     public SpriteVec2f normalizeSeparate() {
-        Vec3f normalizedFrom = this.from.copy();
+        Vector3f normalizedFrom = new Vector3f(this.from);
         normalizedFrom.normalize();
-        Vec3f normalizedTo = this.to.copy();
+        Vector3f normalizedTo = new Vector3f(this.to);
         normalizedTo.normalize();
 
         return SpriteVec2f.from(normalizedFrom, normalizedTo);
@@ -46,21 +46,21 @@ public class SpriteVec2f {
         return Math.sqrt(this.innerSquaredDistance());
     }
     public double innerSquaredDistance() {
-        double x = this.from.getX() - this.to.getX();
-        double y = this.from.getY() - this.to.getY();
-        double z = this.from.getZ() - this.to.getZ();
+        double x = this.from.x - this.to.x;
+        double y = this.from.y - this.to.y;
+        double z = this.from.z - this.to.z;
 
         return x * x + y * y + z * z;
     }
-    public double distanceTo(Vec3f pos) {
+    public double distanceTo(Vector3f pos) {
         return Math.sqrt(this.squaredDistanceTo(pos));
     }
-    public double squaredDistanceTo(Vec3f pos) {
-        Vec3f center = this.center();
+    public double squaredDistanceTo(Vector3f pos) {
+        Vector3f center = this.center();
 
-        double x = pos.getX() - center.getX();
-        double y = pos.getY() - center.getY();
-        double z = pos.getZ() - center.getZ();
+        double x = pos.x - center.x;
+        double y = pos.y - center.y;
+        double z = pos.z - center.z;
 
         return x * x + y * y + z * z;
     }
@@ -83,11 +83,11 @@ public class SpriteVec2f {
 
         return list;
     }
-    public Vec3f center() {
-        return new Vec3f(
-                (this.from.getX() + this.to.getX()) / 2,
-                (this.from.getY() + this.to.getY()) / 2,
-                (this.from.getZ() + this.to.getZ()) / 2
+    public Vector3f center() {
+        return new Vector3f(
+                (this.from.x + this.to.x) / 2,
+                (this.from.y + this.to.y) / 2,
+                (this.from.z + this.to.z) / 2
         );
     }
 

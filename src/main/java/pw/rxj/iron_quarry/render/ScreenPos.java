@@ -2,7 +2,7 @@ package pw.rxj.iron_quarry.render;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
-import net.minecraft.util.math.Vector4f;
+import org.joml.Vector4f;
 
 public class ScreenPos {
     public final float x;
@@ -19,7 +19,7 @@ public class ScreenPos {
         return new ScreenPos(x, y, depth);
     }
     public static ScreenPos of(Vector4f transformed) {
-        return from(transformed.getX(), transformed.getX(), transformed.getW());
+        return from(transformed.x, transformed.y, transformed.w);
     }
 
     public boolean isAhead() {

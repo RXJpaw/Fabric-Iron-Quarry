@@ -10,13 +10,15 @@ import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
+import org.joml.Vector2i;
 import pw.rxj.iron_quarry.Main;
+import pw.rxj.iron_quarry.interfaces.IManipulateTooltipPositioner;
 import pw.rxj.iron_quarry.resource.config.client.BlockBreakingConfig;
 import pw.rxj.iron_quarry.resource.config.client.QuarryMonitorOverlayConfig;
 import pw.rxj.iron_quarry.types.AbsAlignment;
 import pw.rxj.iron_quarry.util.ComplexOption;
 
-public class ClientConfigScreen extends GameOptionsScreen {
+public class ClientConfigScreen extends GameOptionsScreen implements IManipulateTooltipPositioner {
     private static final BlockBreakingConfig.Handler BLOCK_BREAKING_CONFIG = Main.CONFIG.getBlockBreakingConfig();
     private static final QuarryMonitorOverlayConfig.Handler QUARRY_MONITOR_OVERLAY_CONFIG = Main.CONFIG.getQuarryMonitorOverlayConfig();
     private final Screen parent;
@@ -78,13 +80,14 @@ public class ClientConfigScreen extends GameOptionsScreen {
         this.addSelectableChild(this.list);
         this.addSelectableChild(this.list);
 
-        this.addDrawableChild(new ButtonWidget(
-                this.width / 2 - 100, this.height - 27,
-                200, 20,
-                ScreenTexts.DONE, (button) -> {
+        this.addDrawableChild(
+                ButtonWidget.builder(ScreenTexts.DONE, (button) -> {
                     if(this.client != null) this.client.setScreen(this.parent);
-                }
-        ));
+                })
+                .position(this.width / 2 - 100, this.height - 27)
+                .size(200, 20)
+                .build()
+        );
     }
 
     @Override
@@ -93,7 +96,11 @@ public class ClientConfigScreen extends GameOptionsScreen {
         this.list.render(matrices, mouseX, mouseY, delta);
         drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 15, 16777215);
         super.render(matrices, mouseX, mouseY, delta);
-        this.renderOrderedTooltip(matrices, getHoveredButtonTooltip(this.list, mouseX, mouseY), mouseX, mouseY + 25);
+    }
+
+    @Override
+    public Vector2i getTooltipPosition(int x, int y, int width, int height) {
+        return new Vector2i(x, y + 25);
     }
 
     @Override

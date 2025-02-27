@@ -5,10 +5,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.registry.Registries;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import pw.rxj.iron_quarry.Main;
@@ -38,7 +38,7 @@ public class QuarryBlockScreenHandler extends ScreenHandler {
         this(syncId, playerInventory, QuarryInventory.Output.noRef(), QuarryInventory.BatteryInput.noRef(), QuarryInventory.MachineUpgrades.noRef(),
                 QuarryInventory.Blueprint.noRef(), QuarryInventory.Drill.noRef(), new ComplexEnergyContainer(), new MachineConfiguration(), QuarryBlock.getFallback());
 
-        this.quarryBlock = (QuarryBlock) Registry.BLOCK.get(buffer.readIdentifier());
+        this.quarryBlock = (QuarryBlock) Registries.BLOCK.get(buffer.readIdentifier());
         this.blockPos = buffer.readBlockPos();
         this.world = playerInventory.player.getWorld();
     }
@@ -162,7 +162,7 @@ public class QuarryBlockScreenHandler extends ScreenHandler {
 
     //Shift + Player Inv Slot
     @Override
-    public ItemStack transferSlot(PlayerEntity player, int invSlot) {
+    public ItemStack quickMove(PlayerEntity player, int invSlot) {
         ItemStack newStack = ItemStack.EMPTY;
         int maxInvSize = this.DrillInventory.size() + this.OutputInventory.size() + this.BlueprintInventory.size() + this.BatteryInputInventory.size() + this.MachineUpgradesInventory.size();
 

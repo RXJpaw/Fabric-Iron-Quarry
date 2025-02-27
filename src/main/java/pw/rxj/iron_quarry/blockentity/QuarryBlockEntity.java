@@ -28,6 +28,9 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -39,8 +42,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 import org.jetbrains.annotations.Nullable;
@@ -523,7 +524,7 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
                 double y = quarryPos.getY() + 0.5;
                 double z = quarryPos.getZ() + 0.5;
 
-                PlaySoundS2CPacket soundPacket = new PlaySoundS2CPacket(SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, x, y, z, 1.0F, 1.0F, serverWorldToBreak.getSeed());
+                PlaySoundS2CPacket soundPacket = new PlaySoundS2CPacket(RegistryEntry.of(SoundEvents.ENTITY_ITEM_BREAK), SoundCategory.BLOCKS, x, y, z, 1.0F, 1.0F, serverWorldToBreak.getSeed());
                 serverWorldToBreak.getServer().getPlayerManager().sendToAround(null, x, y, z, 64.0, serverWorldToBreak.getRegistryKey(), soundPacket);
 
                 drillStack.setCount(0);
@@ -641,7 +642,7 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
 
     @Override
     public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buffer) {
-        buffer.writeIdentifier(Registry.BLOCK.getId(this.getQuarryBlock()));
+        buffer.writeIdentifier(Registries.BLOCK.getId(this.getQuarryBlock()));
         buffer.writeBlockPos(pos);
     }
 }

@@ -17,6 +17,7 @@ import pw.rxj.iron_quarry.item.DrillItem;
 import pw.rxj.iron_quarry.item.QuarryMonitorItem;
 import pw.rxj.iron_quarry.resource.ResourceReloadListener;
 import pw.rxj.iron_quarry.resource.config.client.QuarryMonitorOverlayConfig;
+import pw.rxj.iron_quarry.types.AbsAlignment;
 import pw.rxj.iron_quarry.util.ZUtil;
 
 public class QuarryMonitorOverlayRenderer {
@@ -24,6 +25,8 @@ public class QuarryMonitorOverlayRenderer {
     public static final Identifier OVERLAY_TEXTURE = Identifier.of(Main.MOD_ID, "textures/gui/quarry_monitor_overlay.png");
 
     private static void renderOnScreen(MatrixStack matrices, double tickDelta) {
+        if(QUARRY_MONITOR_OVERLAY_CONFIG.getAlignment().equals(AbsAlignment.OFF)) return;
+
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         ClientPlayerEntity player = minecraftClient.player;
         if(player == null) return;

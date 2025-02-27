@@ -1,5 +1,6 @@
 package pw.rxj.iron_quarry.item;
 
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
@@ -12,30 +13,25 @@ import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.tag.TagKey;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
 import pw.rxj.iron_quarry.gui.CustomTooltipData;
 import pw.rxj.iron_quarry.gui.TooltipInventoryData;
-import pw.rxj.iron_quarry.interfaces.IDynamicItemName;
-import pw.rxj.iron_quarry.interfaces.IHandledItemEntity;
-import pw.rxj.iron_quarry.interfaces.IHandledSmithing;
-import pw.rxj.iron_quarry.interfaces.IModelPredicateProvider;
+import pw.rxj.iron_quarry.interfaces.*;
 import pw.rxj.iron_quarry.recipe.HandledSmithingRecipe;
 import pw.rxj.iron_quarry.records.AugmentStack;
 import pw.rxj.iron_quarry.types.AugmentType;
@@ -47,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class AugmentItem extends Item implements IHandledSmithing, IHandledItemEntity, IModelPredicateProvider, IDynamicItemName {
+public class AugmentItem extends Item implements IHandledSmithing, IHandledItemEntity, IModelPredicateProvider, IDynamicItemName, IModifyItemGroupEntries {
     public static int CAPACITY_UPGRADE_SLOTS = 7;
     public static int UNIQUE_SET_AMOUNT = 1;
 
@@ -98,7 +94,7 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
         List<Pair<ItemStack, Boolean>> inventory = new ArrayList<>();
         List<Item> capacityUpgrades = this.getUpgrades(stack, ZItemTags.AUGMENT_CAPACITY_ENHANCERS);
 
-        Registry.ITEM.iterateEntries(ZItemTags.AUGMENT_CAPACITY_ENHANCERS).forEach(itemRegistryEntry -> {
+        Registries.ITEM.iterateEntries(ZItemTags.AUGMENT_CAPACITY_ENHANCERS).forEach(itemRegistryEntry -> {
             Item upgradeItem = itemRegistryEntry.value();
 
             inventory.add(new Pair<>(upgradeItem.getDefaultStack(), !capacityUpgrades.contains(upgradeItem)));
@@ -367,7 +363,7 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
             if(capacityUpgrades.size() >= CAPACITY_UPGRADE_SLOTS) return false;
         }
 
-        String upgradeId = Registry.ITEM.getId(upgrade.getItem()).toString();
+        String upgradeId = Registries.ITEM.getId(upgrade.getItem()).toString();
 
         for (NbtElement nbtElement : nbtList) {
             if(nbtElement instanceof NbtCompound nbtCompound) {
@@ -412,7 +408,7 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
                 Identifier itemId = Identifier.tryParse(id);
                 if(itemId == null) continue;
 
-                Optional<Item> item = Registry.ITEM.getOrEmpty(itemId);
+                Optional<Item> item = Registries.ITEM.getOrEmpty(itemId);
                 item.ifPresent(upgradeList::add);
             }
         }
@@ -446,17 +442,17 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
     }
 
     @Override
-    public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks) {
+    public void onModifyItemGroupEntry(FabricItemGroupEntries entries) {
         if (this.getUniqueType().isDisabled()) return;
 
-        super.appendStacks(group, stacks);
+        entries.add(this);
 
-        if(!this.isUnique() && this.isIn(group)) {
-            stacks.add(this.withAllCapacityEnhancers());
+        if(!this.isUnique()) {
+            entries.add(this.withAllCapacityEnhancers());
 
             for (int i = 0; i < CAPACITY_UPGRADE_SLOTS + 1; i++) {
-                if(!AugmentType.SPEED.isDisabled()) stacks.add(this.withCapacity(AugmentType.SPEED, i));
-                if(!AugmentType.FORTUNE.isDisabled()) stacks.add(this.withCapacity(AugmentType.FORTUNE, i));
+                if(!AugmentType.SPEED.isDisabled()) entries.add(this.withCapacity(AugmentType.SPEED, i));
+                if(!AugmentType.FORTUNE.isDisabled()) entries.add(this.withCapacity(AugmentType.FORTUNE, i));
             }
         }
     }

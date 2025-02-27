@@ -2,8 +2,10 @@ package pw.rxj.iron_quarry.mixin;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.HoveredTooltipPositioner;
 import net.minecraft.client.gui.tooltip.OrderedTextTooltipComponent;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
+import net.minecraft.client.gui.tooltip.TooltipPositioner;
 import net.minecraft.client.item.TooltipData;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -26,7 +28,7 @@ public abstract class TooltipRenderMixin {
 
     @Shadow @Nullable protected MinecraftClient client;
 
-    @Shadow protected abstract void renderTooltipFromComponents(MatrixStack matrices, List<TooltipComponent> components, int x, int y);
+    @Shadow protected abstract void renderTooltipFromComponents(MatrixStack matrices, List<TooltipComponent> components, int x, int y, TooltipPositioner positioner);
 
     @Inject(method = "renderTooltip(Lnet/minecraft/client/util/math/MatrixStack;Ljava/util/List;Ljava/util/Optional;II)V", at = @At(value = "HEAD"), cancellable = true)
     private void renderTooltip(MatrixStack matrices, List<Text> lines, Optional<TooltipData> data, int x, int y, CallbackInfo ci) {
@@ -39,12 +41,12 @@ public abstract class TooltipRenderMixin {
                 }
             }
 
-            renderTooltipFromComponents(matrices, list, x, y); ci.cancel();
+            renderTooltipFromComponents(matrices, list, x, y, HoveredTooltipPositioner.INSTANCE); ci.cancel();
         }
     }
 
     @Inject(method = "renderTooltipFromComponents", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z"))
-    private void renderTooltipCompat(MatrixStack matrices, List<TooltipComponent> components, int x, int y, CallbackInfo ci) {
+    private void renderTooltipCompat(MatrixStack matrices, List<TooltipComponent> components, int x, int y, TooltipPositioner positioner, CallbackInfo ci) {
         if(client == null) return;
 
         if(components.size() > 1 && components.get(1) instanceof CustomTooltipComponent customTooltipComponent) {

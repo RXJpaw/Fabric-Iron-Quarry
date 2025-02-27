@@ -1,19 +1,19 @@
 package pw.rxj.iron_quarry.item;
 
 import net.minecraft.item.Item;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import pw.rxj.iron_quarry.Main;
 
 import java.util.List;
 
 public class ZItemTags {
     private static TagKey<Item> of(String path) {
-        return TagKey.of(Registry.ITEM_KEY, Identifier.of(Main.MOD_ID, path));
+        return TagKey.of(RegistryKeys.ITEM, Identifier.of(Main.MOD_ID, path));
     }
     private static TagKey<Item> commonOf(String path) {
-        return TagKey.of(Registry.ITEM_KEY, Identifier.of("c", path));
+        return TagKey.of(RegistryKeys.ITEM, Identifier.of("c", path));
     }
 
     public static final TagKey<Item> AUGMENT_CAPACITY_ENHANCERS = of("augment_capacity_enhancers");

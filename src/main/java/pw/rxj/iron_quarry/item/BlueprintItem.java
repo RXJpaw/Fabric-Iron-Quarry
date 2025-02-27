@@ -2,25 +2,27 @@ package pw.rxj.iron_quarry.item;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.GameOptions;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.*;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmithing, IHandledGrinding, IHandledItemEntity, IHandledMainHandScrolling, IAlwaysRenderItemName, IHandledKeyedAction {
+public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmithing, IHandledGrinding, IHandledItemEntity, IHandledMainHandScrolling, IAlwaysRenderItemName, IHandledKeyedAction, IModifyItemGroupEntries {
     public BlueprintItem(Settings settings) {
         super(settings);
     }
@@ -523,21 +525,16 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
     }
 
     @Override
-    public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks) {
-        super.appendStacks(group, stacks);
+    public void onModifyItemGroupEntry(FabricItemGroupEntries entries) {
+        entries.add(this);
 
-        if(this.isIn(group)) {
-            ItemStack stack = new ItemStack(this);
+        ItemStack stack = new ItemStack(this);
 
-            MinecraftClient minecraftClient = MinecraftClient.getInstance();
-            ClientWorld clientWorld = minecraftClient.world;
+        this.setWorld(stack,  World.OVERWORLD);
+        this.setFirstPos(stack, null, new BlockPos(10000, 64, 10000));
+        this.setSecondPos(stack, null, new BlockPos(-10000, -64, -10000));
+        this.setSealed(stack, true);
 
-            this.setWorld(stack, clientWorld == null ? World.OVERWORLD : clientWorld.getRegistryKey());
-            this.setFirstPos(stack, null, new BlockPos(10000, 64, 10000));
-            this.setSecondPos(stack, null, new BlockPos(-10000, -64, -10000));
-            this.setSealed(stack, true);
-
-            stacks.add(stack);
-        }
+        entries.add(stack);
     }
 }
