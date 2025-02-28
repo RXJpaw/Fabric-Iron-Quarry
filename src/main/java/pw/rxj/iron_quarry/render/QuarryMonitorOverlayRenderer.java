@@ -17,7 +17,6 @@ import pw.rxj.iron_quarry.item.DrillItem;
 import pw.rxj.iron_quarry.item.QuarryMonitorItem;
 import pw.rxj.iron_quarry.resource.ResourceReloadListener;
 import pw.rxj.iron_quarry.resource.config.client.QuarryMonitorOverlayConfig;
-import pw.rxj.iron_quarry.types.AbsAlignment;
 import pw.rxj.iron_quarry.util.ZUtil;
 
 public class QuarryMonitorOverlayRenderer {
@@ -25,8 +24,6 @@ public class QuarryMonitorOverlayRenderer {
     public static final Identifier OVERLAY_TEXTURE = Identifier.of(Main.MOD_ID, "textures/gui/quarry_monitor_overlay.png");
 
     private static void renderOnScreen(MatrixStack matrices, double tickDelta) {
-        if(QUARRY_MONITOR_OVERLAY_CONFIG.getAlignment().equals(AbsAlignment.OFF)) return;
-
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         ClientPlayerEntity player = minecraftClient.player;
         if(player == null) return;
@@ -95,12 +92,12 @@ public class QuarryMonitorOverlayRenderer {
         RenderSystem.applyModelViewMatrix();
 
         if(blueprintStack.getItem() instanceof BlueprintItem) {
-            itemRenderer.renderGuiItemIcon(blueprintStack, 13, 4);
-            itemRenderer.renderGuiItemOverlay(textRenderer, blueprintStack, 13, 4);
+            itemRenderer.renderGuiItemIcon(matrices, blueprintStack, 13, 4);
+            itemRenderer.renderGuiItemOverlay(matrices, textRenderer, blueprintStack, 13, 4);
         }
         if(drillStack.getItem() instanceof DrillItem) {
-            itemRenderer.renderGuiItemIcon(drillStack, 13, 25);
-            itemRenderer.renderGuiItemOverlay(textRenderer, drillStack, 13, 25);
+            itemRenderer.renderGuiItemIcon(matrices, drillStack, 13, 25);
+            itemRenderer.renderGuiItemOverlay(matrices, textRenderer, drillStack, 13, 25);
         }
 
         modelViewStack.pop();

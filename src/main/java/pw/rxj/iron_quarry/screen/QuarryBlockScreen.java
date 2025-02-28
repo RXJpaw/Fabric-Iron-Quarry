@@ -282,7 +282,7 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
                 }
 
                 if(TrackableZone.isMouseOver(ioConfigX + bgX, ioConfigY + bgY, bgTexture.width(), bgTexture.height(), mouseX, mouseY)) {
-                    drawIoHighlight(matrices, ioConfigX + bgX, ioConfigY + bgY, this.getZOffset());
+                    drawIoHighlight(matrices, ioConfigX + bgX, ioConfigY + bgY, 0);
                 }
             });
 

@@ -8,6 +8,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import pw.rxj.iron_quarry.interfaces.IHandledCrafting;
@@ -16,7 +17,7 @@ import pw.rxj.iron_quarry.util.ZUtil;
 public class HandledCraftingRecipe extends ShapedRecipe {
     public static final RecipeSerializer<HandledCraftingRecipe> SERIALIZER = new RecipeSerializer<>() {
         private ItemStack appendCraftingPreview(ShapedRecipe recipe) {
-            ItemStack output = recipe.getOutput().copy();
+            ItemStack output = recipe.getOutput(DynamicRegistryManager.EMPTY).copy();
 
             if(ZUtil.getBlockOrItem(output) instanceof IHandledCrafting handledCrafting) {
                 ItemStack outputPreview = handledCrafting.getCraftingOutputPreview(recipe);
@@ -55,13 +56,13 @@ public class HandledCraftingRecipe extends ShapedRecipe {
     }
 
     @Override
-    public ItemStack craft(CraftingInventory craftingInventory) {
-        ItemStack output = getOutput().copy();
+    public ItemStack craft(CraftingInventory craftingInventory, DynamicRegistryManager dynamicRegistryManager) {
+        ItemStack output = getOutput(dynamicRegistryManager).copy();
 
         if(ZUtil.getBlockOrItem(output) instanceof IHandledCrafting handledCrafting) {
-            return handledCrafting.getCraftingOutput(this, craftingInventory);
+            return handledCrafting.getCraftingOutput(this, craftingInventory, dynamicRegistryManager);
         }
 
-        return super.craft(craftingInventory);
+        return super.craft(craftingInventory, dynamicRegistryManager);
     }
 }

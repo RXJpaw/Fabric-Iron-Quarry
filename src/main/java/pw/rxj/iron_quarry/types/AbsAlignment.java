@@ -8,11 +8,10 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public enum AbsAlignment implements TranslatableOption {
-    OFF(0),
-    TOP_LEFT(1),
-    TOP_RIGHT(2),
-    BOTTOM_LEFT(3),
-    BOTTOM_RIGHT(4);
+    TOP_LEFT(0),
+    TOP_RIGHT(1),
+    BOTTOM_LEFT(2),
+    BOTTOM_RIGHT(3);
 
     private static final AbsAlignment[] VALUES = Arrays.stream(values()).sorted(Comparator.comparingInt(AbsAlignment::getId)).toArray(AbsAlignment[]::new);
 

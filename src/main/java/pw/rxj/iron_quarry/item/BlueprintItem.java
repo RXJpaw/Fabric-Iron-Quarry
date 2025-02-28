@@ -17,6 +17,7 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -26,7 +27,6 @@ import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pw.rxj.iron_quarry.Main;
 import pw.rxj.iron_quarry.interfaces.*;
 import pw.rxj.iron_quarry.network.KeyedActionPacket;
 import pw.rxj.iron_quarry.network.PacketBlueprintExpand;
@@ -57,8 +57,8 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
     }
 
     @Override
-    public ItemStack getSmithingOutput(HandledSmithingRecipe handler, Inventory inventory) {
-        ItemStack output = handler.getOutput().copy();
+    public ItemStack getSmithingOutput(HandledSmithingRecipe handler, Inventory inventory, DynamicRegistryManager dynamicRegistryManager) {
+        ItemStack output = handler.getOutput(dynamicRegistryManager).copy();
         if(BlueprintItem.isNotOf(output)) return ItemStack.EMPTY;
         ItemStack base = inventory.getStack(0).copy();
 
@@ -339,7 +339,7 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getStackInHand(hand);
-        Main.LOGGER.info(user.shouldCancelInteraction());
+//        Main.LOGGER.info(user.shouldCancelInteraction());
         if(!world.isClient()) return TypedActionResult.fail(stack);
         if(!hand.equals(Hand.MAIN_HAND) || !user.isCreative()) return TypedActionResult.fail(stack);
 

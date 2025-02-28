@@ -138,7 +138,6 @@
     "screen.iron_quarry.client_config.block_break_distance.tooltip": "Distance from which you can see particles and hear the sounds of a quarry breaking blocks.",
     "screen.iron_quarry.client_config.quarry_monitor_alignment": "Quarry Monitor Overlay",
     "screen.iron_quarry.client_config.quarry_monitor_alignment.tooltip": "Absolute position that the quarry monitor overlay anchors to.",
-    "screen.iron_quarry.client_config.quarry_monitor_alignment.off": "OFF",
     "screen.iron_quarry.client_config.quarry_monitor_alignment.top_left": "⌜  ",
     "screen.iron_quarry.client_config.quarry_monitor_alignment.top_right": "  ⌝",
     "screen.iron_quarry.client_config.quarry_monitor_alignment.bottom_left": "⌞  ",

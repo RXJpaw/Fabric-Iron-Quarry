@@ -18,6 +18,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.screen.ScreenHandlerContext;
@@ -205,7 +206,7 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
     }
 
     @Override
-    public ItemStack getSmithingOutput(HandledSmithingRecipe handler, Inventory inventory) {
+    public ItemStack getSmithingOutput(HandledSmithingRecipe handler, Inventory inventory, DynamicRegistryManager dynamicRegistryManager) {
         ItemStack base = inventory.getStack(0).copy();
         if(AugmentItem.isNotOf(base)) return ItemStack.EMPTY;
 

@@ -107,6 +107,8 @@ public class BlueprintPreviewRenderer {
 
         RenderUtil.drawZBufferedCuboid(limitedCuboid.inflate(0.02), matrices, viewDistance);
 
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
         matrices.pop();
     }
 

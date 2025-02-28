@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.state.StateManager;
@@ -351,8 +352,8 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
     }
 
     @Override
-    public ItemStack getCraftingOutput(HandledCraftingRecipe handler, CraftingInventory craftingInventory) {
-        ItemStack output = handler.getOutput().copy();
+    public ItemStack getCraftingOutput(HandledCraftingRecipe handler, CraftingInventory craftingInventory, DynamicRegistryManager dynamicRegistryManager) {
+        ItemStack output = handler.getOutput(dynamicRegistryManager).copy();
 
         for (int i = 0; i < craftingInventory.size(); i++) {
             ItemStack stack = craftingInventory.getStack(i).copy();
@@ -381,7 +382,7 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
     }
 
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState().with(FACING, ctx.getPlayerFacing().getOpposite());
+        return this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
     }
 
     public Identifier getTextureId(){

@@ -55,18 +55,18 @@ public class TooltipQuarryInventoryComponent implements CustomTooltipComponent {
     }
 
     @Override
-    public void drawItems(TextRenderer textRenderer, int x, int y, MatrixStack matrices, ItemRenderer itemRenderer, int z) {
+    public void drawItems(TextRenderer textRenderer, int x, int y, MatrixStack matrices, ItemRenderer itemRenderer) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, QUARRY_SCREEN_BACKGROUND_TEXTURE);
 
-        DrawableHelper.drawTexture(matrices, x, y + 2, z, 79, 26, 18, 18, 256, 256);
-        this.drawItemStack(x, y + 2, this.blueprintStack, textRenderer, matrices, itemRenderer, z);
+        DrawableHelper.drawTexture(matrices, x, y + 2, 79, 26, 18, 18, 256, 256);
+        this.drawItemStack(x, y + 2, this.blueprintStack, textRenderer, matrices, itemRenderer);
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, QUARRY_SCREEN_BACKGROUND_TEXTURE);
 
-        DrawableHelper.drawTexture(matrices, x + 20, y + 2, z, 79, 47, 18, 18, 256, 256);
-        this.drawItemStack(x + 20, y + 2, this.drillStack, textRenderer, matrices, itemRenderer, z);
+        DrawableHelper.drawTexture(matrices, x + 20, y + 2, 79, 47, 18, 18, 256, 256);
+        this.drawItemStack(x + 20, y + 2, this.drillStack, textRenderer, matrices, itemRenderer);
 
         for(int index = 0; index < 6; ++index) {
             int slotX = x + 40 + index * 18;
@@ -76,24 +76,24 @@ public class TooltipQuarryInventoryComponent implements CustomTooltipComponent {
             RenderSystem.setShaderTexture(0, AUGMENTATION_CONFIGURATION_TEXTURE);
 
             if(index >= this.augmentLimit) {
-                DrawableHelper.drawTexture(matrices, slotX, slotY, z, 100, 0, 18, 18, 256, 256);
+                DrawableHelper.drawTexture(matrices, slotX, slotY, 100, 0, 18, 18, 256, 256);
             } else {
-                DrawableHelper.drawTexture(matrices, slotX, slotY, z, 22, 25, 18, 18, 256, 256);
-                this.drawAugmentSlot(slotX, slotY, index, textRenderer, matrices, itemRenderer, z);
+                DrawableHelper.drawTexture(matrices, slotX, slotY, 22, 25, 18, 18, 256, 256);
+                this.drawAugmentSlot(slotX, slotY, index, textRenderer, matrices, itemRenderer);
             }
 
         }
     }
 
-    private void drawItemStack(int x, int y, ItemStack stack, TextRenderer textRenderer, MatrixStack matrices, ItemRenderer itemRenderer, int z) {
-        itemRenderer.renderInGuiWithOverrides(stack, x + 1, y + 1);
-        itemRenderer.renderGuiItemOverlay(textRenderer, stack, x + 1, y + 1);
+    private void drawItemStack(int x, int y, ItemStack stack, TextRenderer textRenderer, MatrixStack matrices, ItemRenderer itemRenderer) {
+        itemRenderer.renderInGuiWithOverrides(matrices, stack, x + 1, y + 1);
+        itemRenderer.renderGuiItemOverlay(matrices, textRenderer, stack, x + 1, y + 1);
     }
 
-    private void drawAugmentSlot(int x, int y, int index, TextRenderer textRenderer, MatrixStack matrices, ItemRenderer itemRenderer, int z) {
+    private void drawAugmentSlot(int x, int y, int index, TextRenderer textRenderer, MatrixStack matrices, ItemRenderer itemRenderer) {
         if(index >= this.MachineUpgradesInventory.size()) return;
 
         ItemStack stack = this.MachineUpgradesInventory.getStack(index);
-        this.drawItemStack(x, y, stack, textRenderer, matrices, itemRenderer, z);
+        this.drawItemStack(x, y, stack, textRenderer, matrices, itemRenderer);
     }
 }

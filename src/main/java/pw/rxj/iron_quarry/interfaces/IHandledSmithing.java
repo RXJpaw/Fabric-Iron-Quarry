@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import pw.rxj.iron_quarry.recipe.HandledSmithingRecipe;
 
 public interface IHandledSmithing {
-    ItemStack getSmithingOutput(HandledSmithingRecipe handler, Inventory inventory);
+    ItemStack getSmithingOutput(HandledSmithingRecipe handler, Inventory inventory, DynamicRegistryManager dynamicRegistryManager);
 
     default ItemStack getSmithingOutputPreview(Ingredient base, Ingredient addition, ItemStack output) {
         return null;

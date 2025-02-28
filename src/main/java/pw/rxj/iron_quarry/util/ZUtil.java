@@ -167,7 +167,7 @@ public class ZUtil {
         double y = Math.min(Math.max(blockPos.getY(), world.getBottomY()), world.getTopY());
         double z = Math.min(Math.max(blockPos.getZ(), worldBorder.getBoundNorth()), worldBorder.getBoundSouth() - 1);
 
-        return new BlockPos(x, y, z);
+        return BlockPos.ofFloored(x, y, z);
     }
     public static boolean isInsideWorldBounds(BlockPos blockPos, World world) {
         if(blockPos.getY() > world.getTopY()) return false;

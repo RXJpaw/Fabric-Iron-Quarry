@@ -23,9 +23,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.registry.Registries;
@@ -287,7 +287,7 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
         ItemStack blueprintStack = thisBlockEntity.BlueprintInventory.getStack(0);
         int blueprintHash = blueprintStack.hashCode();
         ItemStack drillStack = thisBlockEntity.DrillInventory.getStack(0);
-        int drillHash = drillStack.getItem().hashCode();
+        int drillHash = drillStack.hashCode();
 
         if(thisBlockEntity.blueprintHash != blueprintHash || thisBlockEntity.drillHash != drillHash) {
             thisBlockEntity.blueprintHash = blueprintHash;
@@ -297,6 +297,11 @@ public class QuarryBlockEntity extends BlockEntity implements ExtendedScreenHand
             thisBlockEntity.MiningQueue.clear();
 
             ChunkLoadingManager.removeTickets(thisServerWorld, thisPos);
+
+            //Unlike what the name "removeTickets" might suggest, chunk tickets are NOT instantly removed,
+            //but instead are removed at the start of the next tick aka they only get "marked for removal".
+            //If this tick isn't skipped after this, the quarry will show abnormal behaviour.
+            return;
         }
 
         if(!(drillStack.getItem() instanceof DrillItem drillItem)) return;

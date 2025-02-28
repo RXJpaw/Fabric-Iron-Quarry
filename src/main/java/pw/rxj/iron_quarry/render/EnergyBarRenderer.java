@@ -2,44 +2,30 @@ package pw.rxj.iron_quarry.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.*;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pw.rxj.iron_quarry.interfaces.IEnergyContainer;
 
 public class EnergyBarRenderer {
-    public static void onRenderGuiItemOverlay(TextRenderer renderer, ItemStack stack, int x, int y, @Nullable String countLabel, CallbackInfo ci) {
+    public static void renderGuiItemOverlay(MatrixStack matrices, TextRenderer textRenderer, ItemStack stack, int x, int y, @Nullable String countLabel, CallbackInfo ci) {
         if (getItemBarStep(stack) > 0) {
             RenderSystem.disableDepthTest();
-            RenderSystem.disableTexture();
             RenderSystem.disableBlend();
 
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferBuilder = tessellator.getBuffer();
+            int step = (int) Math.ceil(getItemBarStep(stack));
+            int color = 0xB76CEA;
+            int fillX = x + 2;
+            int fillY = y + 13;
 
-            int itemBarStep = (int) Math.ceil(getItemBarStep(stack));
-            int itemBarColor = 0xB76CEA;
-
-            renderGuiQuad(bufferBuilder, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
-            renderGuiQuad(bufferBuilder, x + 2, y + 13, itemBarStep, 1, itemBarColor >> 16 & 255, itemBarColor >> 8 & 255, itemBarColor & 255, 255);
+            DrawableHelper.fill(matrices, fillX, fillY, fillX + 13,   fillY + 2, -16777216);
+            DrawableHelper.fill(matrices, fillX, fillY, fillX + step, fillY + 1, color | -16777216);
 
             RenderSystem.enableBlend();
-            RenderSystem.enableTexture();
             RenderSystem.enableDepthTest();
         }
-    }
-
-    private static void renderGuiQuad(BufferBuilder buffer, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-        buffer.vertex(x + 0.0D , y + 0.0D  , 0.0D).color(red, green, blue, alpha).next();
-        buffer.vertex(x + 0.0D , y + height, 0.0D).color(red, green, blue, alpha).next();
-        buffer.vertex(x + width, y + height, 0.0D).color(red, green, blue, alpha).next();
-        buffer.vertex(x + width, y + 0.0D  , 0.0D).color(red, green, blue, alpha).next();
-
-        BufferRenderer.drawWithGlobalProgram(buffer.end());
     }
 
     public static float getItemBarStep(ItemStack stack) {

@@ -36,7 +36,7 @@ public class ChunkLoadingManager {
                 .filter(ticket -> ticket.getSourceBlockPos().equals(sourceBlockPos))
                 .findFirst();
     }
-    private static List<Ticket> getTickets(ServerWorld sourceWorld, BlockPos sourceBlockPos){
+    public static List<Ticket> getTickets(ServerWorld sourceWorld, BlockPos sourceBlockPos){
         return LOADED_CHUNKS.stream()
                 .filter(ticket -> ticket.getSourceWorld().equals(sourceWorld))
                 .filter(ticket -> ticket.getSourceBlockPos().equals(sourceBlockPos))
@@ -92,7 +92,7 @@ public class ChunkLoadingManager {
         ServerWorldEvents.LOAD.register((server, serverWorld) -> LOADED_CHUNKS.clear());
     }
 
-    private static class Ticket {
+    public static class Ticket {
         private final ServerWorld loadedWorld;
         private final ChunkPos loadedChunkPos;
         private final ServerWorld sourceWorld;

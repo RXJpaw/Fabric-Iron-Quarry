@@ -5,16 +5,22 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.LegacySmithingRecipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.SmithingRecipe;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import pw.rxj.iron_quarry.interfaces.IHandledSmithing;
 import pw.rxj.iron_quarry.util.ZUtil;
 
-public class HandledSmithingRecipe extends SmithingRecipe {
+//TODO: UNCHECKED, PLEASE TEST THOROUGHLY
+@SuppressWarnings("removal")
+public class HandledSmithingRecipe extends LegacySmithingRecipe {
     public static final RecipeSerializer<HandledSmithingRecipe> SERIALIZER = new RecipeSerializer<>() {
-        private ItemStack appendSmithingPreview(Ingredient base, Ingredient addition, ItemStack output) {
+        private ItemStack appendSmithingPreview(Ingredient base, Ingredient addition, SmithingRecipe recipe) {
+            ItemStack output = recipe.getOutput(DynamicRegistryManager.EMPTY);
+
             if(ZUtil.getBlockOrItem(output) instanceof IHandledSmithing smithing) {
                 ItemStack outputPreview = smithing.getSmithingOutputPreview(base, addition, output);
                 if(outputPreview != null) return outputPreview;
@@ -29,7 +35,7 @@ public class HandledSmithingRecipe extends SmithingRecipe {
 
             Ingredient base = Ingredient.fromJson(JsonHelper.getObject(json, "base"));
             Ingredient addition = Ingredient.fromJson(JsonHelper.getObject(json, "addition"));
-            ItemStack output = this.appendSmithingPreview(base, addition, recipe.getOutput());
+            ItemStack output = this.appendSmithingPreview(base, addition, recipe);
 
             return new HandledSmithingRecipe(recipeId, base, addition, output);
         }
@@ -40,7 +46,7 @@ public class HandledSmithingRecipe extends SmithingRecipe {
 
             Ingredient base = Ingredient.fromPacket(buffer);
             Ingredient addition = Ingredient.fromPacket(buffer);
-            ItemStack output = this.appendSmithingPreview(base, addition, recipe.getOutput());
+            ItemStack output = this.appendSmithingPreview(base, addition, recipe);
 
             return new HandledSmithingRecipe(recipeId, base, addition, output);
         }
@@ -56,13 +62,13 @@ public class HandledSmithingRecipe extends SmithingRecipe {
     }
 
     @Override
-    public ItemStack craft(Inventory inventory) {
-        ItemStack output = getOutput().copy();
+    public ItemStack craft(Inventory inventory, DynamicRegistryManager dynamicRegistryManager) {
+        ItemStack output = getOutput(dynamicRegistryManager).copy();
 
         if(ZUtil.getBlockOrItem(output) instanceof IHandledSmithing handledSmithing) {
-            return handledSmithing.getSmithingOutput(this, inventory);
+            return handledSmithing.getSmithingOutput(this, inventory, dynamicRegistryManager);
         }
 
-        return super.craft(inventory);
+        return super.craft(inventory, dynamicRegistryManager);
     }
 }

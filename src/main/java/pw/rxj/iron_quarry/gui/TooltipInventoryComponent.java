@@ -51,7 +51,7 @@ public class TooltipInventoryComponent implements CustomTooltipComponent {
     }
 
     @Override
-    public void drawItems(TextRenderer textRenderer, int x, int y, MatrixStack matrices, ItemRenderer itemRenderer, int z) {
+    public void drawItems(TextRenderer textRenderer, int x, int y, MatrixStack matrices, ItemRenderer itemRenderer) {
         for(int index = 0; index < this.disableableInventory.size(); ++index) {
             int slotX = x + index * 18;
             int slotY = y + 2;
@@ -59,24 +59,24 @@ public class TooltipInventoryComponent implements CustomTooltipComponent {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, CUSTOM_SLOTS_TEXTURE);
 
-            DrawableHelper.drawTexture(matrices, slotX, slotY, z, 0, 0, 18, 18, 36, 36);
+            DrawableHelper.drawTexture(matrices, slotX, slotY, 0, 0, 18, 18, 36, 36);
 
-            this.drawSlot(slotX, slotY, index, textRenderer, matrices, itemRenderer, z);
+            this.drawSlot(slotX, slotY, index, textRenderer, matrices, itemRenderer);
         }
     }
 
-    private void drawSlot(int x, int y, int index, TextRenderer textRenderer, MatrixStack matrices, ItemRenderer itemRenderer, int z) {
+    private void drawSlot(int x, int y, int index, TextRenderer textRenderer, MatrixStack matrices, ItemRenderer itemRenderer) {
         Pair<ItemStack, Boolean> slot = this.disableableInventory.get(index);
         ItemStack itemStack = slot.getA();
         Boolean disabled = slot.getB();
 
-        itemRenderer.renderInGuiWithOverrides(itemStack, x + 1, y + 1, index);
-        itemRenderer.renderGuiItemOverlay(textRenderer, itemStack, x + 1, y + 1);
+        itemRenderer.renderInGuiWithOverrides(matrices, itemStack, x + 1, y + 1, index);
+        itemRenderer.renderGuiItemOverlay(matrices, textRenderer, itemStack, x + 1, y + 1);
 
         if(disabled) {
             RenderSystem.disableDepthTest();
             RenderSystem.colorMask(true, true, true, false);
-            Screen.fillGradient(matrices, x, y, x + 18, y + 18, -1073741824, -1073741824, z);
+            Screen.fillGradient(matrices, x, y, x + 18, y + 18, -1073741824, -1073741824, 0);
             RenderSystem.colorMask(true, true, true, true);
             RenderSystem.enableDepthTest();
         }
