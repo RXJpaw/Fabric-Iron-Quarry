@@ -5,7 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -101,10 +101,10 @@ public class BlockActress {
         Vec3d originVec3d = RenderUtil.vec3dFrom(originBlockPos);
 
         return this.blockState.getDroppedStacks(
-                new LootContext.Builder(this.serverWorld)
-                        .parameter(LootContextParameters.BLOCK_STATE, originBlockState)
-                        .parameter(LootContextParameters.ORIGIN, originVec3d)
-                        .parameter(LootContextParameters.TOOL, miningTool)
+                new LootContextParameterSet.Builder(this.serverWorld)
+                        .add(LootContextParameters.BLOCK_STATE, originBlockState)
+                        .add(LootContextParameters.ORIGIN, originVec3d)
+                        .add(LootContextParameters.TOOL, miningTool)
         );
     }
     public int getRequiredMiningLevel() {

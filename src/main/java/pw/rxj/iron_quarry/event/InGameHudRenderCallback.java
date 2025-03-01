@@ -2,16 +2,16 @@ package pw.rxj.iron_quarry.event;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 
 public interface InGameHudRenderCallback {
-    Event<Start> START = EventFactory.createArrayBacked(Start.class, (listeners) -> (matrices, tickDelta) -> {
+    Event<Start> START = EventFactory.createArrayBacked(Start.class, (listeners) -> (context, tickDelta) -> {
         for (Start event : listeners) {
-            event.onStart(matrices, tickDelta);
+            event.onStart(context, tickDelta);
         }
     });
 
     interface Start {
-        void onStart(MatrixStack matrices, double tickDelta);
+        void onStart(DrawContext context, double tickDelta);
     }
 }

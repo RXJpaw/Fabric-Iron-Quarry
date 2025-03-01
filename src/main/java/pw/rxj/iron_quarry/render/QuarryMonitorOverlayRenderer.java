@@ -3,9 +3,8 @@ package pw.rxj.iron_quarry.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -23,7 +22,7 @@ public class QuarryMonitorOverlayRenderer {
     private static final QuarryMonitorOverlayConfig.Handler QUARRY_MONITOR_OVERLAY_CONFIG = Main.CONFIG.getQuarryMonitorOverlayConfig();
     public static final Identifier OVERLAY_TEXTURE = Identifier.of(Main.MOD_ID, "textures/gui/quarry_monitor_overlay.png");
 
-    private static void renderOnScreen(MatrixStack matrices, double tickDelta) {
+    private static void renderOnScreen(DrawContext context, double tickDelta) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         ClientPlayerEntity player = minecraftClient.player;
         if(player == null) return;
@@ -56,22 +55,22 @@ public class QuarryMonitorOverlayRenderer {
 
         //texture render
 
+        MatrixStack matrices = context.getMatrices();
+
         RenderSystem.enableBlend();
-        RenderSystem.setShaderTexture(0, OVERLAY_TEXTURE);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         matrices.push();
         matrices.translate(x, y, 90.0);
 
-        DrawableHelper.drawTexture(matrices, 0, 0, 0, 0, 0, 42, 45, 128, 128);
+        context.drawTexture(OVERLAY_TEXTURE, 0, 0, 0, 0, 0, 42, 45, 128, 128);
 
         if(energyPct > 0.0F) {
             int chargedPixels = Math.max(0, Math.min(39, (int) (energyPct * 39)));
-            DrawableHelper.drawTexture(matrices, 3, 3 + 39 - chargedPixels, 0, 42, 3 + 39 - chargedPixels, 5, chargedPixels, 128, 128);
+            context.drawTexture(OVERLAY_TEXTURE, 3, 3 + 39 - chargedPixels, 0, 42, 3 + 39 - chargedPixels, 5, chargedPixels, 128, 128);
         }
         if(outputInvPct > 0.0F) {
             int chargedPixels = Math.max(0, Math.min(39, (int) (outputInvPct * 39)));
-            DrawableHelper.drawTexture(matrices, 34, 3 + 39 - chargedPixels, 0, 47, 3 + 39 - chargedPixels, 5, chargedPixels, 128, 128);
+            context.drawTexture(OVERLAY_TEXTURE, 34, 3 + 39 - chargedPixels, 0, 47, 3 + 39 - chargedPixels, 5, chargedPixels, 128, 128);
         }
 
         matrices.pop();
@@ -79,29 +78,20 @@ public class QuarryMonitorOverlayRenderer {
         RenderSystem.disableBlend();
 
         //item render
+        //Renders over subtitles. In versions prior to 1.20 this could be fixed by messing with the ModelViewStack,
+        //but since 1.20 DrawContext#fill (f.e in BlueprintPreviewRenderer) manipulates the way
+        //DrawContext#drawItem works, which could potentially mess with other mods.
 
-        ItemRenderer itemRenderer = minecraftClient.getItemRenderer();
         TextRenderer textRenderer = minecraftClient.textRenderer;
 
-        MatrixStack modelViewStack = RenderSystem.getModelViewStack();
-        modelViewStack.push();
-        //z was -1.0 before for seemingly unknown reasons, which resulted in subtitles being rendered below gui item icons.
-        //setting z to -101.0 (-100.0 doesn't work) results in perfectly fine subtitles being rendered above gui item icons.
-        //last tested: 1.19.2 | feb 26th 2025
-        modelViewStack.translate(x, y, -101.0);
-        RenderSystem.applyModelViewMatrix();
-
         if(blueprintStack.getItem() instanceof BlueprintItem) {
-            itemRenderer.renderGuiItemIcon(matrices, blueprintStack, 13, 4);
-            itemRenderer.renderGuiItemOverlay(matrices, textRenderer, blueprintStack, 13, 4);
+            context.drawItem(blueprintStack, x + 13, y + 4);
+            context.drawItemInSlot(textRenderer, blueprintStack, x + 13, y + 4);
         }
         if(drillStack.getItem() instanceof DrillItem) {
-            itemRenderer.renderGuiItemIcon(matrices, drillStack, 13, 25);
-            itemRenderer.renderGuiItemOverlay(matrices, textRenderer, drillStack, 13, 25);
+            context.drawItem(drillStack, x + 13, y + 25);
+            context.drawItemInSlot(textRenderer, drillStack, x + 13, y + 25);
         }
-
-        modelViewStack.pop();
-        RenderSystem.applyModelViewMatrix();
     }
 
     public static void register() {

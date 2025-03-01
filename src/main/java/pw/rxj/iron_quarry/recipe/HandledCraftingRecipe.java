@@ -1,7 +1,7 @@
 package pw.rxj.iron_quarry.recipe;
 
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
@@ -56,13 +56,13 @@ public class HandledCraftingRecipe extends ShapedRecipe {
     }
 
     @Override
-    public ItemStack craft(CraftingInventory craftingInventory, DynamicRegistryManager dynamicRegistryManager) {
+    public ItemStack craft(RecipeInputInventory recipeInputInventory, DynamicRegistryManager dynamicRegistryManager) {
         ItemStack output = getOutput(dynamicRegistryManager).copy();
 
         if(ZUtil.getBlockOrItem(output) instanceof IHandledCrafting handledCrafting) {
-            return handledCrafting.getCraftingOutput(this, craftingInventory, dynamicRegistryManager);
+            return handledCrafting.getCraftingOutput(this, recipeInputInventory, dynamicRegistryManager);
         }
 
-        return super.craft(craftingInventory, dynamicRegistryManager);
+        return super.craft(recipeInputInventory, dynamicRegistryManager);
     }
 }

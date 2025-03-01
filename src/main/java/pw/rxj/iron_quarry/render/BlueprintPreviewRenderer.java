@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.util.math.MatrixStack;
@@ -156,9 +156,10 @@ public class BlueprintPreviewRenderer {
         }
     }
 
-    private static void renderOnScreen(MatrixStack matrices, double tickDelta) {
+    private static void renderOnScreen(DrawContext context, double tickDelta) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         TextRenderer textRenderer = minecraftClient.textRenderer;
+        MatrixStack matrices = context.getMatrices();
 
         for (ScreenPosData pair : screenPosList) {
             ScreenPos screenPos = pair.getA();
@@ -173,7 +174,6 @@ public class BlueprintPreviewRenderer {
 
             RenderSystem.enableBlend();
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-            RenderSystem.setShaderTexture(0, BLUEPRINT_POSITIONS_TEXTURE);
 
             matrices.push();
 
@@ -181,7 +181,7 @@ public class BlueprintPreviewRenderer {
             matrices.scale(scale, scale, scale);
             matrices.translate(-6, -6, 0.0);
 
-            DrawableHelper.drawTexture(matrices, 0, 0, 0, texUV.x, texUV.y, 13, 13, 36, 36);
+            context.drawTexture(BLUEPRINT_POSITIONS_TEXTURE, 0, 0, 0, texUV.x, texUV.y, 13, 13, 36, 36);
 
             matrices.pop();
 
@@ -189,7 +189,7 @@ public class BlueprintPreviewRenderer {
             if(screenPos.add(1, 1).distanceToCenter() <= 14 * scale) {
                 matrices.push();
 
-                matrices.translate(screenPos.x, screenPos.y + 9 * scale, 90.0);
+                matrices.translate(screenPos.x, screenPos.y + 9 * scale, 0.0F);
 
                 MutableText text = Text.literal(String.format("%,.1fm", distance));
                 int width = textRenderer.getWidth(text);
@@ -199,8 +199,8 @@ public class BlueprintPreviewRenderer {
                 matrices.scale(scale, scale, scale);
                 matrices.translate(1 + width / -2.0F, 0.0, 0.0);
 
-                DrawableHelper.fill(matrices, -2, -2, width + 1, height + 1, 1409286144);
-                textRenderer.draw(matrices, text, 0, 0, new Color(1.0F, 1.0F, 1.0F, alpha).getRGB());
+                context.fill(-2, -2, width + 1, height + 1, 1409286144);
+                context.drawText(textRenderer, text, 0, 0, new Color(1.0F, 1.0F, 1.0F, alpha).getRGB(), true);
 
                 matrices.pop();
             }

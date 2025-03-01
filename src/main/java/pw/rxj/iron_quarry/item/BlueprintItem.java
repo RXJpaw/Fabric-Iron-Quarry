@@ -60,7 +60,7 @@ public class BlueprintItem extends Item implements IBlockAttackable, IHandledSmi
     public ItemStack getSmithingOutput(HandledSmithingRecipe handler, Inventory inventory, DynamicRegistryManager dynamicRegistryManager) {
         ItemStack output = handler.getOutput(dynamicRegistryManager).copy();
         if(BlueprintItem.isNotOf(output)) return ItemStack.EMPTY;
-        ItemStack base = inventory.getStack(0).copy();
+        ItemStack base = inventory.getStack(1).copy();
 
         if(this.isSealed(base)) return ItemStack.EMPTY;
         if(this.getFirstPos(base).isEmpty()) return ItemStack.EMPTY;

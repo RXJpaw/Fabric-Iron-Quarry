@@ -2,11 +2,8 @@ package pw.rxj.iron_quarry.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import org.joml.Matrix4f;
@@ -51,32 +48,29 @@ public class TooltipInventoryComponent implements CustomTooltipComponent {
     }
 
     @Override
-    public void drawItems(TextRenderer textRenderer, int x, int y, MatrixStack matrices, ItemRenderer itemRenderer) {
+    public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context) {
         for(int index = 0; index < this.disableableInventory.size(); ++index) {
             int slotX = x + index * 18;
             int slotY = y + 2;
 
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            RenderSystem.setShaderTexture(0, CUSTOM_SLOTS_TEXTURE);
+            context.drawTexture(CUSTOM_SLOTS_TEXTURE, slotX, slotY, 0, 0, 18, 18, 36, 36);
 
-            DrawableHelper.drawTexture(matrices, slotX, slotY, 0, 0, 18, 18, 36, 36);
-
-            this.drawSlot(slotX, slotY, index, textRenderer, matrices, itemRenderer);
+            this.drawSlot(slotX, slotY, index, textRenderer, context);
         }
     }
 
-    private void drawSlot(int x, int y, int index, TextRenderer textRenderer, MatrixStack matrices, ItemRenderer itemRenderer) {
+    private void drawSlot(int x, int y, int index, TextRenderer textRenderer, DrawContext context) {
         Pair<ItemStack, Boolean> slot = this.disableableInventory.get(index);
         ItemStack itemStack = slot.getA();
         Boolean disabled = slot.getB();
 
-        itemRenderer.renderInGuiWithOverrides(matrices, itemStack, x + 1, y + 1, index);
-        itemRenderer.renderGuiItemOverlay(matrices, textRenderer, itemStack, x + 1, y + 1);
+        context.drawItem(itemStack, x + 1, y + 1, index);
+        context.drawItemInSlot(textRenderer, itemStack, x + 1, y + 1);
 
         if(disabled) {
             RenderSystem.disableDepthTest();
             RenderSystem.colorMask(true, true, true, false);
-            Screen.fillGradient(matrices, x, y, x + 18, y + 18, -1073741824, -1073741824, 0);
+            context.fillGradient(x, y, x + 18, y + 18, 160, -1073741824, -1073741824);
             RenderSystem.colorMask(true, true, true, true);
             RenderSystem.enableDepthTest();
         }

@@ -5,18 +5,16 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.LegacySmithingRecipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.SmithingRecipe;
+import net.minecraft.recipe.SmithingTransformRecipe;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import pw.rxj.iron_quarry.interfaces.IHandledSmithing;
 import pw.rxj.iron_quarry.util.ZUtil;
 
-//TODO: UNCHECKED, PLEASE TEST THOROUGHLY
-@SuppressWarnings("removal")
-public class HandledSmithingRecipe extends LegacySmithingRecipe {
+public class HandledSmithingRecipe extends SmithingTransformRecipe {
     public static final RecipeSerializer<HandledSmithingRecipe> SERIALIZER = new RecipeSerializer<>() {
         private ItemStack appendSmithingPreview(Ingredient base, Ingredient addition, SmithingRecipe recipe) {
             ItemStack output = recipe.getOutput(DynamicRegistryManager.EMPTY);
@@ -31,7 +29,7 @@ public class HandledSmithingRecipe extends LegacySmithingRecipe {
 
         @Override
         public HandledSmithingRecipe read(Identifier recipeId, JsonObject json) {
-            SmithingRecipe recipe = RecipeSerializer.SMITHING.read(recipeId, json);
+            SmithingRecipe recipe = RecipeSerializer.SMITHING_TRANSFORM.read(recipeId, json);
 
             Ingredient base = Ingredient.fromJson(JsonHelper.getObject(json, "base"));
             Ingredient addition = Ingredient.fromJson(JsonHelper.getObject(json, "addition"));
@@ -42,7 +40,7 @@ public class HandledSmithingRecipe extends LegacySmithingRecipe {
 
         @Override
         public HandledSmithingRecipe read(Identifier recipeId, PacketByteBuf buffer) {
-            SmithingRecipe recipe = RecipeSerializer.SMITHING.read(recipeId, buffer);
+            SmithingRecipe recipe = RecipeSerializer.SMITHING_TRANSFORM.read(recipeId, buffer);
 
             Ingredient base = Ingredient.fromPacket(buffer);
             Ingredient addition = Ingredient.fromPacket(buffer);
@@ -53,12 +51,12 @@ public class HandledSmithingRecipe extends LegacySmithingRecipe {
 
         @Override
         public void write(PacketByteBuf buffer, HandledSmithingRecipe recipe) {
-            RecipeSerializer.SMITHING.write(buffer, recipe);
+            RecipeSerializer.SMITHING_TRANSFORM.write(buffer, recipe);
         }
     };
 
     public HandledSmithingRecipe(Identifier id, Ingredient base, Ingredient addition, ItemStack result) {
-        super(id, base, addition, result);
+        super(id, Ingredient.EMPTY, base, addition, result);
     }
 
     @Override

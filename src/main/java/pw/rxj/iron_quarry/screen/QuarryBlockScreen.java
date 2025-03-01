@@ -2,6 +2,7 @@ package pw.rxj.iron_quarry.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.render.GameRenderer;
@@ -70,17 +71,13 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
     private final ManagedSlot DRILL_SLOT;
     private final ManagedSlot BATTERY_SLOT;
 
-    private void drawLockedSlot(MatrixStack matrices, Slot slot, int width, int height) {
+    private void drawLockedSlot(DrawContext context, Slot slot, int width, int height) {
         if(width < 0) Main.LOGGER.warn("Tried to drawLockedSlot with width < 0 ({})", width);
         if(width > 18) Main.LOGGER.warn("Tried to drawLockedSlot with width > 18 ({})", width);
         if(height < 0) Main.LOGGER.warn("Tried to drawLockedSlot with height < 0 ({})", height);
         if(height > 18) Main.LOGGER.warn("Tried to drawLockedSlot with height > 18 ({})", height);
 
-        int originalShaderTexture = RenderSystem.getShaderTexture(0);
-
-        RenderSystem.setShaderTexture(0, AUGMENTATION_CONFIGURATION_TEXTURE);
-        this.drawTexture(matrices, this.x + slot.x - 1, this.y + slot.y - 1, 100, 0, width, height);
-        RenderSystem.setShaderTexture(0, originalShaderTexture);
+        context.drawTexture(AUGMENTATION_CONFIGURATION_TEXTURE, this.x + slot.x - 1, this.y + slot.y - 1, 100, 0, width, height);
     }
 
     public QuarryBlockScreen(QuarryBlockScreenHandler handler, PlayerInventory inventory, Text title) {
@@ -107,7 +104,7 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
     }
 
     @Override
-    protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
+    protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         if(minecraftClient.world == null) return;
 
@@ -130,18 +127,17 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
         int backgroundX = this.x;
         int backgroundY = this.y;
 
-        RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
-        drawTexture(matrices, backgroundX, backgroundY, 0, 0, this.realBackgroundWidth, this.realBackgroundHeight);
+        context.drawTexture(BACKGROUND_TEXTURE, backgroundX, backgroundY, 0, 0, this.realBackgroundWidth, this.realBackgroundHeight);
 
         //Energy-Fill-% rendering
         if(EnergyContainer.getStored() > 0) {
             int chargedPixels = Math.max(0, Math.min(40, (int) (EnergyContainer.getFillPercent() * 40)));
-            drawTexture(matrices, backgroundX + 10, backgroundY + 58 - chargedPixels, 179, 57 - chargedPixels, 12, chargedPixels);
+            context.drawTexture(BACKGROUND_TEXTURE, backgroundX + 10, backgroundY + 58 - chargedPixels, 179, 57 - chargedPixels, 12, chargedPixels);
         }
 
         //Battery Slot rendering
         if(!BATTERY_SLOT.hasStack()){
-            drawTexture(matrices, backgroundX + 11, backgroundY + 64, 180, 60, 10, 14);
+            context.drawTexture(BACKGROUND_TEXTURE, backgroundX + 11, backgroundY + 64, 180, 60, 10, 14);
         }
 
         //Energy-Fill-% tooltip
@@ -164,14 +160,14 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
             return tooltip.subList(0, conflictAmount > 0 ? 5 + conflictAmount : 4);
         });
 
-        drawTexture(matrices, InfoDisplay.zone.x + 5, InfoDisplay.zone.y + 2, 179, 5, 3, 9);
+        context.drawTexture(BACKGROUND_TEXTURE, InfoDisplay.zone.x + 5, InfoDisplay.zone.y + 2, 179, 5, 3, 9);
         if(machineUpgradesUtil.getConflictAmount() > 0) {
             double alpha = Math.sin(System.currentTimeMillis() / 100.0) + 0.5;
 
             RenderSystem.enableBlend();
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, (float) alpha);
 
-            drawTexture(matrices, InfoDisplay.zone.x + 5, InfoDisplay.zone.y + 2, 182, 5, 3, 9);
+            context.drawTexture(BACKGROUND_TEXTURE, InfoDisplay.zone.x + 5, InfoDisplay.zone.y + 2, 182, 5, 3, 9);
 
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.defaultBlendFunc();
@@ -190,11 +186,10 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
             int augmentsMenuWidth = AugmentsConfig.zone.width;
             int augmentsMenuHeight = AugmentsConfig.zone.height;
 
-            RenderSystem.setShaderTexture(0, AUGMENTATION_CONFIGURATION_TEXTURE);
-            this.drawTexture(matrices, augmentsMenuX, augmentsMenuY, 0, 0, augmentsMenuWidth, augmentsMenuHeight);
+            context.drawTexture(AUGMENTATION_CONFIGURATION_TEXTURE, augmentsMenuX, augmentsMenuY, 0, 0, augmentsMenuWidth, augmentsMenuHeight);
 
             RenderUtil.runScissored(augmentsMenuX, augmentsMenuY, augmentsMenuWidth, augmentsMenuHeight, () -> {
-                this.textRenderer.drawWithShadow(matrices, ReadableString.translatable("screen.iron_quarry.quarry_block.title.augmentation"), augmentsMenuX + 20, augmentsMenuY + 7, 0xFFFFFF);
+                context.drawTextWithShadow(this.textRenderer, ReadableString.translatable("screen.iron_quarry.quarry_block.title.augmentation"), augmentsMenuX + 20, augmentsMenuY + 7, 0xFFFFFF);
             });
 
             for (ManagedSlot slot: AUGMENT_SLOTS) {
@@ -205,13 +200,12 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
                 slot.setEnabled(slotVisible);
 
                 if(slot.isLocked() && slotVisible) {
-                    this.drawLockedSlot(matrices, slot, Math.min(testX - slot.x + 1, 18), Math.min(testY - slot.y + 1, 18));
+                    this.drawLockedSlot(context, slot, Math.min(testX - slot.x + 1, 18), Math.min(testY - slot.y + 1, 18));
                 }
             }
 
         } else {
-            RenderSystem.setShaderTexture(0, OPTIONS_TEXTURE);
-            this.drawTexture(matrices, augmentsMenuZone.x, augmentsMenuZone.y, 0, 22, 22, 22);
+            context.drawTexture(OPTIONS_TEXTURE, augmentsMenuZone.x, augmentsMenuZone.y, 0, 22, 22, 22);
 
             AUGMENT_SLOTS.forEach(slot -> slot.setEnabled(false));
         }
@@ -237,12 +231,11 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
                 RenderSystem.enableBlend();
                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, cappedTicks / cappedMaxTicks);
 
-                RenderSystem.setShaderTexture(0, BACKGROUND_IO_OVERLAY);
-                drawTexture(matrices, backgroundX, backgroundY, 0, 0, this.realBackgroundWidth, this.realBackgroundHeight);
+                context.drawTexture(BACKGROUND_IO_OVERLAY, backgroundX, backgroundY, 0, 0, this.realBackgroundWidth, this.realBackgroundHeight);
 
                 //Battery Slot rendering
                 if(!BATTERY_SLOT.hasStack()){
-                    drawTexture(matrices, backgroundX + 11, backgroundY + 64, 180, 60, 10, 14);
+                    context.drawTexture(BACKGROUND_IO_OVERLAY, backgroundX + 11, backgroundY + 64, 180, 60, 10, 14);
                 }
 
                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -250,10 +243,10 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
             }
 
             RenderSystem.setShaderTexture(0, OPTIONS_CONFIGURATION_TEXTURE);
-            drawTexture(matrices, ioConfigX, ioConfigY, 0, 0, ioConfigWidth, ioConfigHeight);
+            context.drawTexture(OPTIONS_CONFIGURATION_TEXTURE, ioConfigX, ioConfigY, 0, 0, ioConfigWidth, ioConfigHeight);
 
             RenderUtil.runScissored(ioConfigX, ioConfigY, ioConfigWidth, ioConfigHeight, () -> {
-                textRenderer.drawWithShadow(matrices, ReadableString.translatable("screen.iron_quarry.quarry_block.title.configuration"), ioConfigX + 20, ioConfigY + 7, 0xFFFFFF);
+                context.drawTextWithShadow(this.textRenderer, ReadableString.translatable("screen.iron_quarry.quarry_block.title.configuration"), ioConfigX + 20, ioConfigY + 7, 0xFFFFFF);
             });
 
             IO_OPTIONS.forEach(ioOption -> {
@@ -265,16 +258,14 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
                 TexturePosition ioTexture = IoState.getTexturePosition(MachineConfiguration.getIoState(face));
 
                 if(ioConfigWidth >= bgX && ioConfigHeight >= bgY){
-                    RenderSystem.setShaderTexture(0, block.getTextureId());
-                    this.drawTexture(matrices,
+                    context.drawTexture(block.getTextureId(),
                             ioConfigX + bgX, ioConfigY + bgY,
                             bgTexture.u(), bgTexture.v(),
                             Math.min(bgTexture.width(), ioConfigWidth - bgX), Math.min(bgTexture.height(), ioConfigHeight - bgY));
                 }
 
                 if(ioConfigWidth >= bgX + 4 && ioConfigHeight >= bgY + 4){
-                    RenderSystem.setShaderTexture(0, IoState.getTextureId());
-                    this.drawTexture(matrices,
+                    context.drawTexture(IoState.getTextureId(),
                             ioConfigX + bgX + 4, ioConfigY + bgY + 4,
                             ioTexture.u(), ioTexture.v(),
                             Math.min(ioTexture.width(), ioConfigWidth - (bgX + 4)), Math.min(ioTexture.height(), ioConfigHeight - (bgY + 4)));
@@ -282,25 +273,24 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
                 }
 
                 if(TrackableZone.isMouseOver(ioConfigX + bgX, ioConfigY + bgY, bgTexture.width(), bgTexture.height(), mouseX, mouseY)) {
-                    drawIoHighlight(matrices, ioConfigX + bgX, ioConfigY + bgY, 0);
+                    drawIoHighlight(context, ioConfigX + bgX, ioConfigY + bgY);
                 }
             });
 
         } else {
-            RenderSystem.setShaderTexture(0, OPTIONS_TEXTURE);
-            this.drawTexture(matrices, ioConfigZone.x, ioConfigZone.y, 0, 0, 22, 22);
+            context.drawTexture(OPTIONS_TEXTURE, ioConfigZone.x, ioConfigZone.y, 0, 0, 22, 22);
         }
     }
 
     @Override
-    protected void drawSlot(MatrixStack matrices, Slot slot) {
+    protected void drawSlot(DrawContext context, Slot slot) {
         if(AUGMENT_SLOTS.contains((ManagedSlot) slot)) {
             TrackableZone.Zone zone = AugmentsConfig.zone;
             RenderUtil.runScissored(zone.x, zone.y, zone.width, zone.height, () -> {
-                super.drawSlot(matrices, slot);
+                super.drawSlot(context, slot);
             });
         } else {
-            super.drawSlot(matrices, slot);
+            super.drawSlot(context, slot);
         }
     }
 
@@ -309,28 +299,29 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
     }
 
     @Override
-    protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY) {
-        super.drawForeground(matrices, mouseX, mouseY);
+    protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
+        super.drawForeground(context, mouseX, mouseY);
 
         if(!this.handler.getCursorStack().isEmpty()) return;
 
+        MatrixStack matrices = context.getMatrices();
         matrices.push();
         matrices.translate(-this.x, -this.y, 100);
 
         if(EnergyDisplay.isMouseOver(mouseX, mouseY)) {
-            this.renderTooltip(matrices, EnergyDisplay.getSuppliedText(), mouseX, mouseY);
+            context.drawTooltip(this.textRenderer, EnergyDisplay.getSuppliedText(), mouseX, mouseY);
         } else if(InfoDisplay.isMouseOver(mouseX, mouseY)) {
-            this.renderTooltip(matrices, InfoDisplay.getSuppliedText(), mouseX, mouseY);
+            context.drawTooltip(this.textRenderer, InfoDisplay.getSuppliedText(), mouseX, mouseY);
         } else if(BLUEPRINT_SLOT.getStack().isEmpty() && TrackableZone.isMouseOver(BLUEPRINT_SLOT, this.x, this.y, mouseX, mouseY)) {
-            this.renderTooltip(matrices, ReadableString.translatable("screen.iron_quarry.quarry_block.tooltip.blueprint_info"), mouseX, mouseY);
+            context.drawTooltip(this.textRenderer, ReadableString.translatable("screen.iron_quarry.quarry_block.tooltip.blueprint_info"), mouseX, mouseY);
         } else if(DRILL_SLOT.getStack().isEmpty() && TrackableZone.isMouseOver(DRILL_SLOT, this.x, this.y, mouseX, mouseY)) {
-            this.renderTooltip(matrices, ReadableString.translatable("screen.iron_quarry.quarry_block.tooltip.drill_info"), mouseX, mouseY);
+            context.drawTooltip(this.textRenderer, ReadableString.translatable("screen.iron_quarry.quarry_block.tooltip.drill_info"), mouseX, mouseY);
         } else if(BATTERY_SLOT.getStack().isEmpty() && TrackableZone.isMouseOver(BATTERY_SLOT, this.x, this.y, mouseX, mouseY)) {
-            this.renderTooltip(matrices, ReadableString.translatable("screen.iron_quarry.quarry_block.tooltip.battery_info"), mouseX, mouseY);
+            context.drawTooltip(this.textRenderer, ReadableString.translatable("screen.iron_quarry.quarry_block.tooltip.battery_info"), mouseX, mouseY);
         } else if(AugmentsConfig.isMouseOver()) {
             for (ManagedSlot slot : AUGMENT_SLOTS) {
                 if(slot.isLocked() && TrackableZone.isMouseOver(slot, this.x, this.y, mouseX, mouseY)) {
-                    this.renderTooltip(matrices, ReadableString.translatable("screen.iron_quarry.quarry_block.tooltip.locked_augment_slot"), mouseX, mouseY);
+                    context.drawTooltip(this.textRenderer, ReadableString.translatable("screen.iron_quarry.quarry_block.tooltip.locked_augment_slot"), mouseX, mouseY);
 
                     break;
                 }
@@ -397,10 +388,10 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        renderBackground(matrices);
-        super.render(matrices, mouseX, mouseY, delta);
-        drawMouseoverTooltip(matrices, mouseX, mouseY);
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        renderBackground(context);
+        super.render(context, mouseX, mouseY, delta);
+        drawMouseoverTooltip(context, mouseX, mouseY);
     }
 
     @Override
@@ -410,10 +401,10 @@ public class QuarryBlockScreen extends HandledScreen<QuarryBlockScreenHandler> {
         this.y = (this.height - this.realBackgroundHeight) / 2;
     }
 
-    public static void drawIoHighlight(MatrixStack matrices, int x, int y, int z) {
+    public static void drawIoHighlight(DrawContext context, int x, int y) {
         RenderSystem.disableDepthTest();
         RenderSystem.colorMask(true, true, true, false);
-        fillGradient(matrices, x, y, x + 16, y + 16, 1612718112, 1612718112, z);
+        context.fillGradient(x, y, x + 16, y + 16, 0, 1612718112, 1612718112);
         RenderSystem.colorMask(true, true, true, true);
         RenderSystem.enableDepthTest();
     }

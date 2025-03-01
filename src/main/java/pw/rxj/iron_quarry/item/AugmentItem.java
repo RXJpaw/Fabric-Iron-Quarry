@@ -207,10 +207,10 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
 
     @Override
     public ItemStack getSmithingOutput(HandledSmithingRecipe handler, Inventory inventory, DynamicRegistryManager dynamicRegistryManager) {
-        ItemStack base = inventory.getStack(0).copy();
+        ItemStack base = inventory.getStack(1).copy();
         if(AugmentItem.isNotOf(base)) return ItemStack.EMPTY;
 
-        ItemStack addition = inventory.getStack(1).copy();
+        ItemStack addition = inventory.getStack(2).copy();
         AugmentStack augmentStack = AugmentStack.from(addition);
 
         if(augmentStack == null) {
@@ -218,7 +218,7 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
             return result ? base : ItemStack.EMPTY;
         } else {
             Inventory outcome = this.getSmithingOutcome(base, addition);
-            return outcome.getStack(2);
+            return outcome.getStack(3);
         }
     }
     public Inventory getSmithingOutcome(ItemStack input, ItemStack addition) {
@@ -229,7 +229,7 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
             stack.setCount(1);
 
             AugmentStack augmentStack = AugmentStack.from(stack);
-            if(augmentStack == null) return new SimpleInventory(input, addition, ItemStack.EMPTY);
+            if(augmentStack == null) return new SimpleInventory(ItemStack.EMPTY, input, addition, ItemStack.EMPTY);
 
             if(!this.canInsert(input, augmentStack)) break;
             this.addAmount(input, augmentStack.amount());
@@ -238,9 +238,9 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
         }
 
         if(this.getAmount(comparisonStack) == this.getAmount(input)) {
-            return new SimpleInventory(input, addition, ItemStack.EMPTY);
+            return new SimpleInventory(ItemStack.EMPTY, input, addition, ItemStack.EMPTY);
         } else {
-            return new SimpleInventory(ItemStack.EMPTY, addition, input);
+            return new SimpleInventory(ItemStack.EMPTY, ItemStack.EMPTY, addition, input);
         }
     }
     @Override
@@ -271,23 +271,23 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
     }
     @Override
     public Boolean handleSmithingTakeOutput(PlayerEntity player, Inventory inputInv, CraftingResultInventory outputInv, ScreenHandlerContext context) {
-        ItemStack base = inputInv.getStack(0).copy();
+        ItemStack base = inputInv.getStack(1).copy();
         if(AugmentItem.isNotOf(base)) return false;
 
-        ItemStack addition = inputInv.getStack(1).copy();
+        ItemStack addition = inputInv.getStack(2).copy();
         AugmentStack augmentStack = AugmentStack.from(addition);
 
         if(augmentStack == null) {
             return false;
         } else {
-            outputInv.unlockLastRecipe(player);
+            outputInv.unlockLastRecipe(player, List.of(inputInv.getStack(0), inputInv.getStack(1), inputInv.getStack(2)));
 
             Inventory outcome = this.getSmithingOutcome(base, addition);
-            inputInv.setStack(0, outcome.getStack(0));
             inputInv.setStack(1, outcome.getStack(1));
+            inputInv.setStack(2, outcome.getStack(2));
 
-            ItemStack output = outcome.getStack(2);
-            output.onCraft(player.world, player, output.getCount());
+            ItemStack output = outcome.getStack(3);
+            output.onCraft(player.getWorld(), player, output.getCount());
 
             context.run((world, pos) -> world.syncWorldEvent(1044, pos, 0));
             return true;

@@ -1,5 +1,8 @@
 {
     "type": "iron_quarry:handled_smithing_recipe",
+    "template": {
+        "tag": "iron_quarry:empty_ingredient"
+    },
     "base": {
         "item": "iron_quarry:blueprint"
     },

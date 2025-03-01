@@ -17,8 +17,11 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
@@ -67,7 +70,7 @@ public class Main implements ModInitializer {
 
 	public static final ScreenHandlerType<QuarryBlockScreenHandler> QUARRY_BLOCK_SCREEN_HANDLER = new ExtendedScreenHandlerType<>(QuarryBlockScreenHandler::new);
 
-	public static final ItemGroup ITEM_GROUP = FabricItemGroup.builder(new Identifier(MOD_ID, "universal")).icon(() -> ZBlocks.NETHERITE_QUARRY.getBlockItem().getDefaultStack()).build();
+	public static final RegistryKey<ItemGroup> ITEM_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(MOD_ID, "universal"));
 
 
 	@Override
@@ -130,6 +133,11 @@ public class Main implements ModInitializer {
 
 		Registry.register(Registries.RECIPE_SERIALIZER, new Identifier(MOD_ID, "handled_crafting_recipe"), HandledCraftingRecipe.SERIALIZER);
 		Registry.register(Registries.RECIPE_SERIALIZER, new Identifier(MOD_ID, "handled_smithing_recipe"), HandledSmithingRecipe.SERIALIZER);
+
+		Registry.register(Registries.ITEM_GROUP, ITEM_GROUP, FabricItemGroup.builder()
+				.displayName(Text.translatable("itemGroup.iron_quarry.universal"))
+				.icon(() -> ZBlocks.NETHERITE_QUARRY.getBlockItem().getDefaultStack())
+				.build());
 
 		ZNetwork.registerServer();
 

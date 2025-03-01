@@ -1,6 +1,7 @@
 package pw.rxj.iron_quarry.mixin;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -17,11 +18,12 @@ import pw.rxj.iron_quarry.util.ZUtil;
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin {
     @Inject(method = "render", at = @At(value = "HEAD"))
-    public void render(MatrixStack matrices, float tickDelta, CallbackInfo callbackInfo) {
+    public void render(DrawContext context, float tickDelta, CallbackInfo ci) {
+        MatrixStack matrices = context.getMatrices();
         matrices.push();
 
         matrices.translate(0, 0, -90);
-        InGameHudRenderCallback.START.invoker().onStart(matrices, tickDelta);
+        InGameHudRenderCallback.START.invoker().onStart(context, tickDelta);
 
         matrices.pop();
     }

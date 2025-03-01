@@ -16,7 +16,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
@@ -352,11 +352,11 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
     }
 
     @Override
-    public ItemStack getCraftingOutput(HandledCraftingRecipe handler, CraftingInventory craftingInventory, DynamicRegistryManager dynamicRegistryManager) {
+    public ItemStack getCraftingOutput(HandledCraftingRecipe handler, RecipeInputInventory recipeInputInventory, DynamicRegistryManager dynamicRegistryManager) {
         ItemStack output = handler.getOutput(dynamicRegistryManager).copy();
 
-        for (int i = 0; i < craftingInventory.size(); i++) {
-            ItemStack stack = craftingInventory.getStack(i).copy();
+        for (int i = 0; i < recipeInputInventory.size(); i++) {
+            ItemStack stack = recipeInputInventory.getStack(i).copy();
 
             if(QuarryBlock.isOf(stack)) {
                 if(stack.hasNbt()) output.setNbt(stack.getNbt());

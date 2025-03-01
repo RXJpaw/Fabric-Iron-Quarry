@@ -1,11 +1,8 @@
 package pw.rxj.iron_quarry.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import org.joml.Matrix4f;
@@ -55,45 +52,36 @@ public class TooltipQuarryInventoryComponent implements CustomTooltipComponent {
     }
 
     @Override
-    public void drawItems(TextRenderer textRenderer, int x, int y, MatrixStack matrices, ItemRenderer itemRenderer) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, QUARRY_SCREEN_BACKGROUND_TEXTURE);
+    public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context) {
+        context.drawTexture(QUARRY_SCREEN_BACKGROUND_TEXTURE, x, y + 2, 79, 26, 18, 18, 256, 256);
+        this.drawItemStack(x, y + 2, this.blueprintStack, textRenderer, context);
 
-        DrawableHelper.drawTexture(matrices, x, y + 2, 79, 26, 18, 18, 256, 256);
-        this.drawItemStack(x, y + 2, this.blueprintStack, textRenderer, matrices, itemRenderer);
-
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, QUARRY_SCREEN_BACKGROUND_TEXTURE);
-
-        DrawableHelper.drawTexture(matrices, x + 20, y + 2, 79, 47, 18, 18, 256, 256);
-        this.drawItemStack(x + 20, y + 2, this.drillStack, textRenderer, matrices, itemRenderer);
+        context.drawTexture(QUARRY_SCREEN_BACKGROUND_TEXTURE, x + 20, y + 2, 79, 47, 18, 18, 256, 256);
+        this.drawItemStack(x + 20, y + 2, this.drillStack, textRenderer, context);
 
         for(int index = 0; index < 6; ++index) {
             int slotX = x + 40 + index * 18;
             int slotY = y + 2;
 
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            RenderSystem.setShaderTexture(0, AUGMENTATION_CONFIGURATION_TEXTURE);
-
             if(index >= this.augmentLimit) {
-                DrawableHelper.drawTexture(matrices, slotX, slotY, 100, 0, 18, 18, 256, 256);
+                context.drawTexture(AUGMENTATION_CONFIGURATION_TEXTURE, slotX, slotY, 100, 0, 18, 18, 256, 256);
             } else {
-                DrawableHelper.drawTexture(matrices, slotX, slotY, 22, 25, 18, 18, 256, 256);
-                this.drawAugmentSlot(slotX, slotY, index, textRenderer, matrices, itemRenderer);
+                context.drawTexture(AUGMENTATION_CONFIGURATION_TEXTURE, slotX, slotY, 22, 25, 18, 18, 256, 256);
+                this.drawAugmentSlot(slotX, slotY, index, textRenderer, context);
             }
 
         }
     }
 
-    private void drawItemStack(int x, int y, ItemStack stack, TextRenderer textRenderer, MatrixStack matrices, ItemRenderer itemRenderer) {
-        itemRenderer.renderInGuiWithOverrides(matrices, stack, x + 1, y + 1);
-        itemRenderer.renderGuiItemOverlay(matrices, textRenderer, stack, x + 1, y + 1);
+    private void drawItemStack(int x, int y, ItemStack stack, TextRenderer textRenderer, DrawContext context) {
+        context.drawItem(stack, x + 1, y + 1);
+        context.drawItemInSlot(textRenderer, stack, x + 1, y + 1);
     }
 
-    private void drawAugmentSlot(int x, int y, int index, TextRenderer textRenderer, MatrixStack matrices, ItemRenderer itemRenderer) {
+    private void drawAugmentSlot(int x, int y, int index, TextRenderer textRenderer, DrawContext context) {
         if(index >= this.MachineUpgradesInventory.size()) return;
 
         ItemStack stack = this.MachineUpgradesInventory.getStack(index);
-        this.drawItemStack(x, y, stack, textRenderer, matrices, itemRenderer);
+        this.drawItemStack(x, y, stack, textRenderer, context);
     }
 }
