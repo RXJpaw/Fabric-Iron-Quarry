@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.PlayerScreenHandler;
@@ -54,7 +55,6 @@ import pw.rxj.iron_quarry.item.QuarryMonitorItem;
 import pw.rxj.iron_quarry.item.ZItemTags;
 import pw.rxj.iron_quarry.network.KeyedActionPacket;
 import pw.rxj.iron_quarry.network.ZNetwork;
-import pw.rxj.iron_quarry.recipe.HandledCraftingRecipe;
 import pw.rxj.iron_quarry.records.TexturePosition;
 import pw.rxj.iron_quarry.resource.ResourceReloadListener;
 import pw.rxj.iron_quarry.resource.config.server.QuarryStatsConfig;
@@ -352,8 +352,8 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
     }
 
     @Override
-    public ItemStack getCraftingOutput(HandledCraftingRecipe handler, RecipeInputInventory recipeInputInventory, DynamicRegistryManager dynamicRegistryManager) {
-        ItemStack output = handler.getOutput(dynamicRegistryManager).copy();
+    public ItemStack getCraftingOutput(ShapedRecipe handler, RecipeInputInventory recipeInputInventory, DynamicRegistryManager dynamicRegistryManager) {
+        ItemStack output = handler.getResult(dynamicRegistryManager).copy();
 
         for (int i = 0; i < recipeInputInventory.size(); i++) {
             ItemStack stack = recipeInputInventory.getStack(i).copy();
@@ -485,6 +485,6 @@ public class QuarryBlock extends BlockWithEntity implements IHandledCrafting, IE
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return checkType(type, ZBlockEntities.QUARRY_BLOCK_ENTITY, QuarryBlockEntity::tick);
+        return validateTicker(type, ZBlockEntities.QUARRY_BLOCK_ENTITY, QuarryBlockEntity::tick);
     }
 }

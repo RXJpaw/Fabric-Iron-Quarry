@@ -1,52 +1,66 @@
 package pw.rxj.iron_quarry.recipe;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.RecipeCodecs;
 import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.SmithingRecipe;
 import net.minecraft.recipe.SmithingTransformRecipe;
 import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
 import pw.rxj.iron_quarry.interfaces.IHandledSmithing;
 import pw.rxj.iron_quarry.util.ZUtil;
 
 public class HandledSmithingRecipe extends SmithingTransformRecipe {
-    public static final RecipeSerializer<HandledSmithingRecipe> SERIALIZER = new RecipeSerializer<>() {
-        private ItemStack appendSmithingPreview(Ingredient base, Ingredient addition, SmithingRecipe recipe) {
-            ItemStack output = recipe.getOutput(DynamicRegistryManager.EMPTY);
+    private final Ingredient template;
+    private final Ingredient base;
+    private final Ingredient addition;
+    private final ItemStack result;
 
-            if(ZUtil.getBlockOrItem(output) instanceof IHandledSmithing smithing) {
-                ItemStack outputPreview = smithing.getSmithingOutputPreview(base, addition, output);
-                if(outputPreview != null) return outputPreview;
+    @Override
+    public RecipeSerializer<?> getSerializer() {
+        return SERIALIZER;
+    }
+
+    public static final RecipeSerializer<HandledSmithingRecipe> SERIALIZER = new RecipeSerializer<>() {
+        private static final Codec<HandledSmithingRecipe> CODEC = RecordCodecBuilder.create((instance) -> {
+            return instance.group(Ingredient.ALLOW_EMPTY_CODEC.fieldOf("template").forGetter((recipe) -> {
+                return recipe.template;
+            }), Ingredient.ALLOW_EMPTY_CODEC.fieldOf("base").forGetter((recipe) -> {
+                return recipe.base;
+            }), Ingredient.ALLOW_EMPTY_CODEC.fieldOf("addition").forGetter((recipe) -> {
+                return recipe.addition;
+            }), RecipeCodecs.CRAFTING_RESULT.fieldOf("result").forGetter((recipe) -> {
+                return recipe.result;
+            })).apply(instance, (template, base, addition, result) -> {
+                return new HandledSmithingRecipe(template, base, addition, appendSmithingPreview(base, addition, result));
+            });
+        });
+
+        private static ItemStack appendSmithingPreview(Ingredient base, Ingredient addition, ItemStack result) {
+            if(ZUtil.getBlockOrItem(result) instanceof IHandledSmithing smithing) {
+                ItemStack resultPreview = smithing.getSmithingOutputPreview(base, addition, result);
+                if(resultPreview != null) return resultPreview;
             }
 
-            return output;
+            return result;
         }
 
         @Override
-        public HandledSmithingRecipe read(Identifier recipeId, JsonObject json) {
-            SmithingRecipe recipe = RecipeSerializer.SMITHING_TRANSFORM.read(recipeId, json);
-
-            Ingredient base = Ingredient.fromJson(JsonHelper.getObject(json, "base"));
-            Ingredient addition = Ingredient.fromJson(JsonHelper.getObject(json, "addition"));
-            ItemStack output = this.appendSmithingPreview(base, addition, recipe);
-
-            return new HandledSmithingRecipe(recipeId, base, addition, output);
+        public Codec<HandledSmithingRecipe> codec() {
+            return CODEC;
         }
 
         @Override
-        public HandledSmithingRecipe read(Identifier recipeId, PacketByteBuf buffer) {
-            SmithingRecipe recipe = RecipeSerializer.SMITHING_TRANSFORM.read(recipeId, buffer);
-
+        public HandledSmithingRecipe read(PacketByteBuf buffer) {
+            Ingredient template = Ingredient.fromPacket(buffer);
             Ingredient base = Ingredient.fromPacket(buffer);
             Ingredient addition = Ingredient.fromPacket(buffer);
-            ItemStack output = this.appendSmithingPreview(base, addition, recipe);
+            ItemStack result = buffer.readItemStack();
 
-            return new HandledSmithingRecipe(recipeId, base, addition, output);
+            return new HandledSmithingRecipe(template, base, addition, result);
         }
 
         @Override
@@ -55,15 +69,20 @@ public class HandledSmithingRecipe extends SmithingTransformRecipe {
         }
     };
 
-    public HandledSmithingRecipe(Identifier id, Ingredient base, Ingredient addition, ItemStack result) {
-        super(id, Ingredient.EMPTY, base, addition, result);
+    public HandledSmithingRecipe(Ingredient template, Ingredient base, Ingredient addition, ItemStack result) {
+        super(template, base, addition, result);
+
+        this.template = template;
+        this.base = base;
+        this.addition = addition;
+        this.result = result;
     }
 
     @Override
     public ItemStack craft(Inventory inventory, DynamicRegistryManager dynamicRegistryManager) {
-        ItemStack output = getOutput(dynamicRegistryManager).copy();
+        ItemStack result = this.getResult(dynamicRegistryManager).copy();
 
-        if(ZUtil.getBlockOrItem(output) instanceof IHandledSmithing handledSmithing) {
+        if(ZUtil.getBlockOrItem(result) instanceof IHandledSmithing handledSmithing) {
             return handledSmithing.getSmithingOutput(this, inventory, dynamicRegistryManager);
         }
 

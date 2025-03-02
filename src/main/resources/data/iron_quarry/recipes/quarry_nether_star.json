@@ -1,5 +1,5 @@
 {
-    "type": "iron_quarry:handled_crafting_recipe",
+    "type": "minecraft:crafting_shaped",
     "pattern": [
         "BCB",
         "CMC",

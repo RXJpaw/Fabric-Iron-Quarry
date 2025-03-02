@@ -40,7 +40,6 @@ import pw.rxj.iron_quarry.interfaces.IHandledUseBlock;
 import pw.rxj.iron_quarry.interfaces.ITickingInventoryItem;
 import pw.rxj.iron_quarry.item.ZItems;
 import pw.rxj.iron_quarry.network.ZNetwork;
-import pw.rxj.iron_quarry.recipe.HandledCraftingRecipe;
 import pw.rxj.iron_quarry.recipe.HandledSmithingRecipe;
 import pw.rxj.iron_quarry.resource.config.ConfigHandler;
 import pw.rxj.iron_quarry.screen.QuarryBlockScreenHandler;
@@ -131,7 +130,6 @@ public class Main implements ModInitializer {
 
 		Registry.register(Registries.SCREEN_HANDLER, new Identifier(MOD_ID, "quarry_block_screen_handler"), QUARRY_BLOCK_SCREEN_HANDLER);
 
-		Registry.register(Registries.RECIPE_SERIALIZER, new Identifier(MOD_ID, "handled_crafting_recipe"), HandledCraftingRecipe.SERIALIZER);
 		Registry.register(Registries.RECIPE_SERIALIZER, new Identifier(MOD_ID, "handled_smithing_recipe"), HandledSmithingRecipe.SERIALIZER);
 
 		Registry.register(Registries.ITEM_GROUP, ITEM_GROUP, FabricItemGroup.builder()

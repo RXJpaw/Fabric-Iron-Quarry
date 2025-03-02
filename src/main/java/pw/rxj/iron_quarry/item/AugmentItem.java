@@ -248,13 +248,13 @@ public class AugmentItem extends Item implements IHandledSmithing, IHandledItemE
         if(output.getItem() instanceof AugmentItem augmentItem) {
             ItemStack stack = output.copy();
 
-            if(addition.toJson().equals(Ingredient.fromTag(ZItemTags.AUGMENT_CAPACITY_ENHANCERS).toJson())) {
+            if(addition.equals(Ingredient.fromTag(ZItemTags.AUGMENT_CAPACITY_ENHANCERS))) {
                 augmentItem.makeSmithingPreview(stack, ZItemTags.AUGMENT_CAPACITY_ENHANCERS);
 
                 return stack;
             } else {
                 for (TagKey<Item> itemTagKey : ZItemTags.AUGMENT_ENHANCERS) {
-                    if(!addition.toJson().equals(Ingredient.fromTag(itemTagKey).toJson())) continue;
+                    if(!addition.equals(Ingredient.fromTag(itemTagKey))) continue;
 
                     AugmentStack augmentStack = AugmentStack.from(itemTagKey);
                     if(augmentStack == null) continue;
